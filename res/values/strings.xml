@@ -4,5 +4,13 @@
     <string name="app_name">萝卜便利店</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    
+    <string name="tab_main_nav_home">首页</string>
+    <string name="tab_main_nav_shop">店铺</string>
+    <string name="tab_main_nav_cart">购物车</string>
+    <string name="tab_main_nav_user">我的</string>
+    <string name="home_search_hinttext">寻找宝贝或店铺</string>
 
+    
+    <string name="exit_program">再按一次退出应用</string>
 </resources>
