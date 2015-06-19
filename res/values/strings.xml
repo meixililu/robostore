@@ -11,6 +11,9 @@
     <string name="tab_main_nav_user">我的</string>
     <string name="home_search_hinttext">寻找宝贝或店铺</string>
 
+    <string name="login">登录</string>
+    <string name="logout">注销</string>
+    <string name="unlogin_txt">您尚未登录，请先登录</string>
     
     <string name="exit_program">再按一次退出应用</string>
 </resources>

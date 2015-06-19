@@ -23,13 +23,23 @@
 		    android:textColor="@color/white"
 		    android:textSize="@dimen/bigger"
 		    />
-        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-            android:id="@+id/collected_progressbar_m"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="right"
-            android:background="@color/white"
-            android:visibility="gone" />
+        <FrameLayout 
+            android:id="@+id/edit_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="right"
+        	android:paddingLeft="@dimen/padding_15"
+        	android:paddingRight="@dimen/padding_15"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<ImageView 
+			    android:id="@+id/edit"
+			    android:layout_width="22dp"
+	        	android:layout_height="20dp"
+			    android:layout_gravity="center"
+			    android:src="@drawable/edit"
+			    />
+        </FrameLayout>
     </android.support.v7.widget.Toolbar>
     
     

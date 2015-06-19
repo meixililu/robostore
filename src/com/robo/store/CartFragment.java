@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 public class CartFragment extends BaseFragment {
 
+	private FrameLayout edit_cover;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,10 +24,8 @@ public class CartFragment extends BaseFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
-	@Override
-	public void onDestroyView() {
-		LogUtil.DefalutLog(CartFragment.class.getName()+"---onDestroyView");
-		super.onDestroyView();
+	protected void initView(){
+		edit_cover = (FrameLayout) getView().findViewById(R.id.edit_cover);
 	}
 	
 	@Override
@@ -43,8 +44,9 @@ public class CartFragment extends BaseFragment {
 	}
 	
 	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser) {
-		super.setUserVisibleHint(isVisibleToUser);
+	public void onDestroyView() {
+		LogUtil.DefalutLog(CartFragment.class.getName()+"---onDestroyView");
+		super.onDestroyView();
 	}
-
+	
 }

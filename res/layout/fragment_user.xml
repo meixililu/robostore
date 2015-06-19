@@ -23,14 +23,69 @@
 		    android:textColor="@color/white"
 		    android:textSize="@dimen/bigger"
 		    />
-        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-            android:id="@+id/collected_progressbar_m"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="right"
-            android:background="@color/white"
-            android:visibility="gone" />
+		<FrameLayout 
+            android:id="@+id/logout_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="right"
+        	android:paddingLeft="@dimen/padding_15"
+        	android:paddingRight="@dimen/padding_15"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<TextView 
+			    android:id="@+id/logout"
+			    android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+			    android:text="@string/logout"
+			    android:layout_gravity="center"
+			    android:gravity="center"
+			    android:textColor="@color/white"
+			    android:textSize="@dimen/bigger"
+			    />
+        </FrameLayout>
     </android.support.v7.widget.Toolbar>
+    
+	<FrameLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@color/app_background"
+	    >
+	    <RelativeLayout 
+	        android:id="@+id/login_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        >
+			<Button 
+			    android:id="@+id/login_btn"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:paddingLeft="@dimen/padding_20"
+			    android:paddingRight="@dimen/padding_20"
+			    android:layout_centerInParent="true"
+			    android:background="@drawable/btn_bg"
+			    android:text="@string/login"
+			    android:textSize="@dimen/bigger"
+			    />
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="@dimen/bigest"
+	            android:textColor="@color/text_dark"
+	            android:text="@string/unlogin_txt"
+	            android:layout_centerHorizontal="true"
+	            android:layout_above="@id/login_btn"
+	            android:layout_marginBottom="40dp"
+	            />
+	    </RelativeLayout>
+	    <LinearLayout 
+	        android:id="@+id/user_info_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:orientation="vertical"
+	        >
+	        
+	    </LinearLayout>
+	</FrameLayout>
     
     
 </LinearLayout>
