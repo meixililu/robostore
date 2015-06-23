@@ -1,12 +1,12 @@
 package com.robo.store;
 
+import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -14,16 +14,21 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.robo.store.util.KeyUtil;
-import com.robo.store.util.ScreenUtil;
 
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends ActionBarActivity implements View.OnClickListener{
 
-	public Toolbar toolbar;
+	public LinearLayout toolbar;
+	public FrameLayout back_cover;
+	public TextView titleTv;
+	public String title;
 	public ProgressBarCircularIndeterminate mProgressbar;
 	public SwipeRefreshLayout mSwipeRefreshLayout;
 	
@@ -31,13 +36,6 @@ public class BaseActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		TransparentStatusbar();
-	}
-	
-	protected void TransparentStatusbar(){
-		if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-		}
 	}
 	
 	@Override
@@ -49,18 +47,17 @@ public class BaseActivity extends ActionBarActivity {
 
 	protected void getActionBarToolbar() {
         if (toolbar == null) {
-//        	toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
-            if (toolbar != null) {
-                setSupportActionBar(toolbar);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                	toolbar.setPadding(0, ScreenUtil.dip2px(this, 6), 0, 0);
-                }
-            }
-            String title = getIntent().getStringExtra(KeyUtil.ActionbarTitle);
-            if(!TextUtils.isEmpty(title)){
-            	getSupportActionBar().setTitle(title);
-            }
+        	toolbar = (LinearLayout) findViewById(R.id.my_awesome_toolbar);
+        }
+        if(back_cover == null){
+        	back_cover = (FrameLayout) findViewById(R.id.back_cover);
+        	back_cover.setOnClickListener(this);
+        }
+        if(titleTv == null){
+        	titleTv = (TextView) findViewById(R.id.title);
+        	if(!TextUtils.isEmpty(title)){
+        		titleTv.setText(title);
+        	}
         }
     }
 	
@@ -89,6 +86,7 @@ public class BaseActivity extends ActionBarActivity {
 		}
 	}
 	
+	
 	public void onSwipeRefreshLayoutFinish(){
 		if(mSwipeRefreshLayout != null){
 			mSwipeRefreshLayout.setRefreshing(false);
@@ -110,9 +108,12 @@ public class BaseActivity extends ActionBarActivity {
 		}
 	}
 	
-	protected int getScreenHeight() {
-        return findViewById(android.R.id.content).getHeight();
-    }
+	protected void TransparentStatusbar(){
+		if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+		}
+	}
 	
 	@Override
 	protected void onResume() {
@@ -127,15 +128,6 @@ public class BaseActivity extends ActionBarActivity {
 	}
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-		}
-       return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_VOLUME_UP:
@@ -146,6 +138,10 @@ public class BaseActivity extends ActionBarActivity {
 		     return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	protected void setTitle(String title){
+		this.title = title;
 	}
 	
 	protected boolean toolbarIsShown() {
@@ -167,5 +163,22 @@ public class BaseActivity extends ActionBarActivity {
     	animY.setInterpolator(new DecelerateInterpolator(2));
     	animY.start();
     }
+	
+	protected void toActivity(Class mClass,Bundle bundle){
+		Intent intent = new Intent(this,mClass);
+		if(bundle != null){
+			intent.putExtra(KeyUtil.BundleKey, bundle);
+		}
+		startActivity(intent);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+		case R.id.back_cover:
+			BaseActivity.this.finish();
+			break;
+		}
+	}
     
 }

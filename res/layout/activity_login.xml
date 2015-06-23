@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+	<LinearLayout
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar"
+        android:background="@drawable/top_bg"
+        android:orientation="horizontal"
+        >
+        <FrameLayout 
+            android:id="@+id/back_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="left"
+        	android:paddingLeft="@dimen/padding_20"
+        	android:paddingRight="@dimen/padding_20"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<ImageView 
+			    android:layout_width="12dp"
+	        	android:layout_height="21dp"
+			    android:layout_gravity="center"
+			    android:src="@drawable/icon_back"
+			    />
+        </FrameLayout>
+		<TextView 
+		    android:id="@+id/title"
+		    android:layout_width="0dp"
+        	android:layout_height="match_parent"
+        	android:layout_weight="1"
+		    android:layout_gravity="center"
+		    android:gravity="center"
+		    android:textColor="@color/white"
+		    android:textSize="@dimen/bigger"
+		    />
+        <FrameLayout
+            android:id="@+id/register_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:foreground="@drawable/framelayout_selector"
+            android:paddingLeft="@dimen/padding_15"
+            android:paddingRight="@dimen/padding_15"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/register"
+                android:textColor="@color/white"
+                android:textSize="@dimen/bigger" />
+        </FrameLayout>
+    </LinearLayout>
+    
+    
+</LinearLayout>

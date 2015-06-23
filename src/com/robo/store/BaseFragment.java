@@ -1,5 +1,8 @@
 package com.robo.store;
 
+import com.robo.store.util.KeyUtil;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -54,6 +57,14 @@ public class BaseFragment extends Fragment {
 	
 	protected void setLayoutId(int layoutid){
 		layoutId = layoutid;
+	}
+	
+	protected void toActivity(Class mClass,Bundle bundle){
+		Intent intent = new Intent(getActivity(),mClass);
+		if(bundle != null){
+			intent.putExtra(KeyUtil.BundleKey, bundle);
+		}
+		getActivity().startActivity(intent);
 	}
 
 	@Override
