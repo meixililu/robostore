@@ -12,8 +12,10 @@
     <string name="home_search_hinttext">寻找宝贝或店铺</string>
 
     <string name="login">登录</string>
+    <string name="submit">提交</string>
     <string name="logout">注销</string>
     <string name="register">注册</string>
+    <string name="register_identify">输入验证码</string>
     <string name="unlogin_txt">您尚未登录，请先登录</string>
     
     <string name="exit_program">再按一次退出应用</string>
@@ -28,4 +30,5 @@
     <string name="soft_versoin">当前版本</string>
     <string name="soft_update">版本更新</string>
     <string name="check_soft_update">查看版本更新 > </string>
+    <string name="forget_pwd">忘记密码</string>
 </resources>

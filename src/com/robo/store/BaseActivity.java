@@ -35,7 +35,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		TransparentStatusbar();
+//		TransparentStatusbar();
 	}
 	
 	@Override
@@ -46,15 +46,13 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 	protected void getActionBarToolbar() {
-        if (toolbar == null) {
-        	toolbar = (LinearLayout) findViewById(R.id.my_awesome_toolbar);
-        }
-        if(back_cover == null){
-        	back_cover = (FrameLayout) findViewById(R.id.back_cover);
+        toolbar = (LinearLayout) findViewById(R.id.my_awesome_toolbar);
+        back_cover = (FrameLayout) findViewById(R.id.back_cover);
+    	if(back_cover != null){
         	back_cover.setOnClickListener(this);
         }
-        if(titleTv == null){
-        	titleTv = (TextView) findViewById(R.id.title);
+    	titleTv = (TextView) findViewById(R.id.title);
+        if(titleTv != null){
         	if(!TextUtils.isEmpty(title)){
         		titleTv.setText(title);
         	}

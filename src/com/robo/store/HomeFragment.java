@@ -13,9 +13,9 @@ import com.robo.store.util.LogUtil;
 
 public class HomeFragment extends BaseFragment implements OnClickListener{
 
-	private TextView title;
+	private TextView city;
 	private TextView search_btn;
-	private FrameLayout title_cover;
+	private FrameLayout city_cover;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,11 +30,11 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	protected void initView(){
-		title_cover = (FrameLayout) getView().findViewById(R.id.title_cover);
-		title = (TextView) getView().findViewById(R.id.title);
+		city_cover = (FrameLayout) getView().findViewById(R.id.title_cover);
+		city = (TextView) getView().findViewById(R.id.title);
 		search_btn = (TextView) getView().findViewById(R.id.search_btn);
 		
-		title_cover.setOnClickListener(this);
+		city_cover.setOnClickListener(this);
 		search_btn.setOnClickListener(this);
 	}
 

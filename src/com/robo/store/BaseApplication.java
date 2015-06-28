@@ -1,5 +1,7 @@
 package com.robo.store;
 
+import com.robo.store.http.HttpParameter;
+
 import android.app.Application;
 
 public class BaseApplication extends Application {
@@ -13,6 +15,7 @@ public class BaseApplication extends Application {
         super.onCreate();  
         if(mInstance == null)  
             mInstance = this; 
+        HttpParameter.initRequestHeader(this);
     }  
     
 //	/** 

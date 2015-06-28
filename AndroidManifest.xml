@@ -35,6 +35,8 @@
             </intent-filter>
         </activity>
 
+        <meta-data android:value='100001' android:name='ROBOCHANNEL'/>
+        
         <service
             android:name="com.robo.store.service.AccountService"
             android:enabled="true"
@@ -49,6 +51,15 @@
         
         <activity
             android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgetPWDActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ModifyPWDActivity"
             android:screenOrientation="portrait" />
         
         

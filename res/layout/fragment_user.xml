@@ -60,7 +60,7 @@
             <Button
                 android:id="@+id/login_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/login_btn"
                 android:layout_centerInParent="true"
                 android:background="@drawable/btn_login_selector"
                 android:paddingLeft="40dp"

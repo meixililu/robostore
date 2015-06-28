@@ -39,7 +39,7 @@
 		    android:textSize="@dimen/bigger"
 		    />
         <FrameLayout
-            android:id="@+id/register_cover"
+            android:id="@+id/login_cover"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/register"
+                android:text="@string/login"
                 android:textColor="@color/white"
                 android:textSize="@dimen/bigger" />
         </FrameLayout>
@@ -68,32 +68,12 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="@dimen/padding_7"
-            android:hint="账号"
+            android:hint="手机号"
             android:textSize="@dimen/big"
+            android:inputType="phone"
             android:textColorHint="@color/text_grey1"
-            android:singleLine="true"
-			android:maxLength="20" 
-			android:inputType="phone"
-			android:imeOptions="actionNext"          
             android:textCursorDrawable="@null"
             android:textColor="@color/text_black"
-            android:gravity="left|center_vertical"
-			android:background="@drawable/bg_input"
-            />
-        <EditText 
-            android:id="@+id/pwd_input"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:textColor="@color/text_black"
-            android:layout_marginTop="@dimen/padding_15"
-            android:inputType="textPassword"
-            android:textColorHint="@color/text_grey1"
-            android:singleLine="true"
-			android:maxLength="20" 
-			android:imeOptions="actionDone" 
-            android:textCursorDrawable="@null"
-            android:hint="密码"
-            android:textSize="@dimen/big"
             android:gravity="left|center_vertical"
 			android:background="@drawable/bg_input"
             />
@@ -106,38 +86,15 @@
             android:textColor="@color/red"
             android:textSize="@dimen/middle"
             />
-        
         <Button 
-            android:id="@+id/login_btn"
+            android:id="@+id/register_btn"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/login_btn"
             android:layout_marginTop="@dimen/padding_7"
             android:background="@drawable/btn_login_selector"
-            android:text="@string/login"
+            android:text="@string/register"
             android:textSize="@dimen/bigger"
             />
-        <FrameLayout
-            android:id="@+id/forget_pwd_cover"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_gravity="right"
-            android:layout_marginTop="@dimen/padding_7"
-            android:foreground="@drawable/framelayout_selector"
-            android:paddingLeft="@dimen/padding_10"
-            android:paddingRight="@dimen/padding_10"
-            >
-	        <TextView 
-	            android:id="@+id/forget_pwd_btn"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:paddingLeft="@dimen/padding_5"
-	            android:layout_gravity="center"
-	            android:gravity="right"
-	            android:textColor="@color/text_grey"
-	            android:textSize="@dimen/big"
-	            android:text="@string/forget_pwd"
-	            />
-        </FrameLayout>
     </LinearLayout>
     
 </LinearLayout>
