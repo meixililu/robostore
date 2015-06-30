@@ -48,7 +48,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.title_cover:
-			toLocationActivity();
+			toActivity(CityActivity.class, null);
 			break;
 		case R.id.search_btn:
 			toSearchActivity();
@@ -57,10 +57,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void toSearchActivity(){
-		
-	}
-	
-	private void toLocationActivity(){
 		
 	}
 	

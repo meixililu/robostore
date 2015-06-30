@@ -1,5 +1,7 @@
 package com.robo.store;
 
+import java.util.HashMap;
+
 import org.apache.http.Header;
 
 import android.os.Bundle;
@@ -47,7 +49,7 @@ public class RegisterActivity extends BaseActivity {
 	private void RequestData(){
 		if(validData()){
 			showSucceeDialog();
-			RequestParams params = new RequestParams();
+			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("mobile", userName);
 			RoboHttpClient.post("","userLogin", params, new TextHttpResponseHandler(){
 

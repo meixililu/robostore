@@ -1,5 +1,7 @@
 package com.robo.store.http;
 
+import java.util.Map;
+
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -14,7 +16,7 @@ public class RoboHttpClient {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
 
-	public static RequestParams getHeaderParameter(RequestParams data){
+	public static RequestParams getHeaderParameter(Map data){
 		if(TextUtils.isEmpty(HttpParameter.channelId)){
 			HttpParameter.initRequestHeader(BaseApplication.mInstance);
 		}
@@ -23,7 +25,7 @@ public class RoboHttpClient {
 		return params;
 	}
 	
-	public static void get(String url, String type, RequestParams param, AsyncHttpResponseHandler responseHandler) {
+	public static void get(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		RequestParams params = getHeaderParameter(param);
 		client.addHeader("request-type", type);
 		client.addHeader("softVer", HttpParameter.softVer);
@@ -35,7 +37,7 @@ public class RoboHttpClient {
 		client.get(url, params, responseHandler);
 	}
 	
-	public static void post(String url, String type, RequestParams param, AsyncHttpResponseHandler responseHandler) {
+	public static void post(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		RequestParams params = getHeaderParameter(param);
 		client.addHeader("request-type", type);
 		client.addHeader("softVer", HttpParameter.softVer);
@@ -47,11 +49,11 @@ public class RoboHttpClient {
 		client.post(url, params, responseHandler);
 	}
 	
-	public static void get(String type, RequestParams param, AsyncHttpResponseHandler responseHandler) {
+	public static void get(String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		get(HttpParameter.baseUrl, type, param, responseHandler);
 	}
 	
-	public static void post(String type, RequestParams param, AsyncHttpResponseHandler responseHandler) {
+	public static void post(String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		post(HttpParameter.baseUrl, type, param, responseHandler);
 	}
 

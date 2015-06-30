@@ -25,7 +25,7 @@ import com.robo.store.util.KeyUtil;
 
 public class BaseActivity extends ActionBarActivity implements View.OnClickListener{
 
-	public LinearLayout toolbar;
+//	public LinearLayout toolbar;
 	public FrameLayout back_cover;
 	public TextView titleTv;
 	public String title;
@@ -46,7 +46,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 	protected void getActionBarToolbar() {
-        toolbar = (LinearLayout) findViewById(R.id.my_awesome_toolbar);
+//        toolbar = (LinearLayout) findViewById(R.id.my_awesome_toolbar);
         back_cover = (FrameLayout) findViewById(R.id.back_cover);
     	if(back_cover != null){
         	back_cover.setOnClickListener(this);
@@ -142,25 +142,25 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 		this.title = title;
 	}
 	
-	protected boolean toolbarIsShown() {
-        return ViewHelper.getTranslationY(toolbar) == 0;
-    }
-
-	protected boolean toolbarIsHidden() {
-        return ViewHelper.getTranslationY(toolbar) == -toolbar.getHeight();
-    }
-	
-	protected void hideViews() {
-		ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", -toolbar.getHeight());
-    	animY.setInterpolator(new AccelerateInterpolator(2));
-    	animY.start();
-    }
-
-	protected void showViews() {
-    	ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", 0);
-    	animY.setInterpolator(new DecelerateInterpolator(2));
-    	animY.start();
-    }
+//	protected boolean toolbarIsShown() {
+//        return ViewHelper.getTranslationY(toolbar) == 0;
+//    }
+//
+//	protected boolean toolbarIsHidden() {
+//        return ViewHelper.getTranslationY(toolbar) == -toolbar.getHeight();
+//    }
+//	
+//	protected void hideViews() {
+//		ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", -toolbar.getHeight());
+//    	animY.setInterpolator(new AccelerateInterpolator(2));
+//    	animY.start();
+//    }
+//
+//	protected void showViews() {
+//    	ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", 0);
+//    	animY.setInterpolator(new DecelerateInterpolator(2));
+//    	animY.start();
+//    }
 	
 	protected void toActivity(Class mClass,Bundle bundle){
 		Intent intent = new Intent(this,mClass);
