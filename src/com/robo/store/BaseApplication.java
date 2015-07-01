@@ -1,5 +1,6 @@
 package com.robo.store;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.robo.store.http.HttpParameter;
 
 import android.app.Application;
@@ -9,6 +10,7 @@ public class BaseApplication extends Application {
 //	private static DaoMaster daoMaster;  
 //    private static DaoSession daoSession; 
     public static BaseApplication mInstance;
+//    public static 
     
     @Override  
     public void onCreate() {  
@@ -16,7 +18,10 @@ public class BaseApplication extends Application {
         if(mInstance == null)  
             mInstance = this; 
         HttpParameter.initRequestHeader(this);
+        SDKInitializer.initialize(getApplicationContext());
     }  
+    
+    
     
 //	/** 
 //     * 取得DaoMaster 

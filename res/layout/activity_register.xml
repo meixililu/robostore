@@ -72,6 +72,7 @@
             android:textSize="@dimen/big"
             android:inputType="phone"
             android:textColorHint="@color/text_grey1"
+            android:maxLength="11"
             android:textCursorDrawable="@null"
             android:textColor="@color/text_black"
             android:gravity="left|center_vertical"

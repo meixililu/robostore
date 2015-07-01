@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.apache.http.Header;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,12 +13,13 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.gc.materialdesign.widgets.ProgressDialog;
-import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.dao.ResultDao;
+import com.robo.store.dao.UserLoginResponse;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.Md5;
+import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 
 public class LoginActivity extends BaseActivity {
@@ -55,11 +57,11 @@ public class LoginActivity extends BaseActivity {
 		userName = username_input.getText().toString().trim();
 		pwd = pwd_input.getText().toString().trim();
 		if(TextUtils.isEmpty(userName)){
-			ToastUtil.diaplayMesShort(this, "ÇëÊäÈëÕËºÅ");
+			ToastUtil.diaplayMesShort(this, "è¯·è¾“å…¥è´¦å·");
 			isvalid = false;
 		}
 		if(TextUtils.isEmpty(pwd)){
-			ToastUtil.diaplayMesShort(this, "ÇëÊäÈëÃÜÂë");
+			ToastUtil.diaplayMesShort(this, "è¯·è¾“å…¥å¯†ç ");
 			isvalid = false;
 		}
 		return isvalid;
@@ -75,13 +77,16 @@ public class LoginActivity extends BaseActivity {
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-					LogUtil.DefalutLog("login---RequestData---onFailure:"+arg2);
+					ToastUtil.diaplayMesLong(LoginActivity.this, "è¿æ¥å¤±è´¥ï¼Œè¯·é‡è¯•ï¼");
 				}
 
 				@Override
-				public void onSuccess(int arg0, Header[] arg1, String arg2) {
-					LogUtil.DefalutLog("login---RequestData---onSuccess:"+arg2);
-					
+				public void onSuccess(int arg0, Header[] arg1, String result) {
+					LogUtil.DefalutLog(result);
+					UserLoginResponse mUserLoginResponse = (UserLoginResponse) ResultParse.parseResult(result,UserLoginResponse.class);
+					if(ResultParse.handleResutl(LoginActivity.this, mUserLoginResponse)){
+						ToastUtil.diaplayMesLong(LoginActivity.this, "ç™»å½•æˆåŠŸ");
+					}
 				}
 				
 				@Override
@@ -93,8 +98,7 @@ public class LoginActivity extends BaseActivity {
 	}
 	
 	private void showSucceeDialog(){
-		progressDialog = new ProgressDialog(this, "ÕıÔÚµÇÂ¼", getResources().getColor(R.color.app_color));
-		progressDialog.show();
+		progressDialog = ProgressDialog.show(this, "", "æ­£åœ¨ç™»å½•...", true, false);
 	}
 	
 	@Override

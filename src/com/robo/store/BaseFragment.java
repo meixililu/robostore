@@ -66,6 +66,19 @@ public class BaseFragment extends Fragment {
 		}
 		getActivity().startActivity(intent);
 	}
+	
+	protected void toActivityForResult(Class mClass,Bundle bundle,int requestCode){
+		Intent intent = new Intent(getActivity(),mClass);
+		if(bundle != null){
+			intent.putExtra(KeyUtil.BundleKey, bundle);
+		}
+		getActivity().startActivityForResult(intent, requestCode);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 
 	@Override
 	public void onPause() {

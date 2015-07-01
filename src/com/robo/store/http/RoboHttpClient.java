@@ -1,10 +1,14 @@
 package com.robo.store.http;
 
+import java.io.IOException;
 import java.util.Map;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -16,37 +20,46 @@ public class RoboHttpClient {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
 
-	public static RequestParams getHeaderParameter(Map data){
+	public static RequestParams getHeaderParameter(Map data) throws JsonGenerationException, JsonMappingException, IOException{
 		if(TextUtils.isEmpty(HttpParameter.channelId)){
 			HttpParameter.initRequestHeader(BaseApplication.mInstance);
 		}
 		RequestParams params = new RequestParams();
-		params.put("paramList", new Gson().toJson(data));
+		ObjectMapper objectMapper = new ObjectMapper();
+		params.put("paramList", objectMapper.writeValueAsString(data));
 		return params;
 	}
 	
 	public static void get(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
-		RequestParams params = getHeaderParameter(param);
-		client.addHeader("request-type", type);
-		client.addHeader("softVer", HttpParameter.softVer);
-		client.addHeader("channelId", HttpParameter.channelId);
-		client.addHeader("platform", HttpParameter.platform);
-		client.addHeader("systemVer", HttpParameter.systemVer);
-		client.addHeader("machId", HttpParameter.machId);
-		LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
-		client.get(url, params, responseHandler);
+		try {
+			RequestParams params = getHeaderParameter(param);
+			client.addHeader("request-type", type);
+			client.addHeader("softVer", HttpParameter.softVer);
+			client.addHeader("channelId", HttpParameter.channelId);
+			client.addHeader("platform", HttpParameter.platform);
+			client.addHeader("systemVer", HttpParameter.systemVer);
+			client.addHeader("machId", HttpParameter.machId);
+			LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
+			client.get(url, params, responseHandler);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void post(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
-		RequestParams params = getHeaderParameter(param);
-		client.addHeader("request-type", type);
-		client.addHeader("softVer", HttpParameter.softVer);
-		client.addHeader("channelId", HttpParameter.channelId);
-		client.addHeader("platform", HttpParameter.platform);
-		client.addHeader("systemVer", HttpParameter.systemVer);
-		client.addHeader("machId", HttpParameter.machId);
-		LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
-		client.post(url, params, responseHandler);
+		try {
+			RequestParams params = getHeaderParameter(param);
+			client.addHeader("request-type", type);
+			client.addHeader("softVer", HttpParameter.softVer);
+			client.addHeader("channelId", HttpParameter.channelId);
+			client.addHeader("platform", HttpParameter.platform);
+			client.addHeader("systemVer", HttpParameter.systemVer);
+			client.addHeader("machId", HttpParameter.machId);
+			LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
+			client.post(url, params, responseHandler);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public static void get(String type, Map param, AsyncHttpResponseHandler responseHandler) {

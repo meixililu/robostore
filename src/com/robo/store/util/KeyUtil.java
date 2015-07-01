@@ -13,7 +13,9 @@ public class KeyUtil {
 	
 	public static final String SDcardPathKey = "SDcardPathKey";
 
-	public static final String BundleKey = "BundleKey";;
+	public static final String BundleKey = "BundleKey";
+	
+	public static final String CityKey = "CityKey";
 
 	
 	

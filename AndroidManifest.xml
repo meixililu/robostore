@@ -14,6 +14,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -36,7 +45,10 @@
         </activity>
 
         <meta-data android:value='100001' android:name='ROBOCHANNEL'/>
+        <meta-data android:name="com.baidu.lbsapi.API_KEY" android:value="Q9tAiPVE2vt3b9GPka34KXM0" />
         
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"></service>
+
         <service
             android:name="com.robo.store.service.AccountService"
             android:enabled="true"

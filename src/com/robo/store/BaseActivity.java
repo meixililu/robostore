@@ -22,6 +22,7 @@ import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.robo.store.util.KeyUtil;
+import com.robo.store.util.LogUtil;
 
 public class BaseActivity extends ActionBarActivity implements View.OnClickListener{
 
@@ -162,6 +163,12 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 //    	animY.start();
 //    }
 	
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		LogUtil.DefalutLog("BaseActivity---onActivityResult");
+	}
+	
 	protected void toActivity(Class mClass,Bundle bundle){
 		Intent intent = new Intent(this,mClass);
 		if(bundle != null){
@@ -174,7 +181,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.back_cover:
-			BaseActivity.this.finish();
+			BaseActivity.this.onBackPressed();
 			break;
 		}
 	}

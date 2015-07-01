@@ -3,6 +3,7 @@ package com.robo.store;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.robo.store.adapter.MainTabViewPagerAdapter;
+import com.robo.store.util.LogUtil;
 import com.robo.store.util.TabsUtil;
 
 public class MainActivity extends ActionBarActivity implements OnPageChangeListener {
@@ -73,6 +75,15 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 			exitTime = System.currentTimeMillis();
 		} else {
 			finish();
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		LogUtil.DefalutLog("MainActivity---onActivityResult");
+		if(HomeFragment.RequestCity == requestCode){
+			HomeFragment.mBaseFragment.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 
