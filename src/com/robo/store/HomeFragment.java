@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.adapter.HomeMenuGridViewAdapter;
 import com.robo.store.dao.UserLoginResponse;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.KeyUtil;
@@ -39,12 +40,14 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private ListView mListView;
 	private ProgressBarCircularIndeterminate mProgressbar;
 	private LayoutInflater inflater;
+	private HomeMenuGridViewAdapter mAdapter;
+	private boolean isHashLoadData;
 	
-	public static String city;
-	public static BaseFragment mBaseFragment;
 	private View headerView;
 	private GridView mGridView;
 	private AutoScrollViewPager auto_view_pager;
+	public static String city;
+	public static BaseFragment mBaseFragment;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,9 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
+		if(!isHashLoadData){
+			isHashLoadData = true;
+		}
 	}
 	
 	private void RequestData(){
