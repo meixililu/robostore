@@ -1,7 +1,10 @@
 package com.robo.store;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.Header;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +16,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.robo.store.adapter.MainTabViewPagerAdapter;
+import com.robo.store.dao.UserLoginResponse;
+import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.LogUtil;
+import com.robo.store.util.ResultParse;
 import com.robo.store.util.TabsUtil;
+import com.robo.store.util.ToastUtil;
 
 public class MainActivity extends ActionBarActivity implements OnPageChangeListener {
 
@@ -37,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		init();
+		RequestData();
 	}
 	
 	private void init(){
@@ -85,6 +95,30 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		if(HomeFragment.RequestCity == requestCode){
 			HomeFragment.mBaseFragment.onActivityResult(requestCode, resultCode, data);
 		}
+	}
+	
+	private void RequestData(){
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("currentVer", String.valueOf(HttpParameter.softVerCode));
+		RoboHttpClient.get("getAppVersion", params, new TextHttpResponseHandler(){
+
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(MainActivity.this, "连接失败，请重试！");
+			}
+
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				LogUtil.DefalutLog(result);
+//				UserLoginResponse mUserLoginResponse = (UserLoginResponse) ResultParse.parseResult(result,UserLoginResponse.class);
+//				if(ResultParse.handleResutl(MainActivity.this, mUserLoginResponse)){
+//				}
+			}
+			
+			@Override
+			public void onFinish() {
+			}
+		});
 	}
 
 //	@Override

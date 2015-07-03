@@ -20,7 +20,7 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	private Context mContext;
 	
-	public void HomeMenuGridViewAdapter(Context mContext, LayoutInflater inflater, List<GoodsType> GoodsTypeList){
+	public HomeMenuGridViewAdapter(Context mContext, LayoutInflater inflater, List<GoodsType> GoodsTypeList){
 		this.mContext = mContext;
 		this.mGoodsTypeList = GoodsTypeList;
 		this.inflater = inflater;

@@ -12,8 +12,12 @@ public class HttpParameter {
 
 	public static final String baseUrl = "http://123.57.8.253:8080/robo/base";
 	
+	public static final String goodUrl = "http://123.57.8.253:8080/robo/goods";
+	
 	//RequestHeader
 	public static String softVer;
+	
+	public static int softVerCode;
 	
 	public static String channelId;
 	
@@ -36,6 +40,7 @@ public class HttpParameter {
 			PackageManager manager = mContext.getPackageManager();
 			PackageInfo info = manager.getPackageInfo(mContext.getPackageName(), 0);
 			softVer = info.versionName;
+			softVerCode = info.versionCode;
 		} catch (Exception e) {
 			softVer = "1.0";
 			e.printStackTrace();

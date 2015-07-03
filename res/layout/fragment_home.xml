@@ -1,77 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    android:orientation="vertical"
+    android:layout_height="fill_parent"
     android:background="@color/white"
-    >
-	<LinearLayout
+    android:orientation="vertical" >
+
+    <LinearLayout
         android:id="@+id/my_awesome_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar"
         android:background="@drawable/top_bg"
-        android:orientation="horizontal"
-        >
-        <FrameLayout 
+        android:orientation="horizontal" >
+
+        <FrameLayout
             android:id="@+id/title_cover"
             android:layout_width="wrap_content"
-        	android:layout_height="match_parent"
-        	android:foreground="@drawable/framelayout_selector"
-            >
-			<TextView 
-			    android:id="@+id/title"
-			    android:layout_width="wrap_content"
-	        	android:layout_height="match_parent"
-	        	android:paddingLeft="@dimen/padding_15"
-	        	android:paddingRight="@dimen/padding_15"
-			    android:text="广州"
-			    android:drawableEnd="@drawable/triangle"
-			    android:layout_gravity="left"
-			    android:gravity="center"
-			    android:textColor="@color/white"
-			    android:textSize="@dimen/bigger"
-			    />
+            android:layout_height="match_parent"
+            android:foreground="@drawable/framelayout_selector" >
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:drawableEnd="@drawable/triangle"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_15"
+                android:paddingRight="@dimen/padding_15"
+                android:text="广州"
+                android:textColor="@color/white"
+                android:textSize="@dimen/bigger" />
         </FrameLayout>
-		<TextView 
-		    android:id="@+id/search_btn"
-		    android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	android:layout_marginTop="@dimen/padding_7"
-        	android:layout_marginBottom="@dimen/padding_7"
-        	android:layout_marginRight="@dimen/padding_15"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/search_home"
-        	android:textColor="@drawable/text_gray_to_lightgray_selector"
-        	android:text="@string/home_search_hinttext"
-        	android:textSize="@dimen/middle"
-		    />
+
+        <TextView
+            android:id="@+id/search_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/padding_7"
+            android:layout_marginRight="@dimen/padding_15"
+            android:layout_marginTop="@dimen/padding_7"
+            android:background="@drawable/search_home"
+            android:gravity="center_vertical"
+            android:text="@string/home_search_hinttext"
+            android:textColor="@drawable/text_gray_to_lightgray_selector"
+            android:textSize="@dimen/middle" />
     </LinearLayout>
-    
-	<FrameLayout 
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    >
-	    <ListView 
-	        android:id="@+id/content_lv"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:background="@color/none"
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/content_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/none"
             android:cacheColorHint="@color/none"
             android:divider="@color/none"
             android:dividerHeight="@dimen/padding_margin"
             android:fadingEdge="none"
             android:listSelector="@color/none"
-            android:scrollbars="none"
-        />
-	    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            android:scrollbars="none" />
+
+        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
             android:id="@+id/progressbar_m"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_gravity="center"
-            android:background="@color/white"
+            android:background="@color/app_color"
             android:visibility="gone" />
-	</FrameLayout>
-    
-	
-    
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical" >
+
+            <com.robo.store.view.AutoScrollViewPager
+                android:id="@+id/auto_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <GridView
+                android:id="@+id/gridview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/app_color"
+                android:gravity="center"
+                android:horizontalSpacing="0dp"
+                android:numColumns="4"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="0dp" />
+        </LinearLayout>
+    </FrameLayout>
+
 </LinearLayout>
