@@ -90,12 +90,12 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		
 		mHomeListViewAdapter = new HomeListViewAdapter(getActivity(), inflater, goodsList);
 		mMenuAdapter = new HomeMenuGridViewAdapter(getActivity(), inflater, mGoodsTypeList);
-//		headerView = inflater.inflate(R.layout.home_list_header, null);
-//		mGridView = (GridView) headerView.findViewById(R.id.gridview);
-//		auto_view_pager = (AutoScrollViewPager) headerView.findViewById(R.id.auto_view_pager);
-		mGridView = (GridView) getView().findViewById(R.id.gridview);
+		headerView = inflater.inflate(R.layout.home_list_header, null);
+		mGridView = (GridView) headerView.findViewById(R.id.gridview);
+		auto_view_pager = (AutoScrollViewPager) headerView.findViewById(R.id.auto_view_pager);
+//		mGridView = (GridView) getView().findViewById(R.id.gridview);
+//		auto_view_pager = (AutoScrollViewPager) getView().findViewById(R.id.auto_view_pager);
 		mGridView.setAdapter(mMenuAdapter);
-		auto_view_pager = (AutoScrollViewPager) getView().findViewById(R.id.auto_view_pager);
 		
 		ArrayList<Integer> imageIdList = new ArrayList<Integer>();
         imageIdList.add(R.drawable.banner1);
@@ -109,7 +109,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         auto_view_pager.startAutoScroll();
         auto_view_pager.setCurrentItem(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imageIdList.size());
 		
-//        mListView.addHeaderView(headerView);
+        mListView.addHeaderView(headerView);
 		mListView.setAdapter(mHomeListViewAdapter);
 		city_cover.setOnClickListener(this);
 		search_btn.setOnClickListener(this);
