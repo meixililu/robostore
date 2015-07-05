@@ -13,6 +13,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 
 /**
@@ -62,6 +63,7 @@ public class ImagePagerAdapter extends RecyclingPagerAdapter {
             holder = (ViewHolder)view.getTag();
         }
         holder.imageView.setImageResource(imageIdList.get(getPosition(position)));
+        holder.imageView.setScaleType(ScaleType.CENTER_CROP);
         return view;
     }
 

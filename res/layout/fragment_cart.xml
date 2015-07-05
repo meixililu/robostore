@@ -5,8 +5,7 @@
     android:orientation="vertical"
     android:background="@color/white"
     >
-	<android.support.v7.widget.Toolbar
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+	<RelativeLayout
         android:id="@+id/my_awesome_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar"
@@ -18,7 +17,7 @@
 		    android:layout_width="wrap_content"
         	android:layout_height="match_parent"
 		    android:text="@string/tab_main_nav_cart"
-		    android:layout_gravity="center"
+		    android:layout_centerInParent="true"
 		    android:gravity="center"
 		    android:textColor="@color/white"
 		    android:textSize="@dimen/bigger"
@@ -27,7 +26,7 @@
             android:id="@+id/edit_cover"
             android:layout_width="wrap_content"
         	android:layout_height="match_parent"
-		    android:layout_gravity="right"
+        	android:layout_alignParentRight="true"
         	android:paddingLeft="@dimen/padding_15"
         	android:paddingRight="@dimen/padding_15"
         	android:foreground="@drawable/framelayout_selector"
@@ -40,7 +39,7 @@
 			    android:src="@drawable/edit"
 			    />
         </FrameLayout>
-    </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
     
     
 </LinearLayout>

@@ -52,14 +52,15 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		final GoodsType mCategory = mGoodsTypeList.get(position);
-		holder.good_type_name.setText(mCategory.getGoodsTypeName());
-		holder.good_type_name.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ToastUtil.diaplayMesLong(mContext, mCategory.getGoodsTypeName());
-			}
-		});
+		final GoodsType mGoodsType = mGoodsTypeList.get(position);
+		holder.good_type_name.setText(mGoodsType.getGoodsTypeName());
+		if(mGoodsType.getIsSelect() == 1){
+			holder.good_type_name.setTextColor(mContext.getResources().getColor(R.color.text_dark));
+			holder.good_type_name.setBackgroundResource(R.drawable.btn_bg_home_menu_s);
+		}else{
+			holder.good_type_name.setTextColor(mContext.getResources().getColor(R.color.white));
+			holder.good_type_name.setBackgroundResource(R.color.none);
+		}
 		return convertView;
 	}
 	

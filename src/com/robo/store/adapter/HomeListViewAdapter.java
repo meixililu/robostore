@@ -3,19 +3,21 @@ package com.robo.store.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.robo.store.GoodsDetailActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
+import com.robo.store.util.KeyUtil;
+import com.robo.store.util.ToastUtil;
 
 public class HomeListViewAdapter extends BaseAdapter {
 
@@ -50,6 +52,7 @@ public class HomeListViewAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.home_good_list_item, null);
 			holder = new ViewHolder();
+			holder.item_cover = (FrameLayout) convertView.findViewById(R.id.item_cover);
 			holder.good_icon = (ImageView) convertView.findViewById(R.id.good_icon);
 			holder.good_buy = (ImageView) convertView.findViewById(R.id.good_buy);
 			holder.good_name = (TextView) convertView.findViewById(R.id.good_name);
@@ -60,13 +63,34 @@ public class HomeListViewAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		GoodsBase mGoodsBase = goodsList.get(position);
+		final GoodsBase mGoodsBase = goodsList.get(position);
 		holder.good_name.setText(mGoodsBase.getGoodsName());
+		holder.good_price_new.setText("￥" + mGoodsBase.getVipPrice());
+		holder.good_price_old.setText("￥" + mGoodsBase.getRetailPrice());
 		
+		holder.item_cover.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				toGoodsDetailActivity(mGoodsBase.getGoodsBarcode());
+			}
+		});
+		holder.good_buy.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ToastUtil.diaplayMesShort(context, "加入购物车:"+mGoodsBase.getGoodsName());
+			}
+		});
 		return convertView;
 	}
 	
+	private void toGoodsDetailActivity(String id){
+		Intent intent = new Intent(context, GoodsDetailActivity.class);
+		intent.putExtra(KeyUtil.GoodsIdKey, id);
+		context.startActivity(intent);
+	}
+	
 	static class ViewHolder {
+		FrameLayout item_cover;
 		ImageView good_icon;
 		ImageView good_buy;
 		TextView good_name;

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_cover"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="@dimen/padding_10"
+    android:foreground="@drawable/framelayout_selector"
+    >
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
     <ImageView 
@@ -42,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_10"
-                android:textSize="@dimen/big"
+                android:textSize="@dimen/bigger"
                 android:textColor="@color/text_dark"
                 android:text="美味尽享受"
                 />
@@ -54,7 +60,7 @@
             android:layout_marginBottom="2dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:gravity="center_vertical"
+            android:gravity="bottom"
             android:orientation="horizontal"
             >
             <TextView 
@@ -69,7 +75,7 @@
                 android:id="@+id/good_price_old"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_10"
+                android:layout_marginLeft="@dimen/padding_15"
                 android:textSize="@dimen/bigger"
                 android:textColor="@color/text_dark"
                 android:text="$35.00"
@@ -79,11 +85,12 @@
     </RelativeLayout>
     <ImageView 
         android:id="@+id/good_buy"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_vertical"
         android:src="@drawable/add_cart"
         />
 
 </LinearLayout>
+</FrameLayout>

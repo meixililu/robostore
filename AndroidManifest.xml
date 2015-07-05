@@ -65,6 +65,9 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".GoodsDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
         <activity

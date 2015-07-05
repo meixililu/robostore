@@ -33,4 +33,6 @@
     <string name="soft_update">版本更新</string>
     <string name="check_soft_update">查看版本更新 > </string>
     <string name="forget_pwd">忘记密码</string>
+    
+    <string name="connet_fail">连接失败，请重试！</string>
 </resources>

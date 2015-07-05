@@ -17,6 +17,7 @@ public class KeyUtil {
 	
 	public static final String CityKey = "CityKey";
 
+	public static final String GoodsIdKey = "GoodsIdKey";
 	
 	
 	

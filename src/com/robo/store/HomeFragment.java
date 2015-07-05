@@ -2,6 +2,7 @@ package com.robo.store;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,13 +12,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
-import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,12 +36,15 @@ import com.robo.store.dao.GoodsBase;
 import com.robo.store.dao.GoodsType;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.util.HomeUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.SPUtil;
 import com.robo.store.util.ToastUtil;
+import com.robo.store.util.ViewUtil;
 import com.robo.store.view.AutoScrollViewPager;
+import com.robo.store.view.MyGridView;
 
 public class HomeFragment extends BaseFragment implements OnClickListener{
 
@@ -46,17 +54,19 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private FrameLayout city_cover;
 	private SharedPreferences mSharedPreferences;
 	private ListView mListView;
+	private LinearLayout viewpager_dot_layout;
 	private ProgressBarCircularIndeterminate mProgressbar;
 	private LayoutInflater inflater;
 	private HomeMenuGridViewAdapter mMenuAdapter;
 	private List<GoodsType> mGoodsTypeList;
+	public SwipeRefreshLayout mSwipeRefreshLayout;
 	
 	private HomeListViewAdapter mHomeListViewAdapter;
 	private List<GoodsBase> goodsList;
 	private boolean isHashFinishInitView;
 	
 	private View headerView;
-	private GridView mGridView;
+	private MyGridView mGridView;
 	private AutoScrollViewPager auto_view_pager;
 	private String goodType = "0";
 	public static String city;
@@ -84,18 +94,40 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		search_btn = (TextView) getView().findViewById(R.id.search_btn);
 		mListView = (ListView) getView().findViewById(R.id.content_lv);
 		mProgressbar = (ProgressBarCircularIndeterminate) getView().findViewById(R.id.progressbar_m);
+		mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.mswiperefreshlayout);
+		mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
+	            R.color.holo_green_light, 
+	            R.color.holo_orange_light, 
+	            R.color.holo_red_light);
+		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				onSwipeRefreshLayoutRefresh();
+			}
+		});
 		
 		mGoodsTypeList = new ArrayList<GoodsType>();
 		goodsList = new ArrayList<GoodsBase>();
 		
 		mHomeListViewAdapter = new HomeListViewAdapter(getActivity(), inflater, goodsList);
 		mMenuAdapter = new HomeMenuGridViewAdapter(getActivity(), inflater, mGoodsTypeList);
+		
 		headerView = inflater.inflate(R.layout.home_list_header, null);
-		mGridView = (GridView) headerView.findViewById(R.id.gridview);
+		viewpager_dot_layout = (LinearLayout) headerView.findViewById(R.id.viewpager_dot_layout);
+		mGridView = (MyGridView) headerView.findViewById(R.id.gridview);
 		auto_view_pager = (AutoScrollViewPager) headerView.findViewById(R.id.auto_view_pager);
-//		mGridView = (GridView) getView().findViewById(R.id.gridview);
-//		auto_view_pager = (AutoScrollViewPager) getView().findViewById(R.id.auto_view_pager);
 		mGridView.setAdapter(mMenuAdapter);
+		mGridView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+				GoodsType mGoodsType = mGoodsTypeList.get(position);
+				goodType = mGoodsType.getGoodsTypeId();
+				HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
+				mMenuAdapter.notifyDataSetChanged();
+				clearList();
+				RequestData();
+			}
+		});
 		
 		ArrayList<Integer> imageIdList = new ArrayList<Integer>();
         imageIdList.add(R.drawable.banner1);
@@ -107,8 +139,14 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         auto_view_pager.setOnPageChangeListener(new MyOnPageChangeListener());
         auto_view_pager.setInterval(2000);
         auto_view_pager.startAutoScroll();
-        auto_view_pager.setCurrentItem(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imageIdList.size());
+        int currentItem = Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imageIdList.size();
+        auto_view_pager.setCurrentItem(currentItem);
 		
+        for(int i=0;i<imageIdList.size();i++){
+        	viewpager_dot_layout.addView( ViewUtil.getDot(getActivity(),i) );
+        }
+        ViewUtil.changeState(viewpager_dot_layout, currentItem%5);
+        
         mListView.addHeaderView(headerView);
 		mListView.setAdapter(mHomeListViewAdapter);
 		city_cover.setOnClickListener(this);
@@ -122,11 +160,21 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		loadData();
 	}
 	
+	public void onSwipeRefreshLayoutRefresh(){
+		clearList();
+		RequestData();
+	}
+	
+	public void clearList(){
+		goodsList.clear();
+		mHomeListViewAdapter.notifyDataSetChanged();
+	}
+	
 	public class MyOnPageChangeListener implements OnPageChangeListener {
 
         @Override
         public void onPageSelected(int position) {
-//            indexText.setText(new StringBuilder().append((position) % imageIdList.size() + 1).append("/").append(imageIdList.size());
+        	ViewUtil.changeState(viewpager_dot_layout, (position%5));
         }
 
         @Override
@@ -153,7 +201,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), "连接失败，请重试！");
+				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
 			}
 
 			@Override
@@ -161,12 +209,15 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 				GetGoodsListResponse mGetGoodsListResponse = (GetGoodsListResponse) ResultParse.parseResult(result,GetGoodsListResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mGetGoodsListResponse)){
 					List<GoodsType> typeList = mGetGoodsListResponse.getTypeList();
+					Collections.reverse(typeList);
 					mGoodsTypeList.clear();
 					mGoodsTypeList.addAll(typeList);
+					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
 					
 					List<GoodsBase> mGoodsList = mGetGoodsListResponse.getGoodsList();
-					goodsList.clear();
-					goodsList.addAll(mGoodsList);
+					for(int i=0; i<20; i++){
+						goodsList.addAll(mGoodsList);
+					}
 					
 					mMenuAdapter.notifyDataSetChanged();
 					mHomeListViewAdapter.notifyDataSetChanged();
@@ -175,6 +226,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 			
 			@Override
 			public void onFinish() {
+				mSwipeRefreshLayout.setRefreshing(false);
 				mProgressbar.setVisibility(View.GONE);
 			}
 		});

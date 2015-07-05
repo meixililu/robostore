@@ -50,49 +50,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/mswiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
         <ListView
             android:id="@+id/content_lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/none"
             android:cacheColorHint="@color/none"
-            android:divider="@color/none"
-            android:dividerHeight="@dimen/padding_margin"
+            android:divider="@color/text_tint2"
+            android:dividerHeight="1px"
             android:fadingEdge="none"
-            android:listSelector="@color/none"
             android:scrollbars="none" />
-
+		</android.support.v4.widget.SwipeRefreshLayout>
         <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
             android:id="@+id/progressbar_m"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
             android:background="@color/app_color"
             android:visibility="gone" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:visibility="gone"
-            android:orientation="vertical" >
-
-            <com.robo.store.view.AutoScrollViewPager
-                android:id="@+id/auto_view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <GridView
-                android:id="@+id/gridview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/app_color"
-                android:gravity="center"
-                android:horizontalSpacing="0dp"
-                android:numColumns="4"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="0dp" />
-        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>
