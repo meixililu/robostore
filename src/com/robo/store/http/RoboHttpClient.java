@@ -9,9 +9,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import android.text.TextUtils;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.robo.store.http.AsyncHttpClient;
+import com.robo.store.http.AsyncHttpResponseHandler;
+import com.robo.store.http.RequestParams;
 import com.robo.store.BaseApplication;
 import com.robo.store.util.LogUtil;
 
@@ -32,14 +32,18 @@ public class RoboHttpClient {
 	
 	public static void get(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		try {
-			RequestParams params = getHeaderParameter(param);
+			RequestParams params = new RequestParams();
+			if(param != null){
+				params = getHeaderParameter(param);
+			}
 			client.addHeader("request-type", type);
 			client.addHeader("softVer", HttpParameter.softVer);
 			client.addHeader("channelId", HttpParameter.channelId);
 			client.addHeader("platform", HttpParameter.platform);
 			client.addHeader("systemVer", HttpParameter.systemVer);
 			client.addHeader("machId", HttpParameter.machId);
-			LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
+			client.addHeader("accessToken", HttpParameter.accessToken);
+			LogUtil.DefalutLog("RoboHttpClient---Map:"+params.toString());
 			client.get(url, params, responseHandler);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,14 +52,18 @@ public class RoboHttpClient {
 	
 	public static void post(String url, String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		try {
-			RequestParams params = getHeaderParameter(param);
+			RequestParams params = new RequestParams();
+			if(param != null){
+				params = getHeaderParameter(param);
+			}
 			client.addHeader("request-type", type);
 			client.addHeader("softVer", HttpParameter.softVer);
 			client.addHeader("channelId", HttpParameter.channelId);
 			client.addHeader("platform", HttpParameter.platform);
 			client.addHeader("systemVer", HttpParameter.systemVer);
 			client.addHeader("machId", HttpParameter.machId);
-			LogUtil.DefalutLog("RoboHttpClient---post:"+params.toString());
+			client.addHeader("accessToken", HttpParameter.accessToken);
+			LogUtil.DefalutLog("RoboHttpClient---Map:"+params.toString());
 			client.post(url, params, responseHandler);
 		} catch (Exception e) {
 			e.printStackTrace();

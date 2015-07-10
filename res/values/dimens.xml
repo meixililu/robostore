@@ -28,6 +28,9 @@
 	<dimen name="padding_5">5dp</dimen>
 	<dimen name="padding_margin">2dp</dimen>
 	<dimen name="login_btn">45dp</dimen>
+	<dimen name="progressbar_width">50dp</dimen>
+	<dimen name="progressbar_heigh">50dp</dimen>
+	<dimen name="bottom_menu_heigh">50dp</dimen>
 	
 	
 	

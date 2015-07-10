@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+	<RelativeLayout
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar"
+        android:background="@drawable/top_bg"
+        android:orientation="horizontal"
+        >
+        <FrameLayout 
+            android:id="@+id/back_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="left"
+        	android:paddingLeft="@dimen/padding_20"
+        	android:paddingRight="@dimen/padding_20"
+        	android:layout_alignParentLeft="true"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<ImageView 
+			    android:layout_width="12dp"
+	        	android:layout_height="21dp"
+			    android:layout_gravity="center"
+			    android:src="@drawable/icon_back"
+			    />
+        </FrameLayout>
+		<TextView 
+		    android:id="@+id/title"
+		    android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="center"
+		    android:gravity="center"
+		    android:textColor="@color/white"
+		    android:textSize="@dimen/bigger"
+		    />
+    </RelativeLayout>
+    
+	<FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/mswiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        <ListView
+            android:id="@+id/content_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/none"
+            android:cacheColorHint="@color/none"
+            android:divider="@color/text_tint2"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:scrollbars="none" />
+		</android.support.v4.widget.SwipeRefreshLayout>
+	    
+	    <LinearLayout 
+	        android:id="@+id/empty_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="@color/white"
+	        android:orientation="vertical"
+	        android:visibility="gone"
+	        >
+	        <TextView
+	            android:id="@+id/empty_prompt_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
+                android:gravity="center"
+                android:text="@string/sorry_nothing_found"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/bigger" />
+	    </LinearLayout>
+	    
+        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            android:id="@+id/progressBarCircularIndetermininate"
+            android:layout_width="@dimen/progressbar_width"
+            android:layout_height="@dimen/progressbar_heigh"
+            android:layout_gravity="center"
+            android:background="@color/app_color"
+            android:visibility="gone" />
+    </FrameLayout>
+    
+</LinearLayout>

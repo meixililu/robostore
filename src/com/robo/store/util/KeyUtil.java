@@ -19,10 +19,19 @@ public class KeyUtil {
 
 	public static final String GoodsIdKey = "GoodsIdKey";
 	
+	public static final String ToClass = "ToClass";
 	
+	public static final String UserNameKey = "UserNameKey";
 	
+	public static final String UserPWDKey = "UserPWDKey";
 	
+	public static final String SearchContentKey = "SearchContentKey";
 	
+	public static final String SearchTypeKey = "SearchTypeKey";
+	
+	public static final String OrderIdKey = "OrderIdKey";
+	
+	public static final String OrderTypeKey = "OrderTypeKey";
 	
 	
 	

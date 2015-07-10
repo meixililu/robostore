@@ -1,45 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    android:orientation="vertical"
+    android:layout_height="fill_parent"
     android:background="@color/white"
-    >
-	<RelativeLayout
+    android:orientation="vertical" >
+
+    <RelativeLayout
         android:id="@+id/my_awesome_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar"
-        android:paddingLeft="0dp"
         android:background="@drawable/top_bg"
-        >
-		<TextView 
-		    android:id="@+id/title"
-		    android:layout_width="wrap_content"
-        	android:layout_height="match_parent"
-		    android:text="@string/tab_main_nav_cart"
-		    android:layout_centerInParent="true"
-		    android:gravity="center"
-		    android:textColor="@color/white"
-		    android:textSize="@dimen/bigger"
-		    />
-        <FrameLayout 
+        android:paddingLeft="0dp" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/tab_main_nav_cart"
+            android:textColor="@color/white"
+            android:textSize="@dimen/bigger" />
+
+        <FrameLayout
             android:id="@+id/edit_cover"
             android:layout_width="wrap_content"
-        	android:layout_height="match_parent"
-        	android:layout_alignParentRight="true"
-        	android:paddingLeft="@dimen/padding_15"
-        	android:paddingRight="@dimen/padding_15"
-        	android:foreground="@drawable/framelayout_selector"
-            >
-			<ImageView 
-			    android:id="@+id/edit"
-			    android:layout_width="22dp"
-	        	android:layout_height="20dp"
-			    android:layout_gravity="center"
-			    android:src="@drawable/edit"
-			    />
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:foreground="@drawable/framelayout_selector"
+            android:paddingLeft="@dimen/padding_15"
+            android:paddingRight="@dimen/padding_15" >
+
+            <TextView
+                android:id="@+id/edit"
+                android:layout_width="30dp"
+                android:layout_height="27dp"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/middle"
+                android:gravity="center"
+                android:background="@drawable/edit" />
         </FrameLayout>
     </RelativeLayout>
+
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+	    <LinearLayout
+	        android:id="@+id/cart_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:visibility="gone"
+	        android:orientation="vertical" >
+	
+	        <ListView
+	            android:id="@+id/content_lv"
+	            android:layout_width="match_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="1"
+	            android:background="@color/none"
+	            android:cacheColorHint="@color/none"
+	            android:divider="@color/none"
+	            android:dividerHeight="0px"
+	            android:fadingEdge="none"
+	            android:scrollbars="none" />
+	
+	        <RelativeLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="50dp"
+	            android:background="@color/app_color"
+	            android:gravity="center_vertical"
+	            android:orientation="horizontal" >
+	
+	            <CheckBox
+	                android:id="@+id/check_all"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="@dimen/padding_10"
+	                android:layout_marginRight="@dimen/padding_20"
+	                android:layout_centerVertical="true"
+	                android:layout_alignParentLeft="true"
+	                android:button="@drawable/cb_style1_selector"
+	                android:paddingLeft="3dp"
+	                android:text="全选"
+	                android:textSize="@dimen/middle" />
+	
+	            <TextView
+	                android:id="@+id/total"
+	                android:layout_width="wrap_content"
+	                android:layout_height="match_parent"
+	                android:gravity="left|center_vertical"
+	                android:layout_toRightOf="@id/check_all"
+	                android:text="合计：￥0.00"
+	                android:textColor="@color/white"
+	                android:textSize="@dimen/bigger" />
+	
+	            <Button
+	                android:id="@+id/btn_to_balance_or_delete"
+	                android:layout_width="90dp"
+	                android:layout_height="match_parent"
+	                android:background="@drawable/btn_balance_selector"
+	                android:layout_alignParentRight="true"
+	                android:paddingLeft="@dimen/padding_15"
+	                android:paddingRight="@dimen/padding_15"
+	                android:text="@string/to_balance"
+	                android:textSize="@dimen/bigger" />
+	        </RelativeLayout>
+	    </LinearLayout>
+	    
+	    
+	    <LinearLayout 
+	        android:id="@+id/empty_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="@color/white"
+	        android:orientation="vertical"
+	        android:visibility="gone"
+	        >
+	        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
+                android:gravity="center"
+                android:text="购物车是空的"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/bigger" />
+	        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="去逛逛"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/bigger" />
+	    </LinearLayout>
+    </FrameLayout>
     
-    
+
 </LinearLayout>

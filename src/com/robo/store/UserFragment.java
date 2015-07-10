@@ -2,6 +2,9 @@ package com.robo.store;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +16,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gc.materialdesign.widgets.Dialog;
+import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.LoginUtil;
+import com.robo.store.util.Md5;
+import com.robo.store.util.SPUtil;
 
 public class UserFragment extends BaseFragment implements OnClickListener{
 	
 	public static final String AccountKey = "com.robo.store";
+	public static final int requestLoginCode = 101;
 	private FrameLayout logout_cover;
 	private Button mButton;
+	private TextView my_account_name;
 	private RelativeLayout login_layout;
 	private LinearLayout user_info_layout;
 	
@@ -28,11 +37,16 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	private FrameLayout modify_pwd_cover,retrieve_pwd_cover;
 	private TextView check_my_order;
 	private TextView check_soft_update;
+	public static UserFragment mUserFragment;
+	private SharedPreferences mSharedPreferences;
+	private String userName,userPWD;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addAccount();
+		mUserFragment = this;
+		mSharedPreferences = SPUtil.getSharedPreferences(getActivity());
+		userPWD = mSharedPreferences.getString(KeyUtil.UserPWDKey, "");
 	}
 
 	@Override
@@ -47,6 +61,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		login_layout = (RelativeLayout) getView().findViewById(R.id.login_layout);
 		user_info_layout = (LinearLayout) getView().findViewById(R.id.user_info_layout);
 		mButton = (Button) getView().findViewById(R.id.login_btn);
+		my_account_name = (TextView) getView().findViewById(R.id.my_account_name);
 		
 		obligation_cover = (FrameLayout) getView().findViewById(R.id.obligation_cover);
 		to_pick_up_cover = (FrameLayout) getView().findViewById(R.id.to_pick_up_cover);
@@ -73,6 +88,8 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 			logout_cover.setVisibility(View.VISIBLE);
 			login_layout.setVisibility(View.GONE);
 			user_info_layout.setVisibility(View.VISIBLE);
+			userName = mSharedPreferences.getString(KeyUtil.UserNameKey, "");
+			my_account_name.setText(userName);
 		}else{
 			logout_cover.setVisibility(View.GONE);
 			login_layout.setVisibility(View.VISIBLE);
@@ -82,17 +99,10 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	
 	private void addAccount(){
 		AccountManager accountManager = AccountManager.get(getActivity());
-		Account account = new Account("Messi",AccountKey);
-        accountManager.addAccountExplicitly(account,"123456",null);
+		Account account = new Account(userName,AccountKey);
+        accountManager.addAccountExplicitly(account,userPWD,null);
 	}
 	
-	private void getAccount(){
-		AccountManager accountManager = AccountManager.get(getActivity());
-		Account[] mAccount = accountManager.getAccountsByType(AccountKey);
-		if(mAccount != null && mAccount.length > 0){
-			String name = mAccount[0].name;
-		}
-	}
 	
 	@Override
 	public void onClick(View v) {
@@ -101,27 +111,52 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 			loginout();
 			break;
 		case R.id.login_btn:
-			toLoginActivity();
+			toActivityForResult(LoginActivity.class,null, requestLoginCode); 
+			break;
+		case R.id.obligation_cover:
+			toOrderListActivity(1);
+			break;
+		case R.id.to_pick_up_cover:
+			toOrderListActivity(3);
+			break;
+		case R.id.refund_cover:
+			toOrderListActivity(4);
 			break;
 		case R.id.check_my_order:
-			checkMyAllOrder();
+			toOrderListActivity(0);
 			break;
 		case R.id.check_soft_update:
 			checkSoftUpdate();
 			break;
+		case R.id.modify_pwd_cover:
+			toActivity(ModifyPWDActivity.class, null);
+			break;
+		case R.id.retrieve_pwd_cover:
+			toActivity(ForgetPWDActivity.class, null);
+			break;
 		}
 	}
 	
+	private void toOrderListActivity(int type){
+		Bundle mBundle = new Bundle();
+		mBundle.putInt(KeyUtil.OrderTypeKey, type);
+		toActivity(CheckAllOrdersActivity.class, mBundle);
+	}
+	
 	private void loginout(){
-		
-	}
-	
-	private void toLoginActivity(){
-		toActivity(LoginActivity.class,null); 
-	}
-	
-	private void checkMyAllOrder(){
-		
+		Dialog dialog = new Dialog(getActivity(), "温馨提示", "您确定要注销退出吗？");
+		dialog.addAcceptButton("确定");
+		dialog.addCancelButton("取消");
+		dialog.setOnAcceptButtonClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.UserPWDKey, "");
+				LoginUtil.isLogin = false;
+				isLogin();
+			}
+		});
+		dialog.setCancelable(true);
+		dialog.show();
 	}
 	
 	private void checkSoftUpdate(){
@@ -129,13 +164,11 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	@Override
-	public void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestLoginCode == requestCode && Activity.RESULT_OK == resultCode){
+			isLogin();
+		}
 	}
 	
 	@Override
@@ -147,6 +180,9 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		if(mUserFragment != null){
+			mUserFragment = null;
+		}
 	}
 
 	

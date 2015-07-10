@@ -2,30 +2,43 @@
 <resources>
 
     <string name="app_name">萝卜便利店</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    
     <string name="tab_main_nav_home">首页</string>
     <string name="tab_main_nav_shop">店铺</string>
     <string name="tab_main_nav_cart">购物车</string>
     <string name="tab_main_nav_user">我的</string>
     <string name="home_search_hinttext">寻找宝贝或店铺</string>
+    <string name="search_hinttext">请输入搜索内容...</string>
 
     <string name="select_city">选择城市</string>
     <string name="login">登录</string>
+    <string name="modify">修改</string>
     <string name="identity_code">获取验证码</string>
     <string name="submit">提交</string>
     <string name="logout">注销</string>
+    <string name="refund">退款</string>
+    <string name="to_pay">去支付</string>
+    <string name="search">搜索</string>
+    <string name="search_goods_result">商品搜索</string>
+    <string name="search_shops_result">店铺搜索</string>
     <string name="register">注册</string>
     <string name="register_identify">输入验证码</string>
     <string name="unlogin_txt">您尚未登录，请先登录</string>
+    <string name="to_balance">去结算</string>
+    <string name="confirm_to_pay">确认订单并支付</string>
+    <string name="delete">删除</string>
+    <string name="finish">完成</string>
+    <string name="confirm_order">确认订单</string>
+    <string name="check_all_orders">全部订单</string>
     
     <string name="exit_program">再按一次退出应用</string>
     <string name="my_order">我的订单</string>
+    <string name="confirm_order_list">商品明细</string>
+    <string name="pay_list">支付方式</string>
     <string name="check_my_all_order">查看全部订单 > </string>
     <string name="my_account_text">我的账号</string>
     <string name="obligantion">待付款</string>
     <string name="to_pick_up">待取货</string>
+    <string name="refunding_list">退款处理中</string>
     <string name="refunding">退款中</string>
     <string name="modify_pwd">修改密码</string>
     <string name="retrieve_pwd">找回密码</string>
@@ -33,6 +46,20 @@
     <string name="soft_update">版本更新</string>
     <string name="check_soft_update">查看版本更新 > </string>
     <string name="forget_pwd">忘记密码</string>
+    <string name="order_detail">订单详情</string>
+    <string name="order_type_1">待付款</string>
+    <string name="order_type_2">订单取消</string>
+    <string name="order_type_3">待取货</string>
+    <string name="order_type_4">退款处理中</string>
+    <string name="order_type_5">已退款，交易关闭</string>
+    <string name="order_type_6">交易完成</string>
     
     <string name="connet_fail">连接失败，请重试！</string>
+    <string name="shop_to_get_goods">取货店铺</string>
+    <string name="update_now">正在更新...</string>
+    <string name="no_more_data">亲，到底啦...</string>
+    <string name="sorry_nothing_found">很抱歉，没有找到相关内容</string>
+    <string name="order_list_empty">暂无订单信息，赶紧去购物吧</string>
+    <string name="change_search_content">换一个试试</string>
+    <string name="sorry_load_faile">加载失败，轻触屏幕刷新</string>
 </resources>

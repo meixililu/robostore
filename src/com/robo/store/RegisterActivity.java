@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.CommonResponse;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.ResultParse;

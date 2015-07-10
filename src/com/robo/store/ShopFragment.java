@@ -1,8 +1,6 @@
 package com.robo.store;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.http.Header;
 
@@ -11,19 +9,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.GetGoodsListResponse;
-import com.robo.store.dao.GoodsBase;
-import com.robo.store.dao.GoodsType;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
-import com.robo.store.util.HomeUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;

@@ -10,6 +10,14 @@ public class GetSingleGoodsResponse extends CommonResponse{
 	private String vipEndDate;
 	private String goodsMemo;
 	private String goodsSpec;
+	private String goodsBarcode;
+	
+	public String getGoodsBarcode() {
+		return goodsBarcode;
+	}
+	public void setGoodsBarcode(String goodsBarcode) {
+		this.goodsBarcode = goodsBarcode;
+	}
 	private List<GoodsPic> picList;
 	
 	

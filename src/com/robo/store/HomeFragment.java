@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
@@ -27,7 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.adapter.HomeListViewAdapter;
 import com.robo.store.adapter.HomeMenuGridViewAdapter;
 import com.robo.store.adapter.ImagePagerAdapter;
@@ -41,6 +43,7 @@ import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.SPUtil;
+import com.robo.store.util.Settings;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
 import com.robo.store.view.AutoScrollViewPager;
@@ -65,12 +68,18 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private List<GoodsBase> goodsList;
 	private boolean isHashFinishInitView;
 	
-	private View headerView;
+	private View headerView,footerView;
+	private LinearLayout load_more_data;
+	private TextView no_more_data;
 	private MyGridView mGridView;
 	private AutoScrollViewPager auto_view_pager;
 	private String goodType = "0";
 	public static String city;
+	public static String cityId = "110100";
 	public static BaseFragment mBaseFragment;
+	public int pageIndex = 0;
+	private boolean isLoadMoreData;
+	private boolean isFinishloadData;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +121,11 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		mHomeListViewAdapter = new HomeListViewAdapter(getActivity(), inflater, goodsList);
 		mMenuAdapter = new HomeMenuGridViewAdapter(getActivity(), inflater, mGoodsTypeList);
 		
+		footerView = inflater.inflate(R.layout.list_footer_view, null);
+		footerView.setVisibility(View.GONE);
+		mListView.addFooterView(footerView);
+		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
+		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		headerView = inflater.inflate(R.layout.home_list_header, null);
 		viewpager_dot_layout = (LinearLayout) headerView.findViewById(R.id.viewpager_dot_layout);
 		mGridView = (MyGridView) headerView.findViewById(R.id.gridview);
@@ -147,8 +161,10 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         }
         ViewUtil.changeState(viewpager_dot_layout, currentItem%5);
         
+        setListOnScrollListener();
         mListView.addHeaderView(headerView);
 		mListView.setAdapter(mHomeListViewAdapter);
+		
 		city_cover.setOnClickListener(this);
 		search_btn.setOnClickListener(this);
 		if(!TextUtils.isEmpty(city)){
@@ -160,14 +176,39 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		loadData();
 	}
 	
+	public void setListOnScrollListener(){
+		mListView.setOnScrollListener(new OnScrollListener() {  
+            private int lastItemIndex;//当前ListView中最后一个Item的索引  
+            @Override  
+            public void onScrollStateChanged(AbsListView view, int scrollState) { 
+                if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && lastItemIndex == mHomeListViewAdapter.getCount() - 1) {  
+                	LogUtil.DefalutLog("onScrollStateChanged---update");
+                	if(isFinishloadData){
+                		if(isLoadMoreData){
+                			RequestData();
+                		}
+                	}
+                }  
+            }  
+            @Override  
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {  
+                lastItemIndex = firstVisibleItem + visibleItemCount - 3;  
+            }  
+        });
+	}
+	
 	public void onSwipeRefreshLayoutRefresh(){
 		clearList();
 		RequestData();
 	}
 	
 	public void clearList(){
+		pageIndex = 0;
 		goodsList.clear();
+		footerView.setVisibility(View.GONE);
 		mHomeListViewAdapter.notifyDataSetChanged();
+		load_more_data.setVisibility(View.VISIBLE);
+		no_more_data.setVisibility(View.GONE);
 	}
 	
 	public class MyOnPageChangeListener implements OnPageChangeListener {
@@ -194,9 +235,15 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void RequestData(){
-		mProgressbar.setVisibility(View.VISIBLE);
-		HashMap<String, String> params = new HashMap<String, String>();
+		isFinishloadData = false;
+		if(pageIndex == 0){
+			mProgressbar.setVisibility(View.VISIBLE);
+		}
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("cityId", HomeFragment.cityId);
 		params.put("type", goodType);
+		params.put("pageIndex", pageIndex);
+		params.put("pageCount", Settings.pageCount);
 		RoboHttpClient.get(HttpParameter.goodUrl,"getGoodsListByType", params, new TextHttpResponseHandler(){
 
 			@Override
@@ -215,17 +262,25 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
 					
 					List<GoodsBase> mGoodsList = mGetGoodsListResponse.getGoodsList();
-					for(int i=0; i<20; i++){
-						goodsList.addAll(mGoodsList);
-					}
+					goodsList.addAll(mGoodsList);
 					
 					mMenuAdapter.notifyDataSetChanged();
 					mHomeListViewAdapter.notifyDataSetChanged();
+					if(mGoodsList.size() > 0){
+						isLoadMoreData = true;
+						pageIndex++;
+						footerView.setVisibility(View.VISIBLE);
+					}else{
+						isLoadMoreData = false;
+						load_more_data.setVisibility(View.GONE);
+						no_more_data.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 			
 			@Override
 			public void onFinish() {
+				isFinishloadData = true;
 				mSwipeRefreshLayout.setRefreshing(false);
 				mProgressbar.setVisibility(View.GONE);
 			}
@@ -249,7 +304,9 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 			toActivityForResult(CityActivity.class, null, RequestCity);
 			break;
 		case R.id.search_btn:
-			
+			Bundle mBundle = new Bundle();
+			mBundle.putString(KeyUtil.SearchTypeKey, SearchActivity.SearchGoods);	
+			toActivity(SearchActivity.class, mBundle);
 			break;
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.apache.http.Header;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,13 +14,17 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.TextHttpResponseHandler;
-import com.robo.store.dao.ResultDao;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.UserLoginResponse;
+import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
+import com.robo.store.util.LoginUtil;
 import com.robo.store.util.Md5;
 import com.robo.store.util.ResultParse;
+import com.robo.store.util.SPUtil;
+import com.robo.store.util.Settings;
 import com.robo.store.util.ToastUtil;
 
 public class LoginActivity extends BaseActivity {
@@ -30,6 +35,8 @@ public class LoginActivity extends BaseActivity {
 	private Button login_btn;
 	private String userName,pwd;
 	private ProgressDialog progressDialog;
+	private Class<?> toClass;
+	private SharedPreferences mSharedPreferences;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,14 @@ public class LoginActivity extends BaseActivity {
 	}
 	
 	private void init(){
+		mSharedPreferences = SPUtil.getSharedPreferences(this);
+		userName = mSharedPreferences.getString(KeyUtil.UserNameKey, "");
+		
+		Bundle mBundle = getIntent().getBundleExtra(KeyUtil.BundleKey);
+		if(mBundle != null){
+			toClass = (Class<?>) mBundle.getSerializable(KeyUtil.ToClass);
+		}
+		
 		register_cover = (FrameLayout) findViewById(R.id.register_cover);
 		forget_pwd_cover = (FrameLayout) findViewById(R.id.forget_pwd_cover);
 		username_input = (EditText) findViewById(R.id.username_input);
@@ -47,6 +62,10 @@ public class LoginActivity extends BaseActivity {
 		error_txt = (TextView) findViewById(R.id.error_txt);
 		login_btn = (Button) findViewById(R.id.login_btn);
 		
+		if(!TextUtils.isEmpty(userName)){
+			username_input.setText(userName);
+			username_input.setSelection(userName.length());
+		}
 		register_cover.setOnClickListener(this);
 		forget_pwd_cover.setOnClickListener(this);
 		login_btn.setOnClickListener(this);
@@ -68,6 +87,7 @@ public class LoginActivity extends BaseActivity {
 	}
 	
 	private void RequestData(){
+		error_txt.setText("");
 		if(validData()){
 			showSucceeDialog();
 			HashMap<String, String> params = new HashMap<String, String>();
@@ -85,12 +105,23 @@ public class LoginActivity extends BaseActivity {
 					LogUtil.DefalutLog(result);
 					UserLoginResponse mUserLoginResponse = (UserLoginResponse) ResultParse.parseResult(result,UserLoginResponse.class);
 					if(ResultParse.handleResutl(LoginActivity.this, mUserLoginResponse)){
+						HttpParameter.accessToken = mUserLoginResponse.getAccessToken();
 						ToastUtil.diaplayMesLong(LoginActivity.this, "登录成功");
+						if(toClass != null){
+							toActivity(toClass,null);
+						}
+						SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.UserPWDKey, Md5.d5(pwd));
+						LoginUtil.isLogin = true;
+						setResult(RESULT_OK);
+						LoginActivity.this.finish();
+					}else{
+						error_txt.setText(mUserLoginResponse.getErrorMsg());
 					}
 				}
 				
 				@Override
 				public void onFinish() {
+					SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.UserNameKey, userName);
 					progressDialog.dismiss();
 				}
 			});

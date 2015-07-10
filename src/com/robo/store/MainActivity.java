@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.http.Header;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,13 +17,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.adapter.MainTabViewPagerAdapter;
-import com.robo.store.dao.UserLoginResponse;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.LogUtil;
-import com.robo.store.util.ResultParse;
+import com.robo.store.util.LoginUtil;
+import com.robo.store.util.SPUtil;
 import com.robo.store.util.TabsUtil;
 import com.robo.store.util.ToastUtil;
 
@@ -32,8 +33,9 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 	private String currentTabId;
 	private View currentView;
 	private long exitTime = 0;
-	private ViewPager viewPager;
+	private static ViewPager viewPager;
 	private List<Fragment> fragmentList;
+	private SharedPreferences mSharedPreferences;
 	
 	private int[] titles = {R.string.tab_main_nav_home, R.string.tab_main_nav_shop, 
 			R.string.tab_main_nav_cart, R.string.tab_main_nav_user};
@@ -47,9 +49,11 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		setContentView(R.layout.activity_main);
 		init();
 		RequestData();
+		LoginUtil.login(this, mSharedPreferences);
 	}
 	
 	private void init(){
+		mSharedPreferences = SPUtil.getSharedPreferences(this);
 		fragmentList = new ArrayList<Fragment>();
 		fragmentList.add(new HomeFragment());
 		fragmentList.add(new ShopFragment());
@@ -77,6 +81,10 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
 	}
+	
+	public static void setCurrentTab(int index){
+		viewPager.setCurrentItem(index);
+	}
 
 	@Override
 	public void onBackPressed() {
@@ -94,6 +102,9 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		LogUtil.DefalutLog("MainActivity---onActivityResult");
 		if(HomeFragment.RequestCity == requestCode){
 			HomeFragment.mBaseFragment.onActivityResult(requestCode, resultCode, data);
+		}
+		if(UserFragment.requestLoginCode == requestCode){
+			UserFragment.mUserFragment.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 	
@@ -121,6 +132,16 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		});
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(viewPager != null){
+			viewPager = null;
+		}
+		LoginUtil.isUpdate = false;
+	}
+	
+	
 //	@Override
 //	public boolean onCreateOptionsMenu(Menu menu) {
 //		getMenuInflater().inflate(R.menu.main, menu);

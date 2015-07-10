@@ -1,10 +1,10 @@
 package com.robo.store.service;
 
-import com.robo.store.util.Authenticator;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+
+import com.robo.store.util.Authenticator;
 
 public class AccountService extends Service {
 

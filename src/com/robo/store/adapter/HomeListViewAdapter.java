@@ -10,12 +10,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.robo.store.GoodsDetailActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
+import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.ToastUtil;
 
@@ -54,9 +56,8 @@ public class HomeListViewAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.item_cover = (FrameLayout) convertView.findViewById(R.id.item_cover);
 			holder.good_icon = (ImageView) convertView.findViewById(R.id.good_icon);
-			holder.good_buy = (ImageView) convertView.findViewById(R.id.good_buy);
+			holder.good_buy = (ImageButton) convertView.findViewById(R.id.good_buy);
 			holder.good_name = (TextView) convertView.findViewById(R.id.good_name);
-			holder.good_des = (TextView) convertView.findViewById(R.id.good_des);
 			holder.good_price_new = (TextView) convertView.findViewById(R.id.good_price_new);
 			holder.good_price_old = (TextView) convertView.findViewById(R.id.good_price_old);
 			convertView.setTag(holder);
@@ -77,7 +78,8 @@ public class HomeListViewAdapter extends BaseAdapter {
 		holder.good_buy.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ToastUtil.diaplayMesShort(context, "加入购物车:"+mGoodsBase.getGoodsName());
+				ToastUtil.diaplayMesShort(context, mGoodsBase.getGoodsName()+"已加入购物车");
+				CartUtil.addToCart(mGoodsBase, 1);
 			}
 		});
 		return convertView;
@@ -92,9 +94,8 @@ public class HomeListViewAdapter extends BaseAdapter {
 	static class ViewHolder {
 		FrameLayout item_cover;
 		ImageView good_icon;
-		ImageView good_buy;
+		ImageButton good_buy;
 		TextView good_name;
-		TextView good_des;
 		TextView good_price_new;
 		TextView good_price_old;
 	}

@@ -7,13 +7,13 @@ package com.robo.store.adapter;
  */
 import java.util.List;
 
-import com.robo.store.view.RecyclingPagerAdapter;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+
+import com.robo.store.view.RecyclingPagerAdapter;
 
 
 /**

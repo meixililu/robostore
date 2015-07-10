@@ -1,9 +1,9 @@
 package com.robo.store;
 
+import android.app.Application;
+
 import com.baidu.mapapi.SDKInitializer;
 import com.robo.store.http.HttpParameter;
-
-import android.app.Application;
 
 public class BaseApplication extends Application {
 

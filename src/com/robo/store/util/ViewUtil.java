@@ -30,7 +30,15 @@ public class ViewUtil {
 		mImage.setLayoutParams(lp);
 		return mImage;
 	}
-
+	
+	public static View getLine(Context mContext, int color){
+		View img = new View(mContext);
+		img.setBackgroundColor(mContext.getResources().getColor(color));
+		LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,1);
+		img.setLayoutParams(mParams);
+		return img;
+	}
+	
 	/**
 	 * 自己画选中的圆点
 	 * 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/load_more_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" 
+        >
+
+        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            android:id="@+id/progressbar_m"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@color/app_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/padding_10"
+            android:gravity="center"
+            android:text="@string/update_now"
+            android:textColor="@color/text_grey"
+            android:textSize="@dimen/big" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_more_data"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/padding_10"
+        android:gravity="center"
+        android:text="@string/no_more_data"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/big" 
+        android:visibility="gone"
+        />
+
+</FrameLayout>

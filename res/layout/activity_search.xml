@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+	<LinearLayout
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar"
+        android:background="@drawable/top_bg"
+        android:orientation="horizontal"
+        >
+        <FrameLayout 
+            android:id="@+id/back_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="left"
+        	android:paddingLeft="@dimen/padding_15"
+        	android:paddingRight="@dimen/padding_15"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<ImageView 
+			    android:layout_width="12dp"
+	        	android:layout_height="21dp"
+			    android:layout_gravity="center"
+			    android:src="@drawable/icon_back"
+			    />
+        </FrameLayout>
+		<EditText
+            android:id="@+id/search_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/search_home"
+            android:imeOptions="actionSearch"
+            android:gravity="center_vertical|left"
+            android:textCursorDrawable="@null"
+            android:hint="@string/search_hinttext"
+            android:textColorHint="@color/text_grey"
+            android:textColor="@color/text_dark"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textSize="@dimen/big" >
+			<requestFocus />
+		    </EditText>
+        <FrameLayout
+            android:id="@+id/search_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:foreground="@drawable/framelayout_selector"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            >
+            <TextView
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/search"
+                android:textColor="@color/white"
+                android:textSize="@dimen/bigger" />
+        </FrameLayout>
+    </LinearLayout>
+    
+    
+</LinearLayout>

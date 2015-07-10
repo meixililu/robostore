@@ -2,7 +2,6 @@ package com.robo.store.util;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.widget.EditText;
 
 public class ValidUtil {
 

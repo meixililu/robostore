@@ -9,18 +9,12 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 
@@ -71,7 +65,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	 */
 	protected void initSwipeRefresh(){
 		if(mSwipeRefreshLayout == null){
-//			mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mswiperefreshlayout);
+			mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mswiperefreshlayout);
 			mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
 		            R.color.holo_green_light, 
 		            R.color.holo_orange_light, 

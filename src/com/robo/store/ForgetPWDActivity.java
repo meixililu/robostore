@@ -4,25 +4,21 @@ import java.util.HashMap;
 
 import org.apache.http.Header;
 
-import com.loopj.android.http.TextHttpResponseHandler;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.CommonResponse;
-import com.robo.store.dao.UserLoginResponse;
 import com.robo.store.http.RoboHttpClient;
-import com.robo.store.util.LogUtil;
 import com.robo.store.util.Md5;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ValidUtil;
-
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 public class ForgetPWDActivity extends BaseActivity {
 
@@ -109,6 +105,8 @@ public class ForgetPWDActivity extends BaseActivity {
 						if (timer != null) {
 							timer.cancel(); 
 						}
+						getcode_btn.setClickable(true);
+						getcode_btn.setText("获取验证码");
 						ToastUtil.diaplayMesLong(ForgetPWDActivity.this, "修改成功");
 					}
 				}

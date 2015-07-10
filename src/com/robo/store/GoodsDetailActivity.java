@@ -12,10 +12,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.GetSingleGoodsResponse;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
@@ -24,6 +26,7 @@ import com.robo.store.util.ToastUtil;
 public class GoodsDetailActivity extends BaseActivity implements View.OnClickListener{
 
 	private FrameLayout back_btn_cover;
+	private LinearLayout goods_layout;
 	private ViewPager viewpager;
 	private LinearLayout viewpager_dot_layout;
 	private TextView good_price_new,good_price_old,good_newprice_end;
@@ -34,8 +37,11 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	
 	private FrameLayout add_to_cart_cover,buy_now_cover;
 	private TextView get_goods_date;
+	private int number = 1;
 	
 	private String goodsBarcode;
+	private GetSingleGoodsResponse mSingleGoods;
+	private ProgressBarCircularIndeterminate progressbar_m;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,8 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	private void init(){
 		goodsBarcode = getIntent().getStringExtra(KeyUtil.GoodsIdKey);
 		back_btn_cover = (FrameLayout) findViewById(R.id.back_btn_cover);
+		goods_layout = (LinearLayout) findViewById(R.id.goods_layout);
+		progressbar_m = (ProgressBarCircularIndeterminate) findViewById(R.id.progressbar_m);
 		viewpager = (ViewPager) findViewById(R.id.viewpager);
 		viewpager_dot_layout = (LinearLayout) findViewById(R.id.viewpager_dot_layout);
 		good_price_new = (TextView) findViewById(R.id.good_price_new);
@@ -66,6 +74,8 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		add_to_cart_cover = (FrameLayout) findViewById(R.id.add_to_cart_cover);
 		buy_now_cover = (FrameLayout) findViewById(R.id.buy_now_cover);
 		
+		number_txt.setText(String.valueOf(number));
+		
 		back_btn_cover.setOnClickListener(this);
 		minus_img.setOnClickListener(this);
 		plus_img.setOnClickListener(this);
@@ -83,9 +93,11 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	}
 	
 	private void RequestData(){
-		showSucceeDialog();
+		goods_layout.setVisibility(View.GONE);
+		progressbar_m.setVisibility(View.VISIBLE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("goodsBarcode", goodsBarcode);
+		params.put("cityId", HomeFragment.cityId);
 		RoboHttpClient.get(HttpParameter.goodUrl, "getSingleGoods", params, new TextHttpResponseHandler(){
 
 			@Override
@@ -96,21 +108,19 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				LogUtil.DefalutLog(result);
-				GetSingleGoodsResponse mGetSingleGoodsResponse = (GetSingleGoodsResponse) ResultParse.parseResult(result,GetSingleGoodsResponse.class);
-				if(ResultParse.handleResutl(GoodsDetailActivity.this, mGetSingleGoodsResponse)){
-					setData(mGetSingleGoodsResponse);
+				mSingleGoods = (GetSingleGoodsResponse) ResultParse.parseResult(result,GetSingleGoodsResponse.class);
+				if(ResultParse.handleResutl(GoodsDetailActivity.this, mSingleGoods)){
+					goods_layout.setVisibility(View.VISIBLE);
+					mSingleGoods.setGoodsBarcode(goodsBarcode);
+					setData(mSingleGoods);
 				}
 			}
 			
 			@Override
 			public void onFinish() {
-				
+				progressbar_m.setVisibility(View.GONE);
 			}
 		});
-	}
-	
-	private void showSucceeDialog(){
-//		progressDialog = ProgressDialog.show(this, "", "正在登录...", true, false);
 	}
 	
 	@Override
@@ -120,11 +130,19 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		case R.id.back_btn_cover:
 			GoodsDetailActivity.this.finish();
 			break;
-		case R.id.forget_pwd_cover:
-			
+		case R.id.minus_img:
+			if(number > 1){
+				number--;
+			}
+			number_txt.setText(String.valueOf(number));
 			break;
-		case R.id.login_btn:
-			
+		case R.id.plus_img:
+			number++;
+			number_txt.setText(String.valueOf(number));
+			break;
+		case R.id.add_to_cart_cover:
+			ToastUtil.diaplayMesShort(GoodsDetailActivity.this, mSingleGoods.getGoodsName()+"已加入购物车");
+			CartUtil.addToCart(mSingleGoods, number);
 			break;
 		}
 	}

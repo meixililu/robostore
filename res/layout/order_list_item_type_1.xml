@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/order_type_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_color"
+        android:padding="@dimen/padding_7" >
+
+        <TextView
+            android:id="@+id/order_type_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/order_type_1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/middle" />
+
+        <Button
+            android:id="@+id/to_pay_btn"
+            android:layout_width="50dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/padding_5"
+            android:background="@drawable/btn_login_selector"
+            android:text="@string/to_pay"
+            android:textSize="@dimen/small" />
+
+    </RelativeLayout>
+    <LinearLayout 
+        android:id="@+id/goods_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        
+    </LinearLayout>
+
+</LinearLayout>
