@@ -22,6 +22,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 	private EditText search_et;
 	private String searchContent;
 	private String searchType;
+	private String shopId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 		Bundle mBundle = getIntent().getBundleExtra(KeyUtil.BundleKey);
 		if(mBundle != null){
 			searchType = mBundle.getString(KeyUtil.SearchTypeKey);
+			shopId = mBundle.getString(KeyUtil.ShopDetailIdKey);
 		}
 		search_cover = (FrameLayout) findViewById(R.id.search_cover);
 		search_et = (EditText) findViewById(R.id.search_tv);
@@ -68,6 +70,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 			Bundle mBundle = new Bundle();
 			mBundle.putString(KeyUtil.SearchTypeKey, searchType);	
 			mBundle.putString(KeyUtil.SearchContentKey, searchContent);	
+			mBundle.putString(KeyUtil.ShopDetailIdKey, shopId);	
 			toActivity(SearchResultActivity.class, mBundle);
 		}
 	}

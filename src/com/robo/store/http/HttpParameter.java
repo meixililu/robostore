@@ -15,6 +15,8 @@ public class HttpParameter {
 	public static final String goodUrl = "http://123.57.8.253:8080/robo/goods";
 	
 	public static final String orderUrl = "http://123.57.8.253:8080/robo/order";
+	
+	public static final String shopsUrl = "http://123.57.8.253:8080/robo/sys";
 	//RequestHeader
 	public static String softVer;
 	

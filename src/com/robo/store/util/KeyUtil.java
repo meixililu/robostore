@@ -33,6 +33,9 @@ public class KeyUtil {
 	
 	public static final String OrderTypeKey = "OrderTypeKey";
 	
+	public static final String ShopDetailTitleKey = "ShopDetailTitleKey";
+	
+	public static final String ShopDetailIdKey = "ShopDetailIdKey";
 	
 	
 	

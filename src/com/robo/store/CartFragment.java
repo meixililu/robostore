@@ -63,7 +63,7 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 		total_tv = (TextView) getView().findViewById(R.id.total);
 		btn_to_balance_or_delete = (Button) getView().findViewById(R.id.btn_to_balance_or_delete);
 		
-		mAdapter = new CartListViewAdapter(getActivity(), inflater, cartList,total_tv);
+		mAdapter = new CartListViewAdapter(getActivity(), inflater, cartList,total_tv,check_all);
 		content_lv.setAdapter(mAdapter);
 		edit_cover.setOnClickListener(this);
 		check_all.setOnClickListener(this);

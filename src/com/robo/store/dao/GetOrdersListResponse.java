@@ -9,6 +9,13 @@ public class GetOrdersListResponse {
 	private int orderStatus;
 	private String orderAmount;
 	private String barcode;
+	private String orderTime;
+	public String getOrderTime() {
+		return orderTime;
+	}
+	public void setOrderTime(String orderTime) {
+		this.orderTime = orderTime;
+	}
 	private List<OrderDetailVO> detailList ;
 	
 	

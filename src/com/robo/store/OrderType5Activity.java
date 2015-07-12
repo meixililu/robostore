@@ -54,7 +54,7 @@ public class OrderType5Activity extends BaseActivity implements View.OnClickList
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_order_type4);
+		setContentView(R.layout.activity_order_type5);
 		init();
 		RequestData();
 	}

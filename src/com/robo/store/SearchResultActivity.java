@@ -72,6 +72,7 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 		if(mBundle != null){
 			searchType = mBundle.getString(KeyUtil.SearchTypeKey);
 			searchContent = mBundle.getString(KeyUtil.SearchContentKey);
+			shopId = mBundle.getString(KeyUtil.ShopDetailIdKey);
 		}
 		if(searchType.equals(SearchActivity.SearchGoods)){
 			title = this.getResources().getString(R.string.search_goods_result);

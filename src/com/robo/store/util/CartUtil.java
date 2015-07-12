@@ -3,6 +3,7 @@ package com.robo.store.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.robo.store.CartFragment;
@@ -81,6 +82,23 @@ public class CartUtil {
 			}
 //			DecimalFormat df = new DecimalFormat("#.##");
 			total_tv.setText("合计：￥"+ CartFragment.totalSum);
+		}
+	}
+	
+	public static void setTotalSum(TextView total_tv,CheckBox check_all){
+		boolean isCheckedAll = true;
+		if(CartFragment.cartList != null){
+			CartFragment.totalSum = 0;
+			for(GoodsBase goods : CartFragment.cartList){
+				if(goods.isSelected()){
+					double privace = NumberUtil.StringToDouble(goods.getVipPrice()) * goods.getNumber();
+					CartFragment.totalSum += privace;
+				}else{
+					isCheckedAll = false;
+				}
+			}
+			total_tv.setText("合计：￥"+ CartFragment.totalSum);
+			check_all.setChecked(isCheckedAll);
 		}
 	}
 	

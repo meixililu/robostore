@@ -6,6 +6,13 @@ public class MallOrderDetailVO {
 	private int goodsCount;
 	private String goodsPic;
 	private String goodsBarcode;
+	private boolean isPickUp;
+	public boolean isPickUp() {
+		return isPickUp;
+	}
+	public void setPickUp(boolean isPickUp) {
+		this.isPickUp = isPickUp;
+	}
 	public String getGoodsName() {
 		return goodsName;
 	}

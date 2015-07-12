@@ -23,12 +23,15 @@ public class CartListViewAdapter extends BaseAdapter {
 	private LayoutInflater mInflater;
 	private List<GoodsBase> goodsList;
 	private TextView total_tv;
+	private CheckBox check_all;
 	
-	public CartListViewAdapter(Context mContext,LayoutInflater mInflater,List<GoodsBase> goodsList,TextView total_tv){
+	public CartListViewAdapter(Context mContext,LayoutInflater mInflater,List<GoodsBase> goodsList,
+			TextView total_tv, CheckBox check_all){
 		this.context = mContext;
 		this.mInflater = mInflater;
 		this.goodsList = goodsList;
 		this.total_tv = total_tv;
+		this.check_all = check_all;
 	}
 	
 	@Override
@@ -80,7 +83,7 @@ public class CartListViewAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				mGoodsBase.setSelected(holder.checkbox.isChecked());
-				CartUtil.setTotalSum(total_tv);
+				CartUtil.setTotalSum(total_tv,check_all);
 			}
 		});
 		holder.minus_img.setOnClickListener(new OnClickListener() {
