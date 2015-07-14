@@ -1,6 +1,13 @@
 package com.robo.store.dao;
 
-public class GoodsBase {
+import java.io.Serializable;
+
+public class GoodsBase implements Serializable {  
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String goodsBarcode;
 	private String goodsName;
 	private String retailPrice;

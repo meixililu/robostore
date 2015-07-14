@@ -46,7 +46,7 @@ public class ResultParse {
 			}else if(mResultDao.getStatus().equals(TokenOut)){
 				SharedPreferences mSharedPreferences = SPUtil.getSharedPreferences(mContext);
 				LoginUtil.login(mContext, mSharedPreferences);
-				ToastUtil.diaplayMesLong(mContext, "请重试！");
+				ToastUtil.diaplayMesLong(mContext, "用户信息更新成功，请刷新重试！");
 			}else{
 				ToastUtil.diaplayMesLong(mContext, mResultDao.getErrorMsg());
 			}

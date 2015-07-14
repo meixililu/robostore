@@ -65,6 +65,9 @@
             android:name=".ShopDetailActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ShopLocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity

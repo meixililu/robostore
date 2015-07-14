@@ -43,7 +43,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
+        
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/mswiperefreshlayout"
             android:layout_width="match_parent"
@@ -70,6 +70,17 @@
             android:layout_gravity="center"
             android:background="@color/app_color"
             android:visibility="gone" />
+        <TextView 
+            android:id="@+id/empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:textColor="@color/text_grey"
+            android:textSize="@dimen/bigger"
+            android:text="暂无数据，轻触屏幕可刷新"
+            android:visibility="gone"
+            />
     </FrameLayout>
 
 </LinearLayout>

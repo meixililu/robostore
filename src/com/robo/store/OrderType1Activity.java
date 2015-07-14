@@ -44,7 +44,6 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 	private FrameLayout order_cancle_cover;
 	private Button confirm_to_pay;
 	private LinearLayout content_layout;
-	private LinearLayout empty_layout;
 	private LayoutInflater inflater;
 	
 	private String mallOrderId;
@@ -71,10 +70,8 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 		order_place_time_tv = (TextView) findViewById(R.id.order_place_time_tv);
 		confirm_to_pay = (Button) findViewById(R.id.confirm_to_pay);
 		content_layout = (LinearLayout) findViewById(R.id.content_layout);
-		empty_layout = (LinearLayout) findViewById(R.id.empty_layout);
 		
 		confirm_to_pay.setOnClickListener(this);
-		empty_layout.setOnClickListener(this);
 	}
 	
 	private void setData(GetSingleOrderResponse mSingleOrder){
@@ -97,7 +94,6 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 	
 	private void RequestData(){
 		mProgressbar.setVisibility(View.VISIBLE);
-		empty_layout.setVisibility(View.GONE);
 		content_layout.setVisibility(View.GONE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("mallOrderId", mallOrderId);
@@ -106,7 +102,7 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				ToastUtil.diaplayMesLong(OrderType1Activity.this, "连接失败，请重试！");
-				empty_layout.setVisibility(View.VISIBLE);
+				showEmptyLayout_Error();
 			}
 
 			@Override
@@ -117,7 +113,7 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 					content_layout.setVisibility(View.VISIBLE);
 					setData(mSingleOrder);
 				}else{
-					empty_layout.setVisibility(View.VISIBLE);
+					showEmptyLayout_Empty();
 				}
 			}
 			
@@ -177,9 +173,6 @@ public class OrderType1Activity extends BaseActivity implements View.OnClickList
 		switch(v.getId()){
 		case R.id.confirm_to_pay:
 			
-			break;
-		case R.id.empty_layout:
-			RequestData();
 			break;
 		}
 	}

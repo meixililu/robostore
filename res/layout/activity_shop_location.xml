@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/contentbg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar"
+        android:background="@drawable/top_bg"
+        android:orientation="horizontal"
+        >
+        <FrameLayout 
+            android:id="@+id/back_cover"
+            android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="left"
+        	android:paddingLeft="@dimen/padding_20"
+        	android:paddingRight="@dimen/padding_20"
+        	android:layout_alignParentLeft="true"
+        	android:foreground="@drawable/framelayout_selector"
+            >
+			<ImageView 
+			    android:layout_width="12dp"
+	        	android:layout_height="21dp"
+			    android:layout_gravity="center"
+			    android:src="@drawable/icon_back"
+			    />
+        </FrameLayout>
+		<TextView 
+		    android:id="@+id/title"
+		    android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+		    android:layout_gravity="center"
+		    android:gravity="center"
+		    android:textColor="@color/white"
+		    android:textSize="@dimen/bigger"
+		    />
+    </RelativeLayout>
+
+    <com.robo.store.view.PagerSlidingTabStrip
+        xmlns:app="http://schemas.android.com/apk/res/com.robo.store"
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/progressbar_width"
+        android:background="@color/white"
+        app:pstsTabSwitch="true" />
+
+    <com.robo.store.view.CustomViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

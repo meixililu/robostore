@@ -1,13 +1,14 @@
 package com.robo.store.dao;
 
 public class CityVO {
-	private String cityCode;
+	private String cityId;
 	private String cityName;
-	public String getCityCode() {
-		return cityCode;
+	
+	public String getCityId() {
+		return cityId;
 	}
-	public void setCityCode(String cityCode) {
-		this.cityCode = cityCode;
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
 	}
 	public String getCityName() {
 		return cityName;

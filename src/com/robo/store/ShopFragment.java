@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.robo.store.adapter.ShopListAdapter;
+import com.robo.store.adapter.ShopPinnedListAdapter;
 import com.robo.store.dao.GetShopListResponse;
 import com.robo.store.dao.ShopBase;
 import com.robo.store.http.HttpParameter;
@@ -49,23 +50,29 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	private View footerView;
 	private LinearLayout load_more_data;
 	private TextView no_more_data;
+	private TextView empty_layout;
 	
 	private LocationClient mLocationClient = null;
 	private BDLocationListener myListener = new MyLocationListener();
-	private double longitude,latitude;
+	public static double longitude,latitude;
 	public int pageIndex = 0;
 	private boolean isLoadMoreData;
-	private boolean isFinishloadData;
+	private boolean isFinishloadData = true;
 	private boolean isNearByListAdd;
 	private int isBeforeUseListAdd;
 	private int isNearbyListAdd;
+	private int loadCount;
 	
 	private List<ShopBase> AllDataList;
-	private ShopListAdapter mShopListAdapter;
+	private ShopPinnedListAdapter mShopListAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mLocationClient = new LocationClient(getActivity());
+		mLocationClient.registerLocationListener( myListener );
+		InitLocation();
+		mLocationClient.start();
 	}
 
 	@Override
@@ -78,10 +85,11 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	
 	protected void initView(){
 		AllDataList = new ArrayList<ShopBase>();
-		mShopListAdapter = new ShopListAdapter(getActivity(), inflater, AllDataList);
+		mShopListAdapter = new ShopPinnedListAdapter(getActivity(), inflater, AllDataList);
 		search_cover = (FrameLayout) getView().findViewById(R.id.search_cover);
 		pinnedlist = (PinnedSectionListView) getView().findViewById(R.id.pinnedlist);
 		mProgressbar = (ProgressBarCircularIndeterminate) getView().findViewById(R.id.progressbar_m);
+		empty_layout = (TextView) getView().findViewById(R.id.empty_layout);
 		mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.mswiperefreshlayout);
 		mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
 	            R.color.holo_green_light, 
@@ -102,12 +110,8 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		
 		pinnedlist.setAdapter(mShopListAdapter);
+		empty_layout.setOnClickListener(this);
 		search_cover.setOnClickListener(this);
-		
-		mLocationClient = new LocationClient(getActivity());
-		mLocationClient.registerLocationListener( myListener );
-		InitLocation();
-		mLocationClient.start();
 	}
 	
 	public void setListOnScrollListener(){
@@ -117,11 +121,9 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
             public void onScrollStateChanged(AbsListView view, int scrollState) { 
                 if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && lastItemIndex == mShopListAdapter.getCount() - 1) {  
                 	LogUtil.DefalutLog("onScrollStateChanged---update");
-                	if(isFinishloadData){
-                		if(isLoadMoreData){
-                			QueryShopByArea();
-                		}
-                	}
+            		if(isLoadMoreData){
+            			QueryShopByArea();
+            		}
                 }  
             }  
             @Override  
@@ -154,6 +156,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	public void clearList(){
+		loadCount = 0;
 		pageIndex = 0;
 		isBeforeUseListAdd = 0;
 		isNearbyListAdd = 0;
@@ -164,56 +167,71 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		no_more_data.setVisibility(View.GONE);
 	}
 	
-	private void QueryShopByArea(){
-		isFinishloadData = false;
+	private void isEmpty(){
 		if(pageIndex == 0){
-			mProgressbar.setVisibility(View.VISIBLE);
-		}
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("longitude", longitude);
-		params.put("latitude", latitude);
-		params.put("cityId", HomeFragment.cityId);
-		params.put("pageIndex", pageIndex);
-		params.put("pageCount", Settings.pageCount);
-		RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByArea", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
-			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mResponse)){
-					List<ShopBase> mList = mResponse.getList();
-					for(int i=0;i<10;i++){
-						mList.add(new ShopBase("水果超市旗舰店","100m"));
-					}
-					if(mList.size() > 0){
-						if(pageIndex == 0){
-							mList.add(0, getSectionBean("市内店铺"));
-						}
-						AllDataList.addAll(mList);
-						isLoadMoreData = true;
-						pageIndex++;
-						footerView.setVisibility(View.VISIBLE);
-					}else{
-						isLoadMoreData = false;
-						load_more_data.setVisibility(View.GONE);
-						no_more_data.setVisibility(View.VISIBLE);
-					}
-					mShopListAdapter.notifyDataSetChanged();
+			if(loadCount == 3){
+				if(AllDataList.size() == 0){
+					empty_layout.setVisibility(View.VISIBLE);
 				}
 			}
-			
-			@Override
-			public void onFinish() {
-				isFinishloadData = true;
-				mSwipeRefreshLayout.setRefreshing(false);
-				mProgressbar.setVisibility(View.GONE);
+		}
+	}
+	
+	private void QueryShopByArea(){
+		if(isFinishloadData){
+			isFinishloadData = false;
+			if(pageIndex == 0){
+				mProgressbar.setVisibility(View.VISIBLE);
 			}
-		});
+			empty_layout.setVisibility(View.GONE);
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("longitude", longitude);
+			params.put("latitude", latitude);
+			params.put("cityId", HomeFragment.cityId);
+			params.put("pageIndex", pageIndex);
+			params.put("pageCount", Settings.pageCount);
+			RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByArea", params, new TextHttpResponseHandler(){
+				
+				@Override
+				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+				}
+				
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, String result) {
+					GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
+					if(ResultParse.handleResutl(getActivity(), mResponse)){
+						List<ShopBase> mList = mResponse.getList();
+						for(int i=0;i<10;i++){
+							mList.add(new ShopBase("水果超市旗舰店","100m"));
+						}
+						if(mList.size() > 0){
+							if(pageIndex == 0){
+								mList.add(0, getSectionBean("市内店铺"));
+							}
+							AllDataList.addAll(mList);
+							isLoadMoreData = true;
+							pageIndex++;
+							footerView.setVisibility(View.VISIBLE);
+						}else{
+							isLoadMoreData = false;
+							load_more_data.setVisibility(View.GONE);
+							no_more_data.setVisibility(View.VISIBLE);
+						}
+						mShopListAdapter.notifyDataSetChanged();
+					}
+				}
+				
+				@Override
+				public void onFinish() {
+					loadCount++;
+					isFinishloadData = true;
+					mSwipeRefreshLayout.setRefreshing(false);
+					mProgressbar.setVisibility(View.GONE);
+					isEmpty();
+				}
+			});
+		}
 	}
 	
 	private void QueryShopByBeforeUse(){
@@ -241,6 +259,11 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 						mShopListAdapter.notifyDataSetChanged();
 					}
 				}
+			}
+			@Override
+			public void onFinish() {
+				loadCount++;
+				isEmpty();
 			}
 		});
 	}
@@ -273,6 +296,11 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 					}
 				}
 			}
+			@Override
+			public void onFinish() {
+				loadCount++;
+				isEmpty();
+			}
 		});
 	}
 	
@@ -293,6 +321,9 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			Bundle mBundle = new Bundle();
 			mBundle.putString(KeyUtil.SearchTypeKey, SearchActivity.SearchShops);	
 			toActivity(SearchActivity.class, mBundle);
+			break;
+		case R.id.empty_layout:
+			onSwipeRefreshLayoutRefresh();
 			break;
 		}
 	}

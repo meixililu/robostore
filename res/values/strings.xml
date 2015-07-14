@@ -54,7 +54,10 @@
     <string name="order_type_5">已退款，交易关闭</string>
     <string name="order_type_6">交易完成</string>
     
-    <string name="connet_fail">连接失败，请重试！</string>
+    <string name="shop_des">店铺介绍</string>
+    <string name="map_location">地图位置</string>
+    <string name="shop_location">店铺位置</string>
+    <string name="connet_fail">加载失败，请重试！</string>
     <string name="shop_to_get_goods">取货店铺</string>
     <string name="update_now">正在更新...</string>
     <string name="no_more_data">亲，到底啦...</string>
@@ -62,4 +65,5 @@
     <string name="order_list_empty">暂无订单信息，赶紧去购物吧</string>
     <string name="change_search_content">换一个试试</string>
     <string name="sorry_load_faile">加载失败，轻触屏幕刷新</string>
+    <string name="sorry_load_empty">暂无数据，轻触屏幕刷新</string>
 </resources>

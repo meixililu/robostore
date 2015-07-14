@@ -6,6 +6,7 @@ import org.apache.http.Header;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -102,7 +103,8 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(GoodsDetailActivity.this, "连接失败，请重试！");
+				showEmptyLayout_Error();
+				ToastUtil.diaplayMesLong(GoodsDetailActivity.this, GoodsDetailActivity.this.getResources().getString(R.string.connet_fail));
 			}
 
 			@Override
@@ -112,7 +114,13 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 				if(ResultParse.handleResutl(GoodsDetailActivity.this, mSingleGoods)){
 					goods_layout.setVisibility(View.VISIBLE);
 					mSingleGoods.setGoodsBarcode(goodsBarcode);
-					setData(mSingleGoods);
+					if(TextUtils.isEmpty(mSingleGoods.getGoodsName())){
+						showEmptyLayout_Empty();
+					}else{
+						setData(mSingleGoods);
+					}
+				}else{
+					showEmptyLayout_Empty();
 				}
 			}
 			
@@ -121,6 +129,11 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 				progressbar_m.setVisibility(View.GONE);
 			}
 		});
+	}
+	
+	@Override
+	public void onClickEmptyLayoutRefresh() {
+		RequestData();
 	}
 	
 	@Override

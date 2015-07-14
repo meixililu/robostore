@@ -235,23 +235,16 @@
         </LinearLayout>
         </LinearLayout>
         
-        <LinearLayout 
-	        android:id="@+id/empty_layout"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:gravity="center"
-	        android:background="@color/white"
-	        android:orientation="vertical"
-	        android:visibility="gone"
-	        >
-	        <TextView
+        <TextView
+		        android:id="@+id/empty_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
+		        android:visibility="gone"
+		        android:background="@color/white"
                 android:text="@string/sorry_load_faile"
                 android:textColor="@color/text_grey"
                 android:textSize="@dimen/bigger" />
-	    </LinearLayout>
 	    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
             android:id="@+id/progressBarCircularIndetermininate"
             android:layout_width="@dimen/progressbar_width"

@@ -12,5 +12,7 @@ public class GetShopListResponse extends CommonResponse{
 	public void setList(List<ShopBase> list) {
 		this.list = list;
 	}
-	
+
+
+
 }

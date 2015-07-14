@@ -24,6 +24,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	public FrameLayout back_cover;
 	public TextView titleTv;
 	public String title;
+	public TextView empty_layout;
 	public ProgressBarCircularIndeterminate mProgressbar;
 	public SwipeRefreshLayout mSwipeRefreshLayout;
 	
@@ -38,6 +39,7 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
         super.setContentView(layoutResID);
         getActionBarToolbar();
         initProgressbar();
+        initEmptyLayout();
     }
 
 	protected void getActionBarToolbar() {
@@ -57,6 +59,34 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	protected void initProgressbar(){
 		if(mProgressbar == null){
 			mProgressbar = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndetermininate);
+		}
+	}
+	
+	protected void initEmptyLayout(){
+		empty_layout = (TextView) findViewById(R.id.empty_layout);
+		if(empty_layout != null){
+			empty_layout.setOnClickListener(this);
+		}
+	}
+	
+	protected void hideEmptyLayout(){
+		if(empty_layout != null){
+			empty_layout.setVisibility(View.GONE);
+			empty_layout.setText(this.getResources().getString(R.string.sorry_load_empty));
+		}
+	}
+	
+	protected void showEmptyLayout_Error(){
+		if(empty_layout != null){
+			empty_layout.setVisibility(View.VISIBLE);
+			empty_layout.setText(this.getResources().getString(R.string.sorry_load_faile));
+		}
+	}
+	
+	protected void showEmptyLayout_Empty(){
+		if(empty_layout != null){
+			empty_layout.setVisibility(View.VISIBLE);
+			empty_layout.setText(this.getResources().getString(R.string.sorry_load_empty));
 		}
 	}
 	
@@ -89,6 +119,9 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 	public void onSwipeRefreshLayoutRefresh(){
 	}
 	
+	public void onClickEmptyLayoutRefresh(){
+	}
+	
 	public void showProgressbar(){
 		if(mProgressbar != null){
 			mProgressbar.setVisibility(View.VISIBLE);
@@ -100,6 +133,8 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 			mProgressbar.setVisibility(View.GONE);
 		}
 	}
+	
+	
 	
 	protected void TransparentStatusbar(){
 		if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -137,26 +172,6 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 		this.title = title;
 	}
 	
-//	protected boolean toolbarIsShown() {
-//        return ViewHelper.getTranslationY(toolbar) == 0;
-//    }
-//
-//	protected boolean toolbarIsHidden() {
-//        return ViewHelper.getTranslationY(toolbar) == -toolbar.getHeight();
-//    }
-//	
-//	protected void hideViews() {
-//		ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", -toolbar.getHeight());
-//    	animY.setInterpolator(new AccelerateInterpolator(2));
-//    	animY.start();
-//    }
-//
-//	protected void showViews() {
-//    	ObjectAnimator animY = ObjectAnimator.ofFloat(toolbar, "y", 0);
-//    	animY.setInterpolator(new DecelerateInterpolator(2));
-//    	animY.start();
-//    }
-	
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		super.onActivityResult(arg0, arg1, arg2);
@@ -176,6 +191,10 @@ public class BaseActivity extends ActionBarActivity implements View.OnClickListe
 		switch(v.getId()){
 		case R.id.back_cover:
 			BaseActivity.this.onBackPressed();
+			break;
+		case R.id.empty_layout:
+			hideEmptyLayout();
+			onClickEmptyLayoutRefresh();
 			break;
 		}
 	}

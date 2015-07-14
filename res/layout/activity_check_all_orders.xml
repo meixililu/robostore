@@ -60,24 +60,16 @@
             android:scrollbars="none" />
 		</android.support.v4.widget.SwipeRefreshLayout>
 	    
-	    <LinearLayout 
-	        android:id="@+id/empty_layout"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:background="@color/white"
-	        android:orientation="vertical"
-	        android:visibility="gone"
-	        >
-	        <TextView
-	            android:id="@+id/empty_prompt_tv"
+	    <TextView
+	        	android:id="@+id/empty_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/sorry_nothing_found"
                 android:textColor="@color/text_grey"
+		        android:background="@color/white"
+		        android:visibility="gone"
                 android:textSize="@dimen/bigger" />
-	    </LinearLayout>
 	    
         <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
             android:id="@+id/progressBarCircularIndetermininate"

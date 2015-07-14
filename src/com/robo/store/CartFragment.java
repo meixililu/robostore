@@ -21,13 +21,16 @@ import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.LoginUtil;
+import com.robo.store.util.SaveData;
 import com.robo.store.util.ToastUtil;
 
 public class CartFragment extends BaseFragment implements OnClickListener{
 
+	public static final String SaveCartDataName = "CartListData";
+	
 	public static List<GoodsBase> cartList;
 	private FrameLayout edit_cover;
-	private LinearLayout empty_layout,cart_layout;
+	private LinearLayout message_layout,cart_layout;
 	private TextView edit;
 	private ListView content_lv;
 	private CheckBox check_all;
@@ -43,8 +46,9 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cartList = new ArrayList<GoodsBase>();
+		getCacheData();
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		LogUtil.DefalutLog(CartFragment.class.getName()+"---onCreateView");
@@ -55,7 +59,7 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 
 	protected void initView(){
 		edit_cover = (FrameLayout) getView().findViewById(R.id.edit_cover);
-		empty_layout = (LinearLayout) getView().findViewById(R.id.empty_layout);
+		message_layout = (LinearLayout) getView().findViewById(R.id.message_layout);
 		cart_layout = (LinearLayout) getView().findViewById(R.id.cart_layout);
 		edit = (TextView) getView().findViewById(R.id.edit);
 		content_lv = (ListView) getView().findViewById(R.id.content_lv);
@@ -67,8 +71,20 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 		content_lv.setAdapter(mAdapter);
 		edit_cover.setOnClickListener(this);
 		check_all.setOnClickListener(this);
-		empty_layout.setOnClickListener(this);
+		message_layout.setOnClickListener(this);
 		btn_to_balance_or_delete.setOnClickListener(this);
+	}
+	
+	private void getCacheData(){
+		try {
+			Object mObject = SaveData.getObject(getActivity(), SaveCartDataName);
+			if(mObject != null){
+				cartList = (ArrayList<GoodsBase>) mObject;
+			}
+		} catch (Exception e) {
+			cartList = new ArrayList<GoodsBase>();
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -79,18 +95,21 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 			if(mAdapter != null){
 				mAdapter.notifyDataSetChanged();
 			}
+			if(total_tv != null && check_all != null){
+				CartUtil.setTotalSum(total_tv,check_all);
+			}
 		}
 	}
 	
 	private void checkIsCartEmpty(){
 		if(cartList.size() == 0){
-			empty_layout.setVisibility(View.VISIBLE);
+			message_layout.setVisibility(View.VISIBLE);
 			edit_cover.setVisibility(View.GONE);
 			cart_layout.setVisibility(View.GONE);
 		}else{
 			cart_layout.setVisibility(View.VISIBLE);
 			edit_cover.setVisibility(View.VISIBLE);
-			empty_layout.setVisibility(View.GONE);
+			message_layout.setVisibility(View.GONE);
 		}
 	}
 	
@@ -105,7 +124,7 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 			mAdapter.notifyDataSetChanged();
 			CartUtil.setTotalSum(total_tv);
 			break;
-		case R.id.empty_layout:
+		case R.id.message_layout:
 			MainActivity.setCurrentTab(0);
 			break;
 		case R.id.btn_to_balance_or_delete:
@@ -162,6 +181,7 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 	public void onDestroy() {
 		super.onDestroy();
 		if(cartList != null){
+			SaveData.saveObject(getActivity(), SaveCartDataName, cartList);
 			cartList.clear();
 			cartList = null;
 		}

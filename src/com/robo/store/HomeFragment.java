@@ -67,6 +67,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private HomeListViewAdapter mHomeListViewAdapter;
 	private List<GoodsBase> goodsList;
 	private boolean isHashFinishInitView;
+	private TextView empty_layout;
 	
 	private View headerView,footerView;
 	private LinearLayout load_more_data;
@@ -75,11 +76,11 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private AutoScrollViewPager auto_view_pager;
 	private String goodType = "0";
 	public static String city;
-	public static String cityId = "110100";
+	public static String cityId;
 	public static BaseFragment mBaseFragment;
 	public int pageIndex = 0;
 	private boolean isLoadMoreData;
-	private boolean isFinishloadData;
+	private boolean isFinishloadData = true;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		mBaseFragment = this;
 		mSharedPreferences = SPUtil.getSharedPreferences(getActivity());
 		city = mSharedPreferences.getString(KeyUtil.CityKey, "");
+		cityId = mSharedPreferences.getString(KeyUtil.CityIdKey, "");
 	}
 
 	@Override
@@ -102,6 +104,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		city_tv = (TextView) getView().findViewById(R.id.title);
 		search_btn = (TextView) getView().findViewById(R.id.search_btn);
 		mListView = (ListView) getView().findViewById(R.id.content_lv);
+		empty_layout = (TextView) getView().findViewById(R.id.empty_layout);
 		mProgressbar = (ProgressBarCircularIndeterminate) getView().findViewById(R.id.progressbar_m);
 		mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.mswiperefreshlayout);
 		mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
@@ -122,10 +125,11 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		mMenuAdapter = new HomeMenuGridViewAdapter(getActivity(), inflater, mGoodsTypeList);
 		
 		footerView = inflater.inflate(R.layout.list_footer_view, null);
+		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
+		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		footerView.setVisibility(View.GONE);
 		mListView.addFooterView(footerView);
-		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
-		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
+		
 		headerView = inflater.inflate(R.layout.home_list_header, null);
 		viewpager_dot_layout = (LinearLayout) headerView.findViewById(R.id.viewpager_dot_layout);
 		mGridView = (MyGridView) headerView.findViewById(R.id.gridview);
@@ -165,9 +169,10 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         mListView.addHeaderView(headerView);
 		mListView.setAdapter(mHomeListViewAdapter);
 		
+		empty_layout.setOnClickListener(this);
 		city_cover.setOnClickListener(this);
 		search_btn.setOnClickListener(this);
-		if(!TextUtils.isEmpty(city)){
+		if(!TextUtils.isEmpty(city) && !TextUtils.isEmpty(cityId)){
 			city_tv.setText(city);
 		}else{
 			toActivityForResult(CityActivity.class, null, RequestCity);
@@ -183,11 +188,9 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
             public void onScrollStateChanged(AbsListView view, int scrollState) { 
                 if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && lastItemIndex == mHomeListViewAdapter.getCount() - 1) {  
                 	LogUtil.DefalutLog("onScrollStateChanged---update");
-                	if(isFinishloadData){
-                		if(isLoadMoreData){
-                			RequestData();
-                		}
-                	}
+            		if(isLoadMoreData){
+            			RequestData();
+            		}
                 }  
             }  
             @Override  
@@ -211,21 +214,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		no_more_data.setVisibility(View.GONE);
 	}
 	
-	public class MyOnPageChangeListener implements OnPageChangeListener {
-
-        @Override
-        public void onPageSelected(int position) {
-        	ViewUtil.changeState(viewpager_dot_layout, (position%5));
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {}
-    }
-
-	
 	protected void loadData(){
 		LogUtil.DefalutLog("HomeFragment---setUserVisibleHint---loadData");
 		if(isHashFinishInitView){
@@ -234,57 +222,80 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		}
 	}
 	
-	private void RequestData(){
-		isFinishloadData = false;
+	private void isEmpty(){
 		if(pageIndex == 0){
-			mProgressbar.setVisibility(View.VISIBLE);
-		}
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("cityId", HomeFragment.cityId);
-		params.put("type", goodType);
-		params.put("pageIndex", pageIndex);
-		params.put("pageCount", Settings.pageCount);
-		RoboHttpClient.get(HttpParameter.goodUrl,"getGoodsListByType", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+			if(goodsList.size() == 0){
+				empty_layout.setVisibility(View.VISIBLE);
 			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				GetGoodsListResponse mGetGoodsListResponse = (GetGoodsListResponse) ResultParse.parseResult(result,GetGoodsListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mGetGoodsListResponse)){
-					List<GoodsType> typeList = mGetGoodsListResponse.getTypeList();
-					Collections.reverse(typeList);
-					mGoodsTypeList.clear();
-					mGoodsTypeList.addAll(typeList);
-					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
-					
-					List<GoodsBase> mGoodsList = mGetGoodsListResponse.getGoodsList();
-					goodsList.addAll(mGoodsList);
-					
-					mMenuAdapter.notifyDataSetChanged();
-					mHomeListViewAdapter.notifyDataSetChanged();
-					if(mGoodsList.size() > 0){
-						isLoadMoreData = true;
-						pageIndex++;
-						footerView.setVisibility(View.VISIBLE);
+		}
+	}
+	
+	private void RequestData(){
+		if(isFinishloadData){
+			mGridView.setEnabled(false);
+			isFinishloadData = false;
+			if(pageIndex == 0){
+				mProgressbar.setVisibility(View.VISIBLE);
+			}
+			empty_layout.setVisibility(View.GONE);
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("cityId", HomeFragment.cityId);
+			params.put("type", goodType);
+			params.put("pageIndex", pageIndex);
+			params.put("pageCount", Settings.pageCount);
+			RoboHttpClient.get(HttpParameter.goodUrl,"getGoodsListByType", params, new TextHttpResponseHandler(){
+				
+				@Override
+				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+				}
+				
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, String result) {
+					GetGoodsListResponse mGetGoodsListResponse = (GetGoodsListResponse) ResultParse.parseResult(result,GetGoodsListResponse.class);
+					if(ResultParse.handleResutl(getActivity(), mGetGoodsListResponse)){
+						List<GoodsType> typeList = mGetGoodsListResponse.getTypeList();
+						Collections.reverse(typeList);
+						mGoodsTypeList.clear();
+						mGoodsTypeList.addAll(typeList);
+						HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
+						
+						List<GoodsBase> mGoodsList = mGetGoodsListResponse.getGoodsList();
+						goodsList.addAll(mGoodsList);
+						
+						mMenuAdapter.notifyDataSetChanged();
+						mHomeListViewAdapter.notifyDataSetChanged();
+						
+						
+						if(mGoodsList.size() > 0){
+							if(mGoodsList.size() < Settings.pageCount && pageIndex == 0){
+								isLoadMoreData = false;
+								mListView.removeFooterView(footerView);
+							}else{
+								isLoadMoreData = true;
+								footerView.setVisibility(View.VISIBLE);
+								pageIndex++;
+							}
+						}else{
+							isLoadMoreData = false;
+							load_more_data.setVisibility(View.GONE);
+							no_more_data.setVisibility(View.VISIBLE);
+						}
 					}else{
-						isLoadMoreData = false;
-						load_more_data.setVisibility(View.GONE);
-						no_more_data.setVisibility(View.VISIBLE);
+						mListView.removeFooterView(footerView);
 					}
 				}
-			}
-			
-			@Override
-			public void onFinish() {
-				isFinishloadData = true;
-				mSwipeRefreshLayout.setRefreshing(false);
-				mProgressbar.setVisibility(View.GONE);
-			}
-		});
+				
+				@Override
+				public void onFinish() {
+					isFinishloadData = true;
+					mSwipeRefreshLayout.setRefreshing(false);
+					mProgressbar.setVisibility(View.GONE);
+					isEmpty();
+					mGridView.setEnabled(true);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -293,7 +304,9 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		LogUtil.DefalutLog("HomeFragment---onActivityResult");
 		if(RequestCity == requestCode){
 			city = mSharedPreferences.getString(KeyUtil.CityKey, "");
+			cityId = mSharedPreferences.getString(KeyUtil.CityIdKey, "");
 			city_tv.setText(city);
+			onSwipeRefreshLayoutRefresh();
 		}
 	}
 	
@@ -308,8 +321,25 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 			mBundle.putString(KeyUtil.SearchTypeKey, SearchActivity.SearchGoods);	
 			toActivity(SearchActivity.class, mBundle);
 			break;
+		case R.id.empty_layout:
+			onSwipeRefreshLayoutRefresh();
+			break;
 		}
 	}
+	
+	public class MyOnPageChangeListener implements OnPageChangeListener {
+
+        @Override
+        public void onPageSelected(int position) {
+        	ViewUtil.changeState(viewpager_dot_layout, (position%5));
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {}
+    }
 	
 	@Override
 	public void onDestroyView() {

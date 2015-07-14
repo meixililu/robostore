@@ -34,11 +34,10 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 
 	//（订单状态：“1.待付款”，“2.订单取消”，“3.待取货”，“4.退款处理中”，“5.已退款，交易关闭”，“6.交易完成”6种状态）
 	private SwipeRefreshLayout mswiperefreshlayout;
-	private LinearLayout empty_layout;
 	private ListView mListView;
 	private View footerView;
 	private LinearLayout load_more_data;
-	private TextView no_more_data,empty_prompt_tv;
+	private TextView no_more_data;
 	private LayoutInflater inflater;
 	
 	private CheckAllOrderListAdapter mCheckAllOrderListAdapter;
@@ -47,7 +46,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	private int OrderType;
 	public int pageIndex;
 	private boolean isLoadMoreData;
-	private boolean isFinishloadData;
+	private boolean isFinishloadData = true;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,15 +76,12 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	private void init(){
 		inflater = LayoutInflater.from(this);
 		initSwipeRefresh();
-		empty_layout = (LinearLayout) findViewById(R.id.empty_layout);
 		mListView = (ListView) findViewById(R.id.content_lv);
-		empty_prompt_tv = (TextView) findViewById(R.id.empty_prompt_tv);
 		footerView = inflater.inflate(R.layout.list_footer_view, null);
 		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		footerView.setVisibility(View.GONE);
 		mListView.addFooterView(footerView);
-		empty_layout.setOnClickListener(this);
 		setListOnScrollListener();
 		ordersList = new ArrayList<GetOrdersListResponse>();
 		mCheckAllOrderListAdapter = new CheckAllOrderListAdapter(this, inflater, ordersList);
@@ -99,11 +95,9 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
             public void onScrollStateChanged(AbsListView view, int scrollState) { 
                 if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && lastItemIndex == mCheckAllOrderListAdapter.getCount() - 1) {  
                 	LogUtil.DefalutLog("onScrollStateChanged---update");
-                	if(isFinishloadData){
-                		if(isLoadMoreData){
-                			RequestData();
-                		}
-                	}
+            		if(isLoadMoreData){
+            			RequestData();
+            		}
                 }  
             }  
             @Override  
@@ -128,69 +122,63 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	}
 	
 	private void RequestData(){
-		isFinishloadData = false;
-		if(pageIndex == 0){
-			mProgressbar.setVisibility(View.VISIBLE);
-		}
-		empty_layout.setVisibility(View.GONE);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("type", OrderType);
-		params.put("pageIndex", pageIndex);
-		params.put("pageCount", Settings.pageCount);
-		RoboHttpClient.get(HttpParameter.orderUrl,"getOrdersList", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(CheckAllOrdersActivity.this, CheckAllOrdersActivity.this.getResources().getString(R.string.connet_fail));
+		if(isFinishloadData){
+			isFinishloadData = false;
+			if(pageIndex == 0){
+				mProgressbar.setVisibility(View.VISIBLE);
 			}
-			
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				GetAllOrderResponse mListResponse = (GetAllOrderResponse) ResultParse.parseResult(result,GetAllOrderResponse.class);
-				if(ResultParse.handleResutl(CheckAllOrdersActivity.this, mListResponse)){
-					List<GetOrdersListResponse> mOrderList = mListResponse.getOrderList();
-					if(mOrderList.size() > 0){
-//						for(int i=0;i<10;i++){
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("type", OrderType);
+			params.put("pageIndex", pageIndex);
+			params.put("pageCount", Settings.pageCount);
+			RoboHttpClient.get(HttpParameter.orderUrl,"getOrdersList", params, new TextHttpResponseHandler(){
+				
+				@Override
+				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					ToastUtil.diaplayMesLong(CheckAllOrdersActivity.this, CheckAllOrdersActivity.this.getResources().getString(R.string.connet_fail));
+				}
+				
+				@Override
+				public void onSuccess(int arg0, Header[] arg1, String result) {
+					GetAllOrderResponse mListResponse = (GetAllOrderResponse) ResultParse.parseResult(result,GetAllOrderResponse.class);
+					if(ResultParse.handleResutl(CheckAllOrdersActivity.this, mListResponse)){
+						List<GetOrdersListResponse> mOrderList = mListResponse.getOrderList();
+						if(mOrderList.size() > 0){
 							ordersList.addAll(mOrderList);
-//						}
-						mCheckAllOrderListAdapter.notifyDataSetChanged();
-						if(mOrderList.size() < Settings.pageCount && pageIndex == 0){
-							isLoadMoreData = false;
-							mListView.removeFooterView(footerView);
+							mCheckAllOrderListAdapter.notifyDataSetChanged();
+							if(mOrderList.size() < Settings.pageCount && pageIndex == 0){
+								isLoadMoreData = false;
+								mListView.removeFooterView(footerView);
+							}else{
+								isLoadMoreData = true;
+								footerView.setVisibility(View.VISIBLE);
+								pageIndex++;
+							}
 						}else{
-							isLoadMoreData = true;
-							footerView.setVisibility(View.VISIBLE);
-							pageIndex++;
+							showEmptyLayout_Empty();
+							empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
+							isLoadMoreData = false;
+							load_more_data.setVisibility(View.GONE);
+							no_more_data.setVisibility(View.VISIBLE);
 						}
 					}else{
-						empty_layout.setVisibility(View.VISIBLE);
-						empty_prompt_tv.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
-						isLoadMoreData = false;
-						load_more_data.setVisibility(View.GONE);
-						no_more_data.setVisibility(View.VISIBLE);
+						mListView.removeFooterView(footerView);
 					}
-				}else{
-					mListView.removeFooterView(footerView);
 				}
-			}
-			
-			@Override
-			public void onFinish() {
-				isFinishloadData = true;
-				mSwipeRefreshLayout.setRefreshing(false);
-				mProgressbar.setVisibility(View.GONE);
-			}
-		});
+				
+				@Override
+				public void onFinish() {
+					isFinishloadData = true;
+					mSwipeRefreshLayout.setRefreshing(false);
+					mProgressbar.setVisibility(View.GONE);
+				}
+			});
+		}
 	}
 	
 	@Override
 	public void onClick(View v) {
 		super.onClick(v);
-		switch(v.getId()){
-		case R.id.empty_layout:
-			
-			break;
-		}
 	}
 	
 	

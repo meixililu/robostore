@@ -46,7 +46,6 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 	private TextView order_place_time_tv;
 	private TextView order_refund_sum;
 	private LinearLayout content_layout;
-	private LinearLayout empty_layout;
 	private Button confirm_to_refund;
 	private LayoutInflater inflater;
 	
@@ -76,9 +75,6 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 		order_place_time_tv = (TextView) findViewById(R.id.order_place_time_tv);
 		order_refund_sum = (TextView) findViewById(R.id.order_refund_sum);
 		content_layout = (LinearLayout) findViewById(R.id.content_layout);
-		empty_layout = (LinearLayout) findViewById(R.id.empty_layout);
-		
-		empty_layout.setOnClickListener(this);
 	}
 	
 	private void setData(GetSingleOrderResponse mSingleOrder){
@@ -102,7 +98,6 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 	
 	private void RequestData(){
 		mProgressbar.setVisibility(View.VISIBLE);
-		empty_layout.setVisibility(View.GONE);
 		content_layout.setVisibility(View.GONE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("mallOrderId", mallOrderId);
@@ -111,7 +106,7 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				ToastUtil.diaplayMesLong(OrderType3Activity.this, "连接失败，请重试！");
-				empty_layout.setVisibility(View.VISIBLE);
+				showEmptyLayout_Error();
 			}
 
 			@Override
@@ -122,7 +117,7 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 					content_layout.setVisibility(View.VISIBLE);
 					setData(mSingleOrder);
 				}else{
-					empty_layout.setVisibility(View.VISIBLE);
+					showEmptyLayout_Empty();
 				}
 			}
 			
@@ -180,11 +175,6 @@ public class OrderType3Activity extends BaseActivity implements View.OnClickList
 	@Override
 	public void onClick(View v) {
 		super.onClick(v);
-		switch(v.getId()){
-		case R.id.empty_layout:
-			RequestData();
-			break;
-		}
 	}
 	
 	

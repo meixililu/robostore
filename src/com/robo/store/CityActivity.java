@@ -3,6 +3,8 @@ package com.robo.store;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -25,12 +27,23 @@ import com.liucanwen.citylist.data.CityData;
 import com.liucanwen.citylist.model.CityItem;
 import com.liucanwen.citylist.widget.ContactItemInterface;
 import com.liucanwen.citylist.widget.ContactListViewImpl;
+import com.robo.store.dao.GetAllCityResponse;
+import com.robo.store.dao.GoodsBase;
+import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RoboHttpClient;
+import com.robo.store.http.TextHttpResponseHandler;
+import com.robo.store.util.CityUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
+import com.robo.store.util.ResultParse;
 import com.robo.store.util.SPUtil;
+import com.robo.store.util.SaveData;
 import com.robo.store.util.ToastUtil;
 
 public class CityActivity extends BaseActivity implements TextWatcher {
+	
+	public static final String SaveCityDataName = "CityListData";
+	
 	private Context context_ = CityActivity.this;
 
 	private ContactListViewImpl listview;
@@ -43,16 +56,18 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 
 	private final static String TAG = "MainActivity2";
 
-	List<ContactItemInterface> contactList;
-	List<ContactItemInterface> filterList;
+	private List<ContactItemInterface> contactList;
+	private List<ContactItemInterface> filterList;
 	private SearchListTask curSearchTask = null;
 	private CityAdapter adapter;
 	
 	private SharedPreferences mSharedPreferences;
 	private String city;
+	private String cityId;
 	private String locationCity;
 	private LocationClient mLocationClient = null;
 	private BDLocationListener myListener = new MyLocationListener();
+	private boolean isAddLocationCity;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,32 +76,51 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 		setContentView(R.layout.city_library_activity);
 		mSharedPreferences = SPUtil.getSharedPreferences(this);
 		city = mSharedPreferences.getString(KeyUtil.CityKey, "");
-		
+		cityId = mSharedPreferences.getString(KeyUtil.CityIdKey, "");
 		mLocationClient = new LocationClient(this);
 		mLocationClient.registerLocationListener( myListener ); 
-		
-		
 		filterList = new ArrayList<ContactItemInterface>();
-		contactList = CityData.getSampleContactList();
-		adapter = new CityAdapter(this, R.layout.city_item, contactList);
+		contactList = new ArrayList<ContactItemInterface>();
+		
 		searchBox = (EditText) findViewById(R.id.input_search_query);
 		searchBox.addTextChangedListener(this);
 		listview = (ContactListViewImpl) this.findViewById(R.id.city_listview);
 		listview.setFastScrollEnabled(true);
-		listview.setAdapter(adapter);
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView parent, View v, int position,long id) {
-				List<ContactItemInterface> searchList = inSearchMode ? filterList : contactList;
-				String select = searchList.get(position).getDisplayInfo();
-				saveCity(select);
-//				ToastUtil.diaplayMesLong(CityActivity.this, select);
+//				List<ContactItemInterface> searchList = inSearchMode ? filterList : contactList;
+				CityItem mCityItem= (CityItem)contactList.get(position);
+				cityId = mCityItem.getCityId();
+				saveCity(cityId, mCityItem.getDisplayInfo());
 				CityActivity.this.finish();
 			}
 		});
-		
+		getCacheData();
 		InitLocation();
 		mLocationClient.start();
+	}
+	
+	private void getCacheData(){
+		try {
+			Object mObject = SaveData.getObject(this, SaveCityDataName);
+			if(mObject != null){
+				contactList = (ArrayList<ContactItemInterface>) mObject;
+				setAdapter();
+				setLocationCity();
+			}else{
+				RequestData();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			contactList = new ArrayList<ContactItemInterface>();
+			e.printStackTrace();
+		}
+	}
+	
+	private void setAdapter(){
+		adapter = new CityAdapter(CityActivity.this, R.layout.city_item, contactList);
+		listview.setAdapter(adapter);
 	}
 	
 	private void InitLocation(){
@@ -103,30 +137,67 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null) return ;
-			LogUtil.DefalutLog("city---code:"+location.getCityCode());
 			locationCity = location.getCity();
-			CityItem item = (CityItem) contactList.get(0);
-			item.setNickName(locationCity);
-			adapter.notifyDataSetChanged();
+			ShopFragment.longitude = location.getLongitude();
+			ShopFragment.latitude = location.getLatitude();
+			setLocationCity();
 		}
+	}
+	
+	private void setLocationCity(){
+		if(contactList.size() > 0 && !TextUtils.isEmpty(locationCity)) {
+			if(!isAddLocationCity){
+				isAddLocationCity = true;
+				CityUtil.setLocationCity(locationCity, contactList);
+				adapter.notifyDataSetChanged();
+			}
+		}
+	}
+	
+	private void RequestData(){
+		showProgressbar();
+		RoboHttpClient.get(HttpParameter.shopsUrl,"getAllCities", null, new TextHttpResponseHandler(){
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				showEmptyLayout_Error();
+				ToastUtil.diaplayMesLong(CityActivity.this, "连接失败，请重试！");
+			}
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetAllCityResponse mResponse = (GetAllCityResponse) ResultParse.parseResult(result,GetAllCityResponse.class);
+				if(ResultParse.handleResutl(CityActivity.this, mResponse)){
+					contactList = CityUtil.getSampleContactList(mResponse.getList());
+					setAdapter();
+					setLocationCity();
+				}else{
+					showEmptyLayout_Empty();
+				}
+			}
+			@Override
+			public void onFinish() {
+				hideProgressbar();
+			}
+		});
 	}
 	
 	@Override
 	public void onBackPressed() {
 		if(TextUtils.isEmpty(locationCity)){
-			if(TextUtils.isEmpty(city) ){
+			if(TextUtils.isEmpty(cityId) || TextUtils.isEmpty(city)){
 				ToastUtil.diaplayMesLong(this, "请选择您所在的城市");
 			}else{
-				saveCity(city);
+				saveCity(cityId,city);
 			}
 		}else{
-			saveCity(locationCity);
+			CityItem mCityItem= (CityItem)contactList.get(0);
+			saveCity(mCityItem.getCityId(), mCityItem.getNickName());
 			super.onBackPressed();
 		}
 	}
 	
-	private void saveCity(String city){
+	private void saveCity(String cityId, String city){
 		SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.CityKey, city);
+		SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.CityIdKey, cityId);
 	}
 	
 	@Override
@@ -134,6 +205,11 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 		super.onDestroy();
 		if(mLocationClient != null){
 			mLocationClient.stop();
+		}
+		if(contactList != null){
+			if(contactList.size() > 0){
+				SaveData.saveObject(this, SaveCityDataName, contactList);
+			}
 		}
 	}
 	
@@ -161,40 +237,29 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 	}
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
+	public void beforeTextChanged(CharSequence s, int start, int count,int after) {
 	}
 
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		// do nothing
 	}
 
 	private class SearchListTask extends AsyncTask<String, Void, String> {
-
 		@Override
 		protected String doInBackground(String... params) {
 			filterList.clear();
-
 			String keyword = params[0];
-
 			inSearchMode = (keyword.length() > 0);
-
 			if (inSearchMode) {
 				// get all the items matching this
 				for (ContactItemInterface item : contactList) {
 					CityItem contact = (CityItem) item;
-
-					boolean isPinyin = contact.getFullName().toUpperCase()
-							.indexOf(keyword) > -1;
+					boolean isPinyin = contact.getFullName().toUpperCase().indexOf(keyword) > -1;
 					boolean isChinese = contact.getNickName().indexOf(keyword) > -1;
-
 					if (isPinyin || isChinese) {
 						filterList.add(item);
 					}
-
 				}
-
 			}
 			return null;
 		}
@@ -204,15 +269,12 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 			synchronized (searchLock) {
 
 				if (inSearchMode) {
-
-					CityAdapter adapter = new CityAdapter(context_,
-							R.layout.city_item, filterList);
+					CityAdapter adapter = new CityAdapter(context_,R.layout.city_item, filterList);
 					adapter.setInSearchMode(true);
 					listview.setInSearchMode(true);
 					listview.setAdapter(adapter);
 				} else {
-					CityAdapter adapter = new CityAdapter(context_,
-							R.layout.city_item, contactList);
+					CityAdapter adapter = new CityAdapter(context_,R.layout.city_item, contactList);
 					adapter.setInSearchMode(false);
 					listview.setInSearchMode(false);
 					listview.setAdapter(adapter);

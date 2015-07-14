@@ -16,6 +16,8 @@ public class KeyUtil {
 	public static final String BundleKey = "BundleKey";
 	
 	public static final String CityKey = "CityKey";
+	
+	public static final String CityIdKey = "CityIdKey";
 
 	public static final String GoodsIdKey = "GoodsIdKey";
 	
@@ -36,6 +38,12 @@ public class KeyUtil {
 	public static final String ShopDetailTitleKey = "ShopDetailTitleKey";
 	
 	public static final String ShopDetailIdKey = "ShopDetailIdKey";
+	
+	public static final String LatitudeKey = "LatitudeKey";
+	
+	public static final String LongitudeKey = "LongitudeKey";
+	
+	public static final String ShopMemoKey = "ShopMemoKey";
 	
 	
 	

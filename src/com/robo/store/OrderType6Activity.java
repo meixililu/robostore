@@ -44,7 +44,6 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 	private TextView order_place_time_tv;
 	private TextView order_sum;
 	private LinearLayout content_layout;
-	private LinearLayout empty_layout;
 	private Button confirm_to_refund;
 	private LayoutInflater inflater;
 	
@@ -73,9 +72,7 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 		order_sum = (TextView) findViewById(R.id.order_sum);
 		confirm_to_refund = (Button) findViewById(R.id.confirm_to_refund);
 		content_layout = (LinearLayout) findViewById(R.id.content_layout);
-		empty_layout = (LinearLayout) findViewById(R.id.empty_layout);
 		
-		empty_layout.setOnClickListener(this);
 	}
 	
 	private void setData(GetSingleOrderResponse mSingleOrder){
@@ -99,7 +96,6 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 	
 	private void RequestData(){
 		mProgressbar.setVisibility(View.VISIBLE);
-		empty_layout.setVisibility(View.GONE);
 		content_layout.setVisibility(View.GONE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("mallOrderId", mallOrderId);
@@ -108,7 +104,7 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				ToastUtil.diaplayMesLong(OrderType6Activity.this, "连接失败，请重试！");
-				empty_layout.setVisibility(View.VISIBLE);
+				showEmptyLayout_Error();
 			}
 
 			@Override
@@ -119,7 +115,7 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 					content_layout.setVisibility(View.VISIBLE);
 					setData(mSingleOrder);
 				}else{
-					empty_layout.setVisibility(View.VISIBLE);
+					showEmptyLayout_Empty();
 				}
 			}
 			
@@ -177,11 +173,6 @@ public class OrderType6Activity extends BaseActivity implements View.OnClickList
 	@Override
 	public void onClick(View v) {
 		super.onClick(v);
-		switch(v.getId()){
-		case R.id.empty_layout:
-			RequestData();
-			break;
-		}
 	}
 	
 	
