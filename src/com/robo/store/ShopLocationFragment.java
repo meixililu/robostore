@@ -40,7 +40,7 @@ public class ShopLocationFragment extends BaseFragment {
 		LatLng point = new LatLng(ShopLocationActivity.latitude, ShopLocationActivity.longitude); 
 		//构建Marker图标  
 		BitmapDescriptor bitmap = BitmapDescriptorFactory  
-		    .fromResource(R.drawable.icon_tab_home_s);  
+		    .fromResource(R.drawable.icon_poi);  
 		//构建MarkerOption，用于在地图上添加Marker  
 		OverlayOptions option = new MarkerOptions()  
 		    .position(point)  

@@ -1,8 +1,12 @@
 package com.robo.store;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.Header;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +17,16 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.robo.store.adapter.ConfirmToPayListViewAdapter;
+import com.robo.store.dao.AddOrderDetailVO;
+import com.robo.store.dao.AddOrderResponse;
 import com.robo.store.dao.GoodsBase;
+import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RoboHttpClient;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.CartUtil;
+import com.robo.store.util.KeyUtil;
+import com.robo.store.util.NumberUtil;
+import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 
 public class ConfirmOrderActivity extends BaseActivity implements OnClickListener{
@@ -53,13 +65,58 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	
 	private void toPay(){
 		if(rb_weixin.isChecked()){
-			
+			submitOrders();
 		}else if(rb_zhifubao.isChecked()){
 			
 		}else{
 			ToastUtil.diaplayMesShort(this, "请选择支付方式");
 		}
 	}
+	
+	private void submitOrders(){
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("cityId", HomeFragment.cityId);
+		params.put("totalPrice", CartFragment.totalSum);
+		params.put("list", getGoodsList());
+		RoboHttpClient.get(HttpParameter.orderUrl,"addOrder", params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, ConfirmOrderActivity.this.getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				AddOrderResponse mResponse = (AddOrderResponse) ResultParse.parseResult(result,AddOrderResponse.class);
+				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
+					ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交成功");
+					Bundle mBundle = new Bundle();
+					mBundle.putString(KeyUtil.OrderIdKey, mResponse.getOrderId());
+					Intent intent = new Intent();
+					intent.setClass(ConfirmOrderActivity.this, OrderType3Activity.class);
+					intent.putExtra(KeyUtil.BundleKey, mBundle);
+					ConfirmOrderActivity.this.startActivity(intent);
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+			}
+		});
+	}
+	
+	private List<AddOrderDetailVO> getGoodsList(){
+		List<AddOrderDetailVO> mGoodsList = new ArrayList<AddOrderDetailVO>();
+		for(GoodsBase mBase : confirmList){
+			AddOrderDetailVO mAddOrderDetailVO = new AddOrderDetailVO();
+			mAddOrderDetailVO.setGoodsBarcode(mBase.getGoodsBarcode());
+			mAddOrderDetailVO.setGoodsCount(mBase.getNumber());
+			mAddOrderDetailVO.setGoodsPrice( NumberUtil.StringToDouble(mBase.getVipPrice()) );
+			mGoodsList.add(mAddOrderDetailVO);
+		}
+		return mGoodsList;
+	}
+	
 	
 	private void paySuccee(){
 		CartFragment.cartList.removeAll(confirmList);

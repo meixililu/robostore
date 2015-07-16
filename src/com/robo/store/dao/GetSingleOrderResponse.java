@@ -5,7 +5,36 @@ import java.util.List;
 public class GetSingleOrderResponse extends CommonResponse {
 	private String mallOrderCode;
 	private int orderType;
+	private int payType;
+	private double totalPrice;
+	private String payTime;
+	private String orderTime;
+	public int getPayType() {
+		return payType;
+	}
+	public void setPayType(int payType) {
+		this.payType = payType;
+	}
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+	public String getPayTime() {
+		return payTime;
+	}
+	public void setPayTime(String payTime) {
+		this.payTime = payTime;
+	}
+	public String getOrderTime() {
+		return orderTime;
+	}
+	public void setOrderTime(String orderTime) {
+		this.orderTime = orderTime;
+	}
 	private List<MallOrderDetailVO> detailList;
+	
 	public String getMallOrderCode() {
 		return mallOrderCode;
 	}

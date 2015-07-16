@@ -8,15 +8,20 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.gc.materialdesign.widgets.Dialog;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.dao.CommonResponse;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.util.KeyUtil;
+import com.robo.store.util.LoginUtil;
 import com.robo.store.util.ResultParse;
+import com.robo.store.util.SPUtil;
 import com.robo.store.util.ToastUtil;
 
 public class RegisterActivity extends BaseActivity {
@@ -62,7 +67,16 @@ public class RegisterActivity extends BaseActivity {
 				public void onSuccess(int arg0, Header[] arg1, String arg2) {
 					CommonResponse mCommonResponse = ResultParse.parseResult(arg2,CommonResponse.class);
 					if(ResultParse.handleResutl(RegisterActivity.this, mCommonResponse)){
-						ToastUtil.diaplayMesLong(RegisterActivity.this, "注册成功");
+						Dialog dialog = new Dialog(RegisterActivity.this, "注册成功", "密码已发送到您的手机，请查收！");
+						dialog.addAcceptButton("确定");
+						dialog.setOnAcceptButtonClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								RegisterActivity.this.finish();
+							}
+						});
+						dialog.setCancelable(true);
+						dialog.show();
 					}
 				}
 				
