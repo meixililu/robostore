@@ -17,12 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.robo.store.OrderType1Activity;
-import com.robo.store.OrderType2Activity;
-import com.robo.store.OrderType3Activity;
-import com.robo.store.OrderType4Activity;
-import com.robo.store.OrderType5Activity;
-import com.robo.store.OrderType6Activity;
+import com.robo.store.OrderDetailActivity;
+import com.robo.store.OrderType1Fragment;
+import com.robo.store.OrderType2Fragment;
+import com.robo.store.OrderType3Fragment;
+import com.robo.store.OrderType4Fragment;
+import com.robo.store.OrderType5Fragment;
+import com.robo.store.OrderType6Fragment;
 import com.robo.store.R;
 import com.robo.store.dao.GetOrdersListResponse;
 import com.robo.store.dao.OrderDetailVO;
@@ -268,23 +269,11 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 	}
 	
 	private void toOrderDetailActivity(GetOrdersListResponse mOrdersList){
-		int type = mOrdersList.getOrderStatus();
 		Bundle mBundle = new Bundle();
 		mBundle.putString(KeyUtil.OrderIdKey, mOrdersList.getOrderId());
+		mBundle.putInt(KeyUtil.OrderTypeKey, mOrdersList.getOrderStatus());
 		Intent intent = new Intent();
-		if(type == 1){
-			intent.setClass(context, OrderType1Activity.class);
-		}else if(type == 2){
-			intent.setClass(context, OrderType2Activity.class);
-		}else if(type == 3){
-			intent.setClass(context, OrderType3Activity.class);
-		}else if(type == 4){
-			intent.setClass(context, OrderType4Activity.class);
-		}else if(type == 5){
-			intent.setClass(context, OrderType5Activity.class);
-		}else if(type == 6){
-			intent.setClass(context, OrderType6Activity.class);
-		}
+		intent.setClass(context, OrderDetailActivity.class);
 		intent.putExtra(KeyUtil.BundleKey, mBundle);
 		context.startActivity(intent);
 	}

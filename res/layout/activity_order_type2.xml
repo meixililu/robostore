@@ -40,10 +40,6 @@
             android:textSize="@dimen/bigger" />
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/app_background" >
 
         <LinearLayout 
             android:id="@+id/content_layout"
@@ -76,7 +72,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 	            android:padding="@dimen/padding_15"
-                android:text="SE2015070932365582"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/bigger" />
 
@@ -140,7 +135,6 @@
    			    android:layout_marginRight="@dimen/padding_15"
    			    android:layout_marginBottom="@dimen/padding_20"
                 android:gravity="right"
-                android:text="下单时间：2015-07-09 09:23:34"
                 android:textColor="@color/text_grey"
                 android:textSize="@dimen/small" />
         </LinearLayout>
@@ -159,7 +153,6 @@
                 android:gravity="left|center_vertical"
 	            android:background="@color/app_color"
 	            android:paddingLeft="@dimen/padding_15"
-                android:text="共计：￥24.0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/bigger" />
             <Button
@@ -174,25 +167,5 @@
         </LinearLayout>
         </LinearLayout>
         
-        <TextView 
-            android:id="@+id/empty_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:gravity="center"
-            android:textColor="@color/text_grey"
-            android:textSize="@dimen/bigger"
-            android:text="@string/sorry_load_faile"
-            android:visibility="gone"
-            />
-	    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-            android:id="@+id/progressBarCircularIndetermininate"
-            android:layout_width="@dimen/progressbar_width"
-            android:layout_height="@dimen/progressbar_heigh"
-            android:layout_gravity="center"
-            android:background="@color/app_color"
-            android:visibility="gone" />
-        
-    </FrameLayout>
 
 </LinearLayout>

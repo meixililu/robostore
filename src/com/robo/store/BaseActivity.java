@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
@@ -18,7 +19,7 @@ import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 
-public class BaseActivity extends ActionBarActivity implements View.OnClickListener{
+public class BaseActivity extends FragmentActivity implements View.OnClickListener{
 
 //	public LinearLayout toolbar;
 	public FrameLayout back_cover;

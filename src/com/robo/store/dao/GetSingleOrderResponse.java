@@ -9,6 +9,8 @@ public class GetSingleOrderResponse extends CommonResponse {
 	private double totalPrice;
 	private String payTime;
 	private String orderTime;
+	private List<MallOrderDetailVO> detailList;
+	
 	public int getPayType() {
 		return payType;
 	}
@@ -33,7 +35,6 @@ public class GetSingleOrderResponse extends CommonResponse {
 	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
 	}
-	private List<MallOrderDetailVO> detailList;
 	
 	public String getMallOrderCode() {
 		return mallOrderCode;

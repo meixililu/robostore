@@ -77,22 +77,7 @@
             android:name=".CheckAllOrdersActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".OrderType1Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".OrderType2Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".OrderType3Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".OrderType4Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".OrderType5Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".OrderType6Activity"
+            android:name=".OrderDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SearchActivity"

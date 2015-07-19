@@ -93,7 +93,7 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 					Bundle mBundle = new Bundle();
 					mBundle.putString(KeyUtil.OrderIdKey, mResponse.getOrderId());
 					Intent intent = new Intent();
-					intent.setClass(ConfirmOrderActivity.this, OrderType3Activity.class);
+					intent.setClass(ConfirmOrderActivity.this, OrderType3Fragment.class);
 					intent.putExtra(KeyUtil.BundleKey, mBundle);
 					ConfirmOrderActivity.this.startActivity(intent);
 				}
