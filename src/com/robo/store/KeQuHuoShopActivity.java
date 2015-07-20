@@ -40,12 +40,10 @@ import com.robo.store.util.Settings;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.view.PinnedSectionListView;
 
-public class ShopFragment extends BaseFragment implements OnClickListener{
+public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener{
 	
 	private LayoutInflater inflater;
-	private ProgressBarCircularIndeterminate mProgressbar;
-	public SwipeRefreshLayout mSwipeRefreshLayout;
-	private FrameLayout search_cover;
+	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private PinnedSectionListView pinnedlist;
 	private View footerView;
 	private LinearLayout load_more_data;
@@ -58,10 +56,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	public int pageIndex = 0;
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
-	private boolean isNearByListAdd;
-	private int isBeforeUseListAdd;
-	private int isNearbyListAdd;
-	private int loadCount;
 	
 	private List<ShopBase> AllDataList;
 	private ShopPinnedListAdapter mShopListAdapter;
@@ -69,28 +63,28 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mLocationClient = new LocationClient(getActivity());
-		mLocationClient.registerLocationListener( myListener );
-		InitLocation();
-		mLocationClient.start();
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		LogUtil.DefalutLog(ShopFragment.class.getName()+"---onCreateView");
-		this.inflater = inflater;
-		setLayoutId(R.layout.fragment_shop);
-        return super.onCreateView(inflater, container, savedInstanceState);
+		setContentView(R.layout.activity_quhuo_shop);
+		initView();
+		initLocation();
 	}
 	
+	private void initLocation(){
+		if(ShopFragment.latitude <= 0){
+			mLocationClient = new LocationClient(this);
+			mLocationClient.registerLocationListener( myListener );
+			InitLocation();
+			mLocationClient.start();
+		}
+	}
+
 	protected void initView(){
+		this.inflater = LayoutInflater.from(this);
 		AllDataList = new ArrayList<ShopBase>();
-		mShopListAdapter = new ShopPinnedListAdapter(getActivity(), inflater, AllDataList);
-		search_cover = (FrameLayout) getView().findViewById(R.id.search_cover);
-		pinnedlist = (PinnedSectionListView) getView().findViewById(R.id.pinnedlist);
-		mProgressbar = (ProgressBarCircularIndeterminate) getView().findViewById(R.id.progressbar_m);
-		empty_layout = (TextView) getView().findViewById(R.id.empty_layout);
-		mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.mswiperefreshlayout);
+		mShopListAdapter = new ShopPinnedListAdapter(this, inflater, AllDataList);
+		pinnedlist = (PinnedSectionListView) findViewById(R.id.pinnedlist);
+		mProgressbar = (ProgressBarCircularIndeterminate) findViewById(R.id.progressbar_m);
+		empty_layout = (TextView) findViewById(R.id.empty_layout);
+		mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mswiperefreshlayout);
 		mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
 	            R.color.holo_green_light, 
 	            R.color.holo_orange_light, 
@@ -110,8 +104,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		
 		pinnedlist.setAdapter(mShopListAdapter);
-		empty_layout.setOnClickListener(this);
-		search_cover.setOnClickListener(this);
 	}
 	
 	public void setListOnScrollListener(){
@@ -143,10 +135,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	}
 
 	protected void loadData(){
-		if(LoginUtil.isLogin){
-			QueryShopByNearby();
-			QueryShopByBeforeUse();
-		}
 		QueryShopByArea();
 	}
 	
@@ -156,10 +144,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	public void clearList(){
-		loadCount = 0;
 		pageIndex = 0;
-		isBeforeUseListAdd = 0;
-		isNearbyListAdd = 0;
 		AllDataList.clear();
 		footerView.setVisibility(View.GONE);
 		mShopListAdapter.notifyDataSetChanged();
@@ -169,10 +154,8 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	
 	private void isEmpty(){
 		if(pageIndex == 0){
-			if(loadCount == 3){
-				if(AllDataList.size() == 0){
-					empty_layout.setVisibility(View.VISIBLE);
-				}
+			if(AllDataList.size() == 0){
+				empty_layout.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -185,22 +168,23 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			}
 			empty_layout.setVisibility(View.GONE);
 			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("cityId", HomeFragment.cityId);
+			params.put("goodsBarcode", "goodsBarcode");
 			params.put("longitude", longitude);
 			params.put("latitude", latitude);
-			params.put("cityId", HomeFragment.cityId);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByArea", params, new TextHttpResponseHandler(){
+			RoboHttpClient.get(HttpParameter.shopsUrl,"getShopListByGoods", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-					ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+					ToastUtil.diaplayMesLong(KeQuHuoShopActivity.this, KeQuHuoShopActivity.this.getResources().getString(R.string.connet_fail));
 				}
 				
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, String result) {
 					GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-					if(ResultParse.handleResutl(getActivity(), mResponse)){
+					if(ResultParse.handleResutl(KeQuHuoShopActivity.this, mResponse)){
 						List<ShopBase> mList = mResponse.getList();
 						if(mList.size() > 0){
 							if(pageIndex == 0){
@@ -226,7 +210,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				
 				@Override
 				public void onFinish() {
-					loadCount++;
 					isFinishloadData = true;
 					mSwipeRefreshLayout.setRefreshing(false);
 					mProgressbar.setVisibility(View.GONE);
@@ -234,70 +217,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				}
 			});
 		}
-	}
-	
-	private void QueryShopByBeforeUse(){
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("longitude", longitude);
-		params.put("latitude", latitude);
-		RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByBeforeUse", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mResponse)){
-					List<ShopBase> mList = mResponse.getList();
-					isBeforeUseListAdd = mList.size();
-					if(isBeforeUseListAdd > 0){
-						mList.add(0, getSectionBean("最近使用的店铺"));
-						AllDataList.addAll(0,mList);
-						mShopListAdapter.notifyDataSetChanged();
-					}
-				}
-			}
-			@Override
-			public void onFinish() {
-				loadCount++;
-				isEmpty();
-			}
-		});
-	}
-	
-	private void QueryShopByNearby(){
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("longitude", longitude);
-		params.put("latitude", latitude);
-		params.put("cityId", HomeFragment.cityId);
-		RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByNearby", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
-			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mResponse)){
-					List<ShopBase> mList = mResponse.getList();
-					isNearbyListAdd = mList.size(); 
-					if(isNearbyListAdd > 0){
-						mList.add(0, getSectionBean("附近的店铺"));
-						AllDataList.addAll(isBeforeUseListAdd, mList);
-						mShopListAdapter.notifyDataSetChanged();
-					}
-				}
-			}
-			@Override
-			public void onFinish() {
-				loadCount++;
-				isEmpty();
-			}
-		});
 	}
 	
 	public class MyLocationListener implements BDLocationListener {
@@ -310,6 +229,10 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		}
 	}
 	
+	public void onClickEmptyLayoutRefresh(){
+		onSwipeRefreshLayoutRefresh();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
@@ -317,9 +240,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			Bundle mBundle = new Bundle();
 			mBundle.putString(KeyUtil.SearchTypeKey, SearchActivity.SearchShops);	
 			toActivity(SearchActivity.class, mBundle);
-			break;
-		case R.id.empty_layout:
-			onSwipeRefreshLayoutRefresh();
 			break;
 		}
 	}
@@ -332,11 +252,10 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	}
 
 	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
+	protected void onStop() {
+		super.onStop();
 		if(mLocationClient != null){
 			mLocationClient.stop();
 		}
-		LogUtil.DefalutLog("ShopFragment---onDestroyView");
 	}
 }

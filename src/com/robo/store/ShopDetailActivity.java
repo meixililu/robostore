@@ -159,7 +159,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 				mProgressbar.setVisibility(View.VISIBLE);
 			}
 			HashMap<String, Object> params = new HashMap<String, Object>();
-			params.put("shopId", "test-DP-0001");
+			params.put("shopId", shopId);
 			params.put("type", goodType);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);

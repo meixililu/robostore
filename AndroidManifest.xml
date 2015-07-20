@@ -62,6 +62,9 @@
         </service>
         
         <activity
+            android:name=".KeQuHuoShopActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ShopDetailActivity"
             android:screenOrientation="portrait" />
         <activity
