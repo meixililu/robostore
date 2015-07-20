@@ -117,7 +117,6 @@ public class OrderType2Fragment extends Fragment implements View.OnClickListener
 		TextView goods_number = (TextView) goodsView.findViewById(R.id.goods_number);
 		LinearLayout goods_refund_status_layout = (LinearLayout) goodsView.findViewById(R.id.goods_refund_status_layout);
 		ImageView get_goods_shop = (ImageView) goodsView.findViewById(R.id.get_goods_shop);
-		TextView already_get_goods_tv = (TextView) goodsView.findViewById(R.id.already_get_goods_tv);
 		TextView goods_refund_status_tv = (TextView) goodsView.findViewById(R.id.goods_refund_status_tv);
 		
 //		Picasso.with(context)

@@ -202,9 +202,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 					GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
 					if(ResultParse.handleResutl(getActivity(), mResponse)){
 						List<ShopBase> mList = mResponse.getList();
-						for(int i=0;i<10;i++){
-							mList.add(new ShopBase("水果超市旗舰店","100m"));
-						}
 						if(mList.size() > 0){
 							if(pageIndex == 0){
 								mList.add(0, getSectionBean("市内店铺"));
@@ -249,9 +246,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mResponse)){
 					List<ShopBase> mList = mResponse.getList();
-					for(int i=0;i<10;i++){
-						mList.add(new ShopBase("干果店最近","100m"));
-					}
 					isBeforeUseListAdd = mList.size();
 					if(isBeforeUseListAdd > 0){
 						mList.add(0, getSectionBean("最近使用的店铺"));
@@ -285,9 +279,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mResponse)){
 					List<ShopBase> mList = mResponse.getList();
-					for(int i=0;i<10;i++){
-						mList.add(new ShopBase("冰淇淋附近","100m"));
-					}
 					isNearbyListAdd = mList.size(); 
 					if(isNearbyListAdd > 0){
 						mList.add(0, getSectionBean("附近的店铺"));

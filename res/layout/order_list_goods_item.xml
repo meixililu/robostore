@@ -81,13 +81,6 @@
 	                android:layout_height="wrap_content"
 	                android:src="@drawable/icon_tab_home_s"
 	                />
-	            <TextView
-	                android:id="@+id/already_get_goods_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="已取"
-                    android:textColor="@color/app_color"
-                    android:textSize="@dimen/small" />
             </LinearLayout>
             <TextView
                 android:id="@+id/goods_refund_status_tv"

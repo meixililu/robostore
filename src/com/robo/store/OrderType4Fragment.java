@@ -122,7 +122,6 @@ public class OrderType4Fragment extends Fragment implements View.OnClickListener
 		TextView good_name = (TextView) goodsView.findViewById(R.id.good_name);
 		TextView good_price_new = (TextView) goodsView.findViewById(R.id.good_price_new);
 		TextView goods_number = (TextView) goodsView.findViewById(R.id.goods_number);
-		TextView already_get_goods_tv = (TextView) goodsView.findViewById(R.id.already_get_goods_tv);
 		ImageView get_goods_shop = (ImageView) goodsView.findViewById(R.id.get_goods_shop);
 		LinearLayout goods_refund_status_layout = (LinearLayout) goodsView.findViewById(R.id.goods_refund_status_layout);
 		TextView goods_refund_status_tv = (TextView) goodsView.findViewById(R.id.goods_refund_status_tv);
@@ -132,10 +131,7 @@ public class OrderType4Fragment extends Fragment implements View.OnClickListener
 //		.tag(context)
 //		.into(good_icon);
 		
-		if(mOrderGoods.isPickUp()){
-			goods_refund_status_layout.setVisibility(View.VISIBLE);
-			already_get_goods_tv.setVisibility(View.VISIBLE);
-		}else{
+		if(!mOrderGoods.isPickUp()){
 			goods_refund_status_tv.setVisibility(View.VISIBLE);
 		}
 		

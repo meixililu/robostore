@@ -43,7 +43,7 @@ import com.robo.store.util.ViewUtil;
 
 public class OrderType3Fragment extends Fragment implements View.OnClickListener{
 
-	private FrameLayout back_cover;
+	private FrameLayout back_cover,quhuo_shop_cover;
 	private TextView order_id_tv;
 	private LinearLayout goods_list;
 	private TextView order_pay_time_tv;
@@ -90,6 +90,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 	
 	private void init(){
 		back_cover = (FrameLayout) rootView.findViewById(R.id.back_cover);
+		quhuo_shop_cover = (FrameLayout) rootView.findViewById(R.id.quhuo_shop_cover);
 		order_id_tv = (TextView) rootView.findViewById(R.id.order_id_tv);
 		goods_list = (LinearLayout) rootView.findViewById(R.id.goods_list);
 		order_pay_time_tv = (TextView) rootView.findViewById(R.id.order_pay_time_tv);
@@ -102,6 +103,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		confirm_to_refund = (Button) rootView.findViewById(R.id.confirm_to_refund);
 		
 		back_cover.setOnClickListener(this);
+		quhuo_shop_cover.setOnClickListener(this);
 		confirm_to_refund.setOnClickListener(this);
 		
 		setData(mSingleOrder);
@@ -138,7 +140,6 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		TextView good_name = (TextView) goodsView.findViewById(R.id.good_name);
 		TextView good_price_new = (TextView) goodsView.findViewById(R.id.good_price_new);
 		TextView goods_number = (TextView) goodsView.findViewById(R.id.goods_number);
-		TextView already_get_goods_tv = (TextView) goodsView.findViewById(R.id.already_get_goods_tv);
 		ImageView get_goods_shop = (ImageView) goodsView.findViewById(R.id.get_goods_shop);
 		LinearLayout goods_refund_status_layout = (LinearLayout) goodsView.findViewById(R.id.goods_refund_status_layout);
 		TextView goods_refund_status_tv = (TextView) goodsView.findViewById(R.id.goods_refund_status_tv);
@@ -148,11 +149,10 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 //		.tag(context)
 //		.into(good_icon);
 		
-		goods_refund_status_layout.setVisibility(View.VISIBLE);
 		if(mOrderGoods.isPickUp()){
-			already_get_goods_tv.setVisibility(View.VISIBLE);
+			goods_refund_status_layout.setVisibility(View.GONE);
 		}else{
-			already_get_goods_tv.setVisibility(View.GONE);
+			goods_refund_status_layout.setVisibility(View.VISIBLE);
 		}
 		
 		good_name.setText(mOrderGoods.getGoodsName());
@@ -184,6 +184,9 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		switch(v.getId()){
 		case R.id.confirm_to_refund:
 			refundOrder();
+			break;
+		case R.id.quhuo_shop_cover:
+			RequestQuhuoShopData();
 			break;
 		case R.id.back_cover:
 			getActivity().onBackPressed();
@@ -234,6 +237,46 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 				progressDialog.dismiss();
 			}
 		});
+	}
+	
+	private void RequestQuhuoShopData(){
+		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "正在加载...", true, false);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("orderCode", mSingleOrder.getMallOrderCode());
+		RoboHttpClient.get(HttpParameter.orderUrl, "getPickupGoods", params, new TextHttpResponseHandler(){
+
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(getActivity(), "连接失败，请重试！");
+			}
+
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				LogUtil.DefalutLog(result);
+				mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
+				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
+					showQuhuoShop();
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private void showQuhuoShop(){
+		Dialog dialog = new Dialog(getActivity(), "取货记录", "取货记录");
+		dialog.addAcceptButton("确定");
+//		dialog.setOnAcceptButtonClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				RequestCancleData();
+//			}
+//		});
+		dialog.setCancelable(true);
+		dialog.show();
 	}
 	
 	
