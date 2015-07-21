@@ -12,13 +12,10 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.FrameLayout;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -26,15 +23,16 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.robo.store.adapter.ShopPinnedListAdapter;
-import com.robo.store.dao.GetShopListResponse;
+import com.robo.store.adapter.QuhuoShopPinnedListAdapter;
+import com.robo.store.dao.GetShopListByGoodsList;
+import com.robo.store.dao.GetShopListByGoodsResponse;
+import com.robo.store.dao.GetShopListByGoodsVO;
 import com.robo.store.dao.ShopBase;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
-import com.robo.store.util.LoginUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.Settings;
 import com.robo.store.util.ToastUtil;
@@ -57,8 +55,8 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
 	
-	private List<ShopBase> AllDataList;
-	private ShopPinnedListAdapter mShopListAdapter;
+	private List<GetShopListByGoodsVO> AllDataList;
+	private QuhuoShopPinnedListAdapter mShopListAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,8 +77,8 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 
 	protected void initView(){
 		this.inflater = LayoutInflater.from(this);
-		AllDataList = new ArrayList<ShopBase>();
-		mShopListAdapter = new ShopPinnedListAdapter(this, inflater, AllDataList);
+		AllDataList = new ArrayList<GetShopListByGoodsVO>();
+		mShopListAdapter = new QuhuoShopPinnedListAdapter(this, inflater, AllDataList);
 		pinnedlist = (PinnedSectionListView) findViewById(R.id.pinnedlist);
 		mProgressbar = (ProgressBarCircularIndeterminate) findViewById(R.id.progressbar_m);
 		empty_layout = (TextView) findViewById(R.id.empty_layout);
@@ -183,14 +181,14 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 				
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, String result) {
-					GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
+					GetShopListByGoodsResponse mResponse = (GetShopListByGoodsResponse) ResultParse.parseResult(result,GetShopListByGoodsResponse.class);
 					if(ResultParse.handleResutl(KeQuHuoShopActivity.this, mResponse)){
-						List<ShopBase> mList = mResponse.getList();
+						List<GetShopListByGoodsList> mList = mResponse.getList();
 						if(mList.size() > 0){
 							if(pageIndex == 0){
-								mList.add(0, getSectionBean(HomeFragment.city+"内店铺"));
+//								mList.add(0, getSectionBean(HomeFragment.city+"内店铺"));
 							}
-							AllDataList.addAll(mList);
+//							AllDataList.addAll(mList);
 							if(mList.size() < Settings.pageCount && pageIndex == 0){
 								isLoadMoreData = false;
 								pinnedlist.removeFooterView(footerView);

@@ -157,16 +157,16 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 			CartUtil.delete();
 			mAdapter.notifyDataSetChanged();
 		}else{
-			if(LoginUtil.isLogin){
-				if(CartFragment.totalSum > 0){
+			if(CartFragment.totalSum > 0){
+				if(LoginUtil.isLogin){
 					toActivity(ConfirmOrderActivity.class, null);
 				}else{
-					ToastUtil.diaplayMesShort(getActivity(), "请至少选择一个商品");
+					Bundle mBundle = new Bundle();
+					mBundle.putSerializable(KeyUtil.ToClass, ConfirmOrderActivity.class);	
+					toActivity(LoginActivity.class, mBundle);
 				}
 			}else{
-				Bundle mBundle = new Bundle();
-				mBundle.putSerializable(KeyUtil.ToClass, ConfirmOrderActivity.class);	
-				toActivity(LoginActivity.class, mBundle);
+				ToastUtil.diaplayMesShort(getActivity(), "请至少选择一个商品");
 			}
 		}
 	}

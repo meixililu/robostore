@@ -20,6 +20,7 @@ import com.robo.store.dao.GoodsBase;
 import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 
 public class HomeListViewAdapter extends BaseAdapter {
 
@@ -65,6 +66,16 @@ public class HomeListViewAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		final GoodsBase mGoodsBase = goodsList.get(position);
+		
+		try {
+			Picasso.with(context)
+			.load(mGoodsBase.getGoodsPic())
+			.tag(context)
+			.into(holder.good_icon);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		holder.good_name.setText(mGoodsBase.getGoodsName());
 		holder.good_price_new.setText("￥" + mGoodsBase.getVipPrice());
 		holder.good_price_old.setText("￥" + mGoodsBase.getRetailPrice());

@@ -36,7 +36,9 @@ public class RoboHttpClient {
 			if(param != null){
 				params = getHeaderParameter(param);
 			}
-			client.addHeader("request-type", type);
+			if(!TextUtils.isEmpty(type)){
+				client.addHeader("request-type", type);
+			}
 			client.addHeader("softVer", HttpParameter.softVer);
 			client.addHeader("channelId", HttpParameter.channelId);
 			client.addHeader("platform", HttpParameter.platform);
@@ -56,7 +58,9 @@ public class RoboHttpClient {
 			if(param != null){
 				params = getHeaderParameter(param);
 			}
-			client.addHeader("request-type", type);
+			if(!TextUtils.isEmpty(type)){
+				client.addHeader("request-type", type);
+			}
 			client.addHeader("softVer", HttpParameter.softVer);
 			client.addHeader("channelId", HttpParameter.channelId);
 			client.addHeader("platform", HttpParameter.platform);
@@ -64,6 +68,21 @@ public class RoboHttpClient {
 			client.addHeader("machId", HttpParameter.machId);
 			client.addHeader("accessToken", HttpParameter.accessToken);
 			LogUtil.DefalutLog("RoboHttpClient---Map:"+params.toString());
+			client.post(url, params, responseHandler);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public static void postForPay(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+		try {
+			client.addHeader("softVer", HttpParameter.softVer);
+			client.addHeader("channelId", HttpParameter.channelId);
+			client.addHeader("platform", HttpParameter.platform);
+			client.addHeader("systemVer", HttpParameter.systemVer);
+			client.addHeader("machId", HttpParameter.machId);
+			client.addHeader("accessToken", HttpParameter.accessToken);
+			LogUtil.DefalutLog("RoboHttpClient---params:"+params.toString());
 			client.post(url, params, responseHandler);
 		} catch (Exception e) {
 			e.printStackTrace();

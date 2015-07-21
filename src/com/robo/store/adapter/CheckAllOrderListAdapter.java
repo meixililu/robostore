@@ -31,6 +31,7 @@ import com.robo.store.dao.OrderGoods;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
+import com.squareup.picasso.Picasso;
 
 public class CheckAllOrderListAdapter extends BaseAdapter {
 
@@ -241,10 +242,14 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 		TextView goods_number = (TextView) goodsView.findViewById(R.id.goods_number);
 		ImageView get_goods_shop = (ImageView) goodsView.findViewById(R.id.get_goods_shop);
 		
-//		Picasso.with(context)
-//		.load(mOrderGoods.getGoodsPic())
-//		.tag(context)
-//		.into(good_icon);
+		try {
+			Picasso.with(context)
+			.load(mOrderGoods.getGoodsPic())
+			.tag(context)
+			.into(good_icon);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		good_name.setText(mOrderGoods.getGoodsName());
 		good_price_new.setText(mOrderGoods.getGoodsPrise());
 		goods_number.setText("x"+mOrderGoods.getGoodsCount());

@@ -6,7 +6,15 @@ public class GetShopListByGoodsVO {
 	private String shopName;
 	private String shopId;
 	private String distance;
+	private int type;
 	private List<MachineVO> list;
+	
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
 	public List<MachineVO> getList() {
 		return list;
 	}

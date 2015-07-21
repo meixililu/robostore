@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.apache.http.Header;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,8 +21,11 @@ import android.widget.TextView;
 import com.robo.store.adapter.ConfirmToPayListViewAdapter;
 import com.robo.store.dao.AddOrderDetailVO;
 import com.robo.store.dao.AddOrderResponse;
+import com.robo.store.dao.GetPayParamsRespone;
 import com.robo.store.dao.GoodsBase;
+import com.robo.store.dao.PayParams;
 import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.CartUtil;
@@ -28,6 +33,10 @@ import com.robo.store.util.KeyUtil;
 import com.robo.store.util.NumberUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
+import com.robo.store.util.WechatPayUtil;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class ConfirmOrderActivity extends BaseActivity implements OnClickListener{
 
@@ -39,6 +48,7 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	private List<GoodsBase> confirmList;
 	private LayoutInflater inflater;
 	private ConfirmToPayListViewAdapter mAdapter;
+	private String orderId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,11 +84,51 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void submitOrders(){
+		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "正在提交订单...", true, false);
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("cityId", HomeFragment.cityId);
 		params.put("totalPrice", CartFragment.totalSum);
 		params.put("list", getGoodsList());
 		RoboHttpClient.get(HttpParameter.orderUrl,"addOrder", params, new TextHttpResponseHandler(){
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, ConfirmOrderActivity.this.getResources().getString(R.string.connet_fail));
+			}
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				AddOrderResponse mResponse = (AddOrderResponse) ResultParse.parseResult(result,AddOrderResponse.class);
+				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
+//					ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交成功");
+					orderId = mResponse.getOrderId();
+					if(!TextUtils.isEmpty(orderId)){
+						getWeChatPara();
+					}else{
+						ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交失败，请重试");
+					}
+				}
+			}
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private void paySuccee(){
+		CartFragment.cartList.removeAll(confirmList);
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, orderId);
+		Intent intent = new Intent();
+		intent.setClass(ConfirmOrderActivity.this, OrderType3Fragment.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		ConfirmOrderActivity.this.startActivity(intent);
+	}
+	
+	private void getWeChatPara(){
+		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", orderId);
+		RoboHttpClient.postForPay(HttpParameter.payUrl, params, new TextHttpResponseHandler(){
 			
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -87,22 +137,31 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
-				AddOrderResponse mResponse = (AddOrderResponse) ResultParse.parseResult(result,AddOrderResponse.class);
+				GetPayParamsRespone mResponse = (GetPayParamsRespone) ResultParse.parseResult(result,GetPayParamsRespone.class);
 				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
-					ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交成功");
-					Bundle mBundle = new Bundle();
-					mBundle.putString(KeyUtil.OrderIdKey, mResponse.getOrderId());
-					Intent intent = new Intent();
-					intent.setClass(ConfirmOrderActivity.this, OrderType3Fragment.class);
-					intent.putExtra(KeyUtil.BundleKey, mBundle);
-					ConfirmOrderActivity.this.startActivity(intent);
+					startWechat(mResponse.getPayParams());
 				}
 			}
 			
 			@Override
 			public void onFinish() {
+				progressDialog.dismiss();
 			}
 		});
+	}
+	
+	private void startWechat(PayParams mPayParams){
+		final IWXAPI msgApi = WXAPIFactory.createWXAPI(this, null);
+		msgApi.registerApp(mPayParams.getAppid());
+		PayReq request = new PayReq();
+		request.appId = mPayParams.getAppid();
+		request.partnerId = mPayParams.getPartnerid();
+		request.prepayId= mPayParams.getPrepayid();
+		request.packageValue = "Sign=WXPay";
+		request.nonceStr= WechatPayUtil.genNonceStr();
+		request.timeStamp = String.valueOf(WechatPayUtil.genTimeStamp());
+		request.sign= WechatPayUtil.getSignData(request);
+		msgApi.sendReq(request);
 	}
 	
 	private List<AddOrderDetailVO> getGoodsList(){
@@ -115,11 +174,6 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			mGoodsList.add(mAddOrderDetailVO);
 		}
 		return mGoodsList;
-	}
-	
-	
-	private void paySuccee(){
-		CartFragment.cartList.removeAll(confirmList);
 	}
 	
 	@Override

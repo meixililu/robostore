@@ -19,6 +19,7 @@ public class CartUtil {
 		mGoodsBase.setRetailPrice(mSingleGoods.getRetailPrice());
 		mGoodsBase.setVipPrice(mSingleGoods.getVipPrice());
 		mGoodsBase.setNumber(num);
+//		mGoodsBase.setGoodsPic(mSingleGoods.get);
 		if(!compareGoodsList(mGoodsBase)){
 			CartFragment.cartList.add(mGoodsBase);
 		}
@@ -31,6 +32,7 @@ public class CartUtil {
 		mGoodsBase.setRetailPrice(mGoods.getRetailPrice());
 		mGoodsBase.setVipPrice(mGoods.getVipPrice());
 		mGoodsBase.setNumber(num);
+		mGoodsBase.setGoodsPic(mGoods.getGoodsPic());
 		if(!compareGoodsList(mGoodsBase)){
 			CartFragment.cartList.add(mGoodsBase);
 		}

@@ -71,6 +71,9 @@
             android:name=".ShopLocationActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
