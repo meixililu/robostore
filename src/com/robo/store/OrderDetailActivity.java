@@ -27,6 +27,7 @@ public class OrderDetailActivity extends BaseActivity implements onFragmentCallR
 	private String mallOrderId;
 	private int orderStatus;
 	private GetSingleOrderResponse mSingleOrder;
+	public static boolean isNeedRefresh;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,15 @@ public class OrderDetailActivity extends BaseActivity implements onFragmentCallR
 			orderStatus = mBundle.getInt(KeyUtil.OrderTypeKey);
 		}
 		parent_layout = (LinearLayout) findViewById(R.id.parent_layout);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(isNeedRefresh){
+			isNeedRefresh = false;
+			refresh();
+		}
 	}
 	
 	private void RequestData(){
@@ -106,5 +116,11 @@ public class OrderDetailActivity extends BaseActivity implements onFragmentCallR
 	
 	public void onClickEmptyLayoutRefresh(){
 		RequestData();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		isNeedRefresh = false;
 	}
 }

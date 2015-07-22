@@ -33,6 +33,7 @@ import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
+import com.squareup.picasso.Picasso;
 
 public class OrderType5Fragment extends Fragment implements View.OnClickListener{
 
@@ -132,10 +133,14 @@ public class OrderType5Fragment extends Fragment implements View.OnClickListener
 		LinearLayout goods_refund_status_layout = (LinearLayout) goodsView.findViewById(R.id.goods_refund_status_layout);
 		TextView goods_refund_status_tv = (TextView) goodsView.findViewById(R.id.goods_refund_status_tv);
 		
-//		Picasso.with(context)
-//		.load(mOrderGoods.getGoodsPic())
-//		.tag(context)
-//		.into(good_icon);
+		try {
+			Picasso.with(getActivity())
+			.load(mOrderGoods.getGoodsPic())
+			.tag(getActivity())
+			.into(good_icon);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		good_name.setText(mOrderGoods.getGoodsName());
 		good_price_new.setText(mOrderGoods.getGoodsPrice());
@@ -205,6 +210,7 @@ public class OrderType5Fragment extends Fragment implements View.OnClickListener
 				mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
 					ToastUtil.diaplayMesLong(getActivity(), "订单已删除");
+					CheckAllOrdersActivity.isNeedRefresh = true;
 					getActivity().finish();
 				}
 			}

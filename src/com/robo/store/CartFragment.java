@@ -88,8 +88,16 @@ public class CartFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		LogUtil.DefalutLog("CartFragment---onResume");
+		setUserVisibleHint(true);
+	}
+	
+	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
+		LogUtil.DefalutLog("CartFragment---setUserVisibleHint:"+isVisibleToUser);
 		if(isVisibleToUser){
 			checkIsCartEmpty();
 			if(mAdapter != null){

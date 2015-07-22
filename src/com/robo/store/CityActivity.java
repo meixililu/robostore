@@ -154,6 +154,10 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 		}
 	}
 	
+	public void onClickEmptyLayoutRefresh(){
+		RequestData();
+	}
+	
 	private void RequestData(){
 		showProgressbar();
 		RoboHttpClient.get(HttpParameter.shopsUrl,"getAllCities", null, new TextHttpResponseHandler(){

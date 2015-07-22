@@ -26,6 +26,7 @@ import com.robo.store.util.LoginUtil;
 import com.robo.store.util.SPUtil;
 import com.robo.store.util.TabsUtil;
 import com.robo.store.util.ToastUtil;
+import com.robo.store.wxapi.WXPayEntryActivity;
 
 public class MainActivity extends ActionBarActivity implements OnPageChangeListener {
 
@@ -138,7 +139,11 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		if(viewPager != null){
 			viewPager = null;
 		}
+		if(BaseApplication.msgApi != null){
+			BaseApplication.msgApi = null;
+		}
 		LoginUtil.isUpdate = false;
+		WXPayEntryActivity.isPaySuccee = false;
 	}
 	
 	

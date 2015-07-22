@@ -22,9 +22,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.widgets.Dialog;
+import com.robo.store.dao.GetPayParamsRespone;
 import com.robo.store.dao.GetSingleOrderResponse;
 import com.robo.store.dao.MallOrderDetailVO;
 import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.listener.onFragmentCallRefresh;
@@ -33,6 +35,8 @@ import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
+import com.robo.store.util.WechatPayUtil;
+import com.squareup.picasso.Picasso;
 
 public class OrderType1Fragment extends Fragment implements View.OnClickListener{
 
@@ -123,12 +127,16 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 		LinearLayout goods_refund_status_layout = (LinearLayout) goodsView.findViewById(R.id.goods_refund_status_layout);
 		TextView goods_refund_status_tv = (TextView) goodsView.findViewById(R.id.goods_refund_status_tv);
 		
-//		Picasso.with(context)
-//		.load(mOrderGoods.getGoodsPic())
-//		.tag(context)
-//		.into(good_icon);
-		goods_refund_status_layout.setVisibility(View.VISIBLE);
+		try {
+			Picasso.with(getActivity())
+			.load(mOrderGoods.getGoodsPic())
+			.tag(getActivity())
+			.into(good_icon);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		goods_refund_status_layout.setVisibility(View.VISIBLE);
 		good_name.setText(mOrderGoods.getGoodsName());
 		good_price_new.setText(mOrderGoods.getGoodsPrice());
 		goods_number.setText("x"+mOrderGoods.getGoodsCount());
@@ -157,7 +165,7 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.confirm_to_pay:
-			
+			getWeChatPara();
 			break;
 		case R.id.order_cancle_cover:
 			cancleOrder();
@@ -166,6 +174,33 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 			getActivity().onBackPressed();
 			break;
 		}
+	}
+	
+	private void getWeChatPara(){
+		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", mSingleOrder.getMallOrderCode());
+		RoboHttpClient.postForPay(HttpParameter.payUrl, params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetPayParamsRespone mResponse = (GetPayParamsRespone) ResultParse.parseResult(result,GetPayParamsRespone.class);
+				if(ResultParse.handleResutl(getActivity(), mResponse)){
+					OrderDetailActivity.isNeedRefresh = true;
+					WechatPayUtil.startWechat(mResponse.getPayParams());
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
 	}
 	
 	private void cancleOrder(){

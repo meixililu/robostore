@@ -1,7 +1,11 @@
 package com.robo.store.adapter;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.Header;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gc.materialdesign.widgets.Dialog;
+import com.robo.store.CheckAllOrdersActivity;
+import com.robo.store.ConfirmOrderActivity;
 import com.robo.store.OrderDetailActivity;
 import com.robo.store.OrderType1Fragment;
 import com.robo.store.OrderType2Fragment;
@@ -26,20 +33,29 @@ import com.robo.store.OrderType5Fragment;
 import com.robo.store.OrderType6Fragment;
 import com.robo.store.R;
 import com.robo.store.dao.GetOrdersListResponse;
+import com.robo.store.dao.GetPayParamsRespone;
+import com.robo.store.dao.GetSingleOrderResponse;
 import com.robo.store.dao.OrderDetailVO;
 import com.robo.store.dao.OrderGoods;
+import com.robo.store.http.HttpParameter;
+import com.robo.store.http.RequestParams;
+import com.robo.store.http.RoboHttpClient;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.KeyUtil;
+import com.robo.store.util.LogUtil;
+import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
+import com.robo.store.util.WechatPayUtil;
 import com.squareup.picasso.Picasso;
 
 public class CheckAllOrderListAdapter extends BaseAdapter {
 
-	private Context context;
+	private CheckAllOrdersActivity context;
 	private LayoutInflater mInflater;
 	private List<GetOrdersListResponse> goodsList;
 	
-	public CheckAllOrderListAdapter(Context mContext,LayoutInflater mInflater,List<GetOrdersListResponse> goodsList){
+	public CheckAllOrderListAdapter(CheckAllOrdersActivity mContext,LayoutInflater mInflater,List<GetOrdersListResponse> goodsList){
 		this.context = mContext;
 		this.mInflater = mInflater;
 		this.goodsList = goodsList;
@@ -161,6 +177,12 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				goodsView.setLayoutParams(mParams);
 				holder1.goods_list.addView(goodsView);
 			}
+			holder1.to_pay_btn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					getWeChatPara(mOrderGoods.getOrderId());
+				}
+			});
 			break;
 		case 2:
 			holder2.goods_list.removeAllViews();
@@ -187,6 +209,12 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				goodsView.setLayoutParams(mParams);
 				holder3.goods_list.addView(goodsView);
 			}
+			holder3.refund_btn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					refundOrder(mOrderGoods);
+				}
+			});
 			break;
 		case 4:
 			holder4.order_refund_sum.setText("退款金额：￥" + mOrderGoods.getOrderAmount());
@@ -271,6 +299,76 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 			get_goods_shop.setVisibility(View.GONE);
 		}
 		return goodsView;
+	}
+	
+	private void getWeChatPara(String orderId){
+		final ProgressDialog progressDialog = ProgressDialog.show(context, "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", orderId);
+		RoboHttpClient.postForPay(HttpParameter.payUrl, params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(context, context.getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetPayParamsRespone mResponse = (GetPayParamsRespone) ResultParse.parseResult(result,GetPayParamsRespone.class);
+				if(ResultParse.handleResutl(context, mResponse)){
+					CheckAllOrdersActivity.isNeedRefresh = true;
+					WechatPayUtil.startWechat(mResponse.getPayParams());
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private void refundOrder(final GetOrdersListResponse mOrderGoods){
+		Dialog dialog = new Dialog(context, "温馨提示", "确定要申请退款吗？");
+		dialog.addAcceptButton("确定");
+		dialog.addCancelButton("取消");
+		dialog.setOnAcceptButtonClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				RequestCancleData(mOrderGoods);
+			}
+		});
+		dialog.setCancelable(true);
+		dialog.show();
+	}
+	
+	private void RequestCancleData(GetOrdersListResponse mOrderGoods){
+		final ProgressDialog progressDialog = ProgressDialog.show(context, "", "正在提交...", true, false);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("orderId", mOrderGoods.getOrderId());
+		params.put("flag", "0");
+		RoboHttpClient.get(HttpParameter.orderUrl, "refund", params, new TextHttpResponseHandler(){
+
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(context, "连接失败，请重试！");
+			}
+
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				LogUtil.DefalutLog(result);
+				GetSingleOrderResponse mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
+				if(ResultParse.handleResutl(context, mSingleOrder)){
+					ToastUtil.diaplayMesLong(context, "申请退款成功");
+					context.onSwipeRefreshLayoutRefresh();
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
 	}
 	
 	private void toOrderDetailActivity(GetOrdersListResponse mOrdersList){

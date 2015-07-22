@@ -47,6 +47,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	public int pageIndex;
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
+	public static boolean isNeedRefresh;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,16 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
                 lastItemIndex = firstVisibleItem + visibleItemCount - 2;  
             }  
         });
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		LogUtil.DefalutLog("CheckAllOrdersActivity---onResume");
+		if(isNeedRefresh){
+			isNeedRefresh = true;
+			onSwipeRefreshLayoutRefresh();
+		}
 	}
 	
 	public void onSwipeRefreshLayoutRefresh(){
@@ -181,5 +192,9 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		super.onClick(v);
 	}
 	
-	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		isNeedRefresh = false;
+	}
 }

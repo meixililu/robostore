@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,7 @@ import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
+import com.robo.store.util.LogUtil;
 import com.robo.store.util.NumberUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
@@ -49,6 +51,7 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	private LayoutInflater inflater;
 	private ConfirmToPayListViewAdapter mAdapter;
 	private String orderId;
+	private boolean isStartedPay;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,13 +77,13 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void toPay(){
-		if(rb_weixin.isChecked()){
+//		if(rb_weixin.isChecked()){
 			submitOrders();
-		}else if(rb_zhifubao.isChecked()){
-			
-		}else{
-			ToastUtil.diaplayMesShort(this, "请选择支付方式");
-		}
+//		}else if(rb_zhifubao.isChecked()){
+//			
+//		}else{
+//			ToastUtil.diaplayMesShort(this, "请选择支付方式");
+//		}
 	}
 	
 	private void submitOrders(){
@@ -98,7 +101,6 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				AddOrderResponse mResponse = (AddOrderResponse) ResultParse.parseResult(result,AddOrderResponse.class);
 				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
-//					ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交成功");
 					orderId = mResponse.getOrderId();
 					if(!TextUtils.isEmpty(orderId)){
 						getWeChatPara();
@@ -112,16 +114,6 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 				progressDialog.dismiss();
 			}
 		});
-	}
-	
-	private void paySuccee(){
-		CartFragment.cartList.removeAll(confirmList);
-		Bundle mBundle = new Bundle();
-		mBundle.putString(KeyUtil.OrderIdKey, orderId);
-		Intent intent = new Intent();
-		intent.setClass(ConfirmOrderActivity.this, OrderType3Fragment.class);
-		intent.putExtra(KeyUtil.BundleKey, mBundle);
-		ConfirmOrderActivity.this.startActivity(intent);
 	}
 	
 	private void getWeChatPara(){
@@ -139,7 +131,8 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetPayParamsRespone mResponse = (GetPayParamsRespone) ResultParse.parseResult(result,GetPayParamsRespone.class);
 				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
-					startWechat(mResponse.getPayParams());
+					isStartedPay = true;
+					WechatPayUtil.startWechat(mResponse.getPayParams());
 				}
 			}
 			
@@ -148,20 +141,6 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 				progressDialog.dismiss();
 			}
 		});
-	}
-	
-	private void startWechat(PayParams mPayParams){
-		final IWXAPI msgApi = WXAPIFactory.createWXAPI(this, null);
-		msgApi.registerApp(mPayParams.getAppid());
-		PayReq request = new PayReq();
-		request.appId = mPayParams.getAppid();
-		request.partnerId = mPayParams.getPartnerid();
-		request.prepayId= mPayParams.getPrepayid();
-		request.packageValue = "Sign=WXPay";
-		request.nonceStr= WechatPayUtil.genNonceStr();
-		request.timeStamp = String.valueOf(WechatPayUtil.genTimeStamp());
-		request.sign= WechatPayUtil.getSignData(request);
-		msgApi.sendReq(request);
 	}
 	
 	private List<AddOrderDetailVO> getGoodsList(){
@@ -174,6 +153,33 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			mGoodsList.add(mAddOrderDetailVO);
 		}
 		return mGoodsList;
+	}
+	
+	private void payFinish(){
+		for(GoodsBase mGoodsBase : confirmList){
+			CartFragment.cartList.remove(mGoodsBase);
+		}
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, orderId);
+		Intent intent = new Intent();
+		intent.setClass(ConfirmOrderActivity.this, OrderDetailActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		ConfirmOrderActivity.this.startActivity(intent);
+		finish();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(isStartedPay){
+			payFinish();
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		LogUtil.DefalutLog("ConfirmOrderActivity---onActivityResult");
 	}
 	
 	@Override

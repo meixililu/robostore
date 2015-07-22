@@ -55,7 +55,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		setLayoutId(R.layout.fragment_user);
         return super.onCreateView(inflater, container, savedInstanceState);
 	}
-
+	
 	protected void initView(){
 		logout_cover = (FrameLayout) getView().findViewById(R.id.logout_cover);
 		login_layout = (RelativeLayout) getView().findViewById(R.id.login_layout);
@@ -94,6 +94,14 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 			logout_cover.setVisibility(View.GONE);
 			login_layout.setVisibility(View.VISIBLE);
 			user_info_layout.setVisibility(View.GONE);
+		}
+	}
+	
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if(logout_cover != null){
+			isLogin();
 		}
 	}
 	

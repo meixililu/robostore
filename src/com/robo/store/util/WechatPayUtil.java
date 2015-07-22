@@ -8,16 +8,29 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.robo.store.BaseApplication;
+import com.robo.store.dao.PayParams;
 import com.tencent.mm.sdk.modelpay.PayReq;
 
 public class WechatPayUtil {
 	
-	public static final String APP_KEY = "";
+	public static final String APP_ID = "wx8070bcfc047fb3b0";
+	
+	public static void startWechat(PayParams mPayParams){
+		PayReq request = new PayReq();
+		request.appId = mPayParams.getAppid();
+		request.partnerId = mPayParams.getPartnerid();
+		request.prepayId= mPayParams.getPrepayid();
+		request.packageValue = mPayParams.getPackages();
+		request.nonceStr= mPayParams.getNoncestr();
+		request.timeStamp = mPayParams.getTimestamp();
+		request.sign= mPayParams.getSign();
+		BaseApplication.msgApi.sendReq(request);
+	}
 	
 	public static String getSignData(PayReq request){
 		List<NameValuePair> signParams = new LinkedList<NameValuePair>();
 		signParams.add(new BasicNameValuePair("appid", request.appId));
-		signParams.add(new BasicNameValuePair("appkey", APP_KEY));
 		signParams.add(new BasicNameValuePair("noncestr", request.nonceStr));
 		signParams.add(new BasicNameValuePair("package", request.packageValue));
 		signParams.add(new BasicNameValuePair("partnerid", request.partnerId));
@@ -25,6 +38,7 @@ public class WechatPayUtil {
 		signParams.add(new BasicNameValuePair("timestamp", request.timeStamp));
 		String stringA = genSign(signParams);
 		String stringSignTemp = stringA + "&key=27ba29d586d6416b8b4266d3daeab797";
+		LogUtil.DefalutLog("wechat---stringSignTemp:" + stringSignTemp);
 		String sign = Md5.d5(stringSignTemp).toUpperCase();
 		LogUtil.DefalutLog("wechat---sign:" + sign);
 		return sign;
