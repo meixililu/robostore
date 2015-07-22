@@ -242,8 +242,8 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		}
 	}
 	
-	private ShopBase getSectionBean(String name){
-		ShopBase mShopBase = new ShopBase();
+	private GetShopListByGoodsVO getSectionBean(String name){
+		GetShopListByGoodsVO mShopBase = new GetShopListByGoodsVO();
 		mShopBase.setShopName(name);
 		mShopBase.setType(1);
 		return mShopBase;
