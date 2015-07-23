@@ -8,7 +8,28 @@ public class GetShopListByGoodsVO {
 	private String distance;
 	private int type;
 	private List<MachineVO> list;
+	private double longitude;
+	private double latitude;
+	private String shopMemo;
 	
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public String getShopMemo() {
+		return shopMemo;
+	}
+	public void setShopMemo(String shopMemo) {
+		this.shopMemo = shopMemo;
+	}
 	public int getType() {
 		return type;
 	}

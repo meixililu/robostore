@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/none"
 	            android:cacheColorHint="@color/none"
+	            android:listSelector="@null"
 	            android:divider="@color/text_tint2"
 	            android:dividerHeight="1px"
 	            android:fadingEdge="none"

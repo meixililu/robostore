@@ -75,10 +75,14 @@ public class HomeListViewAdapter extends BaseAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		holder.good_name.setText(mGoodsBase.getGoodsName());
 		holder.good_price_new.setText("￥" + mGoodsBase.getVipPrice());
 		holder.good_price_old.setText("￥" + mGoodsBase.getRetailPrice());
+		if(mGoodsBase.getVipPrice().equals(mGoodsBase.getRetailPrice())){
+			holder.good_price_old.setVisibility(View.GONE);
+		}else{
+			holder.good_price_old.setVisibility(View.VISIBLE);
+		}
 		
 		holder.item_cover.setOnClickListener(new OnClickListener() {
 			@Override

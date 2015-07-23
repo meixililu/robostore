@@ -159,7 +159,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         auto_view_pager.startAutoScroll();
         int currentItem = Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imageIdList.size();
         auto_view_pager.setCurrentItem(currentItem);
-		
         for(int i=0;i<imageIdList.size();i++){
         	viewpager_dot_layout.addView( ViewUtil.getDot(getActivity(),i) );
         }

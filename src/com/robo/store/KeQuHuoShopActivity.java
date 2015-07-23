@@ -41,19 +41,20 @@ import com.robo.store.view.PinnedSectionListView;
 public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener{
 	
 	private LayoutInflater inflater;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private PinnedSectionListView pinnedlist;
 	private View footerView;
 	private LinearLayout load_more_data;
 	private TextView no_more_data;
 	private TextView empty_layout;
 	
-	private LocationClient mLocationClient = null;
-	private BDLocationListener myListener = new MyLocationListener();
-	public static double longitude,latitude;
+	private LocationClient mLocationClient;
+	private BDLocationListener myListener;
 	public int pageIndex = 0;
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
+	
+	private String goodsBarcode;
+	
 	
 	private List<GetShopListByGoodsVO> AllDataList;
 	private QuhuoShopPinnedListAdapter mShopListAdapter;
@@ -64,11 +65,13 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		setContentView(R.layout.activity_quhuo_shop);
 		initView();
 		initLocation();
+		QueryShopByArea();
 	}
 	
 	private void initLocation(){
 		if(ShopFragment.latitude <= 0){
 			mLocationClient = new LocationClient(this);
+			myListener = new MyLocationListener();
 			mLocationClient.registerLocationListener( myListener );
 			InitLocation();
 			mLocationClient.start();
@@ -76,23 +79,16 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 	}
 
 	protected void initView(){
+		Bundle mBundle = getIntent().getBundleExtra(KeyUtil.BundleKey);
+		if(mBundle != null){
+			goodsBarcode = mBundle.getString(KeyUtil.GoodsIdKey);
+		}
 		this.inflater = LayoutInflater.from(this);
 		AllDataList = new ArrayList<GetShopListByGoodsVO>();
 		mShopListAdapter = new QuhuoShopPinnedListAdapter(this, inflater, AllDataList);
 		pinnedlist = (PinnedSectionListView) findViewById(R.id.pinnedlist);
-		mProgressbar = (ProgressBarCircularIndeterminate) findViewById(R.id.progressbar_m);
 		empty_layout = (TextView) findViewById(R.id.empty_layout);
-		mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mswiperefreshlayout);
-		mSwipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, 
-	            R.color.holo_green_light, 
-	            R.color.holo_orange_light, 
-	            R.color.holo_red_light);
-		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				onSwipeRefreshLayoutRefresh();
-			}
-		});
+		initSwipeRefresh();
 		setListOnScrollListener();
 		
 		footerView = inflater.inflate(R.layout.list_footer_view, null);
@@ -132,13 +128,9 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		mLocationClient.setLocOption(option);
 	}
 
-	protected void loadData(){
-		QueryShopByArea();
-	}
-	
 	public void onSwipeRefreshLayoutRefresh(){
 		clearList();
-		loadData();
+		QueryShopByArea();
 	}
 	
 	public void clearList(){
@@ -162,14 +154,14 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		if(isFinishloadData){
 			isFinishloadData = false;
 			if(pageIndex == 0){
-				mProgressbar.setVisibility(View.VISIBLE);
+				showProgressbar();
 			}
 			empty_layout.setVisibility(View.GONE);
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("cityId", HomeFragment.cityId);
-			params.put("goodsBarcode", "goodsBarcode");
-			params.put("longitude", longitude);
-			params.put("latitude", latitude);
+			params.put("goodsBarcode", goodsBarcode);
+			params.put("longitude", ShopFragment.longitude);
+			params.put("latitude", ShopFragment.latitude);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
 			RoboHttpClient.get(HttpParameter.shopsUrl,"getShopListByGoods", params, new TextHttpResponseHandler(){
@@ -185,10 +177,11 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 					if(ResultParse.handleResutl(KeQuHuoShopActivity.this, mResponse)){
 						List<GetShopListByGoodsList> mList = mResponse.getList();
 						if(mList.size() > 0){
-							if(pageIndex == 0){
-//								mList.add(0, getSectionBean(HomeFragment.city+"内店铺"));
+							for (GetShopListByGoodsList mBean : mList) {
+								GetShopListByGoodsVO mGetShopListByGoodsVO = getSectionBean(mBean.getAreaLevelName());
+								AllDataList.add(mGetShopListByGoodsVO);
+								AllDataList.addAll(mBean.getList());
 							}
-//							AllDataList.addAll(mList);
 							if(mList.size() < Settings.pageCount && pageIndex == 0){
 								isLoadMoreData = false;
 								pinnedlist.removeFooterView(footerView);
@@ -209,8 +202,8 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onFinish() {
 					isFinishloadData = true;
-					mSwipeRefreshLayout.setRefreshing(false);
-					mProgressbar.setVisibility(View.GONE);
+					onSwipeRefreshLayoutFinish();
+					hideProgressbar();
 					isEmpty();
 				}
 			});
@@ -221,9 +214,9 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null) return ;
-			longitude = location.getLongitude();
-			latitude = location.getLatitude();
-			LogUtil.DefalutLog("---longitude:"+longitude+"---latitude:"+latitude);
+			ShopFragment.longitude = location.getLongitude();
+			ShopFragment.latitude = location.getLatitude();
+			LogUtil.DefalutLog("KeQuHuoShopActivity---longitude:"+ShopFragment.longitude+"---latitude:"+ShopFragment.latitude);
 		}
 	}
 	
@@ -233,6 +226,7 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 	
 	@Override
 	public void onClick(View v) {
+		super.onClick(v);
 		switch(v.getId()){
 		case R.id.search_cover:
 			Bundle mBundle = new Bundle();

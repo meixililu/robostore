@@ -4,15 +4,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 import com.robo.store.R;
+import com.robo.store.dao.MachineVO;
 
 public class ViewUtil {
 
+	public static void addQuhuoShopMachine(Context mContext, LinearLayout layout,List<MachineVO> list){
+		int size = list.size();
+		LinearLayout hanglayout = null;
+		for(int i=0; i<size; i++){
+			MachineVO mMachineVO = list.get(i);
+			if(i%3 == 0){
+				hanglayout = initLinearLayout(mContext);
+				layout.addView(hanglayout);
+			}
+			if(hanglayout != null){
+				LinearLayout ItemLinearLayout = initItemLinearLayout(mContext);
+				ItemLinearLayout.addView( initTextView(mContext,mMachineVO.getMachineName()) );
+				hanglayout.addView(ItemLinearLayout);
+			}
+		}
+	}
+	
+	public static LinearLayout initLinearLayout(Context mContext){
+		LinearLayout layout = new LinearLayout(mContext);
+		LinearLayout.LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		layout.setWeightSum(3);
+		layout.setOrientation(LinearLayout.HORIZONTAL);
+		layout.setLayoutParams(lp);
+		return layout;
+	}
+	
+	public static LinearLayout initItemLinearLayout(Context mContext){
+		LinearLayout layout = new LinearLayout(mContext);
+		LinearLayout.LayoutParams lp = new LayoutParams(0, LayoutParams.WRAP_CONTENT);
+		lp.weight = 1;
+		layout.setOrientation(LinearLayout.HORIZONTAL);
+		layout.setLayoutParams(lp);
+		return layout;
+	}
+	
+	public static TextView initTextView(Context mContext, String content){
+		TextView tv = new TextView(mContext);
+		LinearLayout.LayoutParams lp = new LayoutParams(0, ScreenUtil.dip2px(mContext, 37));
+		lp.topMargin = ScreenUtil.dip2px(mContext, 10);
+		lp.leftMargin = ScreenUtil.dip2px(mContext, 5);
+		lp.rightMargin = ScreenUtil.dip2px(mContext, 5);
+		lp.weight = 1;
+		tv.setGravity(Gravity.CENTER);
+		tv.setLayoutParams(lp);
+		tv.setText(content);
+		tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+		tv.setTextColor(mContext.getResources().getColor(R.color.white));
+		tv.setBackground(mContext.getResources().getDrawable(R.drawable.btn_identity_selector));
+		tv.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+			}
+		});
+		return tv;
+	}
+	
 	public static List<ImageView> getImageViewList(Context mContext, int size) {
 		List<ImageView> mList = new ArrayList<ImageView>();
 		for (int i = 0; i < size; i++) {

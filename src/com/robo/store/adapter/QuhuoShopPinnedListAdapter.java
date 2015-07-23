@@ -1,5 +1,6 @@
 package com.robo.store.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -11,13 +12,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robo.store.R;
-import com.robo.store.ShopDetailActivity;
+import com.robo.store.ShopLocationActivity;
 import com.robo.store.dao.GetShopListByGoodsVO;
+import com.robo.store.dao.MachineVO;
 import com.robo.store.dao.ShopBase;
 import com.robo.store.util.KeyUtil;
+import com.robo.store.util.ViewUtil;
 import com.robo.store.view.PinnedSectionListView.PinnedSectionListAdapter;
 
 public class QuhuoShopPinnedListAdapter extends BaseAdapter implements PinnedSectionListAdapter {
@@ -74,8 +78,9 @@ public class QuhuoShopPinnedListAdapter extends BaseAdapter implements PinnedSec
 			switch(type){
 			case 0:
 				holder0 = new ContentHolder();
-				convertView = mInflater.inflate(R.layout.shop_list_item_content, null);
+				convertView = mInflater.inflate(R.layout.quhuo_shop_list_item_content, null);
 				holder0.item_cover = (FrameLayout) convertView.findViewById(R.id.item_cover);
+				holder0.machine_list = (LinearLayout) convertView.findViewById(R.id.machine_list);
 				holder0.shop_name = (TextView) convertView.findViewById(R.id.shop_name);
 				holder0.shop_distance = (TextView) convertView.findViewById(R.id.shop_distance);
 				convertView.setTag(holder0);
@@ -104,14 +109,16 @@ public class QuhuoShopPinnedListAdapter extends BaseAdapter implements PinnedSec
 			holder0.item_cover.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Bundle mBundle = new Bundle();
-					mBundle.putString(KeyUtil.ShopDetailTitleKey, mShopBase.getShopName());
-					mBundle.putString(KeyUtil.ShopDetailIdKey, mShopBase.getShopId());
-					Intent intent = new Intent(context,ShopDetailActivity.class);
-					intent.putExtra(KeyUtil.BundleKey, mBundle);
-					context.startActivity(intent);
+					toMapActivity(mShopBase);
 				}
 			});
+			holder0.machine_list.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+				}
+			});
+			holder0.machine_list.removeAllViews();
+			ViewUtil.addQuhuoShopMachine(context,holder0.machine_list,mShopBase.getList());
 			break;
 		case 1:
 			holder1.seciton_name.setText(mShopBase.getShopName());
@@ -120,12 +127,23 @@ public class QuhuoShopPinnedListAdapter extends BaseAdapter implements PinnedSec
 		return convertView;
 	}
 	
+	private void toMapActivity(GetShopListByGoodsVO mShopBase){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.LatitudeKey, mShopBase.getLatitude()+"");	
+		mBundle.putString(KeyUtil.LongitudeKey, mShopBase.getLongitude()+"");	
+		mBundle.putString(KeyUtil.ShopMemoKey, mShopBase.getShopMemo());
+		Intent intent = new Intent(context,ShopLocationActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		context.startActivity(intent);
+	}
+	
 	static class SectionHolder {
 		TextView seciton_name;
 	}
 	
 	static class ContentHolder {
 		FrameLayout item_cover;
+		LinearLayout machine_list;
 		TextView shop_name;
 		TextView shop_distance;
 	}

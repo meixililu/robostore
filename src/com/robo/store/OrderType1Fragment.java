@@ -149,10 +149,18 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 		get_goods_shop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ToastUtil.diaplayMesShort(getActivity(), "取货店铺信息");
+				toQuhuoShopActivity(mOrderGoods.getGoodsBarcode());
 			}
 		});
 		return goodsView;
+	}
+	
+	private void toQuhuoShopActivity(String goodsId){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.GoodsIdKey, goodsId);
+		Intent intent = new Intent(getActivity(),KeQuHuoShopActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		getActivity().startActivity(intent);
 	}
 	
 	private void toGoodsDetailActivity(String id){

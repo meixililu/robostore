@@ -172,10 +172,18 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		get_goods_shop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ToastUtil.diaplayMesShort(getActivity(), "取货店铺信息");
+				toQuhuoShopActivity(mOrderGoods.getGoodsBarcode());
 			}
 		});
 		return goodsView;
+	}
+	
+	private void toQuhuoShopActivity(String goodsId){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.GoodsIdKey, goodsId);
+		Intent intent = new Intent(getActivity(),KeQuHuoShopActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		getActivity().startActivity(intent);
 	}
 	
 	private void toGoodsDetailActivity(String id){
@@ -257,11 +265,10 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
-				LogUtil.DefalutLog(result);
-				mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
-					showQuhuoShop();
-				}
+//				mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
+//				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
+//					showQuhuoShop();
+//				}
 			}
 			
 			@Override

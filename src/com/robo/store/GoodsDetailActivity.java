@@ -1,11 +1,13 @@
 package com.robo.store;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.http.Header;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,21 +16,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
-import com.robo.store.http.TextHttpResponseHandler;
+import com.robo.store.HomeFragment.MyOnPageChangeListener;
+import com.robo.store.adapter.ImagePagerAdapter;
+import com.robo.store.adapter.ImagePagerUrlAdapter;
 import com.robo.store.dao.GetSingleGoodsResponse;
+import com.robo.store.dao.GoodsPic;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
+import com.robo.store.util.ViewUtil;
+import com.robo.store.view.AutoScrollViewPager;
 
 public class GoodsDetailActivity extends BaseActivity implements View.OnClickListener{
 
 	private FrameLayout back_btn_cover;
 	private LinearLayout goods_layout;
-	private ViewPager viewpager;
+	private AutoScrollViewPager auto_view_pager;
 	private LinearLayout viewpager_dot_layout;
 	private TextView good_price_new,good_price_old,good_newprice_end;
 	private TextView good_name,good_des;
@@ -43,6 +51,7 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	private String goodsBarcode;
 	private GetSingleGoodsResponse mSingleGoods;
 	private ProgressBarCircularIndeterminate progressbar_m;
+	private int imageSize;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +66,7 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		back_btn_cover = (FrameLayout) findViewById(R.id.back_btn_cover);
 		goods_layout = (LinearLayout) findViewById(R.id.goods_layout);
 		progressbar_m = (ProgressBarCircularIndeterminate) findViewById(R.id.progressbar_m);
-		viewpager = (ViewPager) findViewById(R.id.viewpager);
+		auto_view_pager = (AutoScrollViewPager) findViewById(R.id.auto_view_pager);
 		viewpager_dot_layout = (LinearLayout) findViewById(R.id.viewpager_dot_layout);
 		good_price_new = (TextView) findViewById(R.id.good_price_new);
 		good_price_old = (TextView) findViewById(R.id.good_price_old);
@@ -88,6 +97,9 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	private void setData(GetSingleGoodsResponse mGetSingleGoodsResponse){
 		good_price_new.setText(mGetSingleGoodsResponse.getVipPrice());
 		good_price_old.setText("￥" + mGetSingleGoodsResponse.getRetailPrice());
+		if(mGetSingleGoodsResponse.getVipPrice().equals(mGetSingleGoodsResponse.getRetailPrice())){
+			good_price_old.setVisibility(View.GONE);
+		}
 		good_name.setText(mGetSingleGoodsResponse.getGoodsName());
 		good_msg.setText(mGetSingleGoodsResponse.getGoodsMemo());
 		goods_spec.setText(mGetSingleGoodsResponse.getGoodsSpec());
@@ -118,6 +130,9 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 						showEmptyLayout_Empty();
 					}else{
 						setData(mSingleGoods);
+						if(mSingleGoods.getPicList().size() > 0){
+							setAutoScrollViewPager(mSingleGoods.getPicList());
+						}
 					}
 				}else{
 					showEmptyLayout_Empty();
@@ -130,6 +145,40 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 			}
 		});
 	}
+	
+	private void setAutoScrollViewPager(List<GoodsPic> picList){
+		ArrayList<String> imageIdList = new ArrayList<String>();
+		for(GoodsPic mGoodsPic : picList){
+			imageIdList.add(mGoodsPic.getPicUrl());
+		}
+		imageSize = imageIdList.size();
+		auto_view_pager.setAdapter(new ImagePagerUrlAdapter(this, imageIdList).setInfiniteLoop(true));
+        auto_view_pager.setOnPageChangeListener(new MyOnPageChangeListener());
+        if(imageSize > 1){
+        	auto_view_pager.setInterval(2000);
+        	auto_view_pager.startAutoScroll();
+        }
+        int currentItem = Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imageIdList.size();
+        auto_view_pager.setCurrentItem(currentItem);
+        for(int i=0;i<imageIdList.size();i++){
+        	viewpager_dot_layout.addView( ViewUtil.getDot(this,i) );
+        }
+        ViewUtil.changeState(viewpager_dot_layout, currentItem%imageSize);
+	}
+	
+	public class MyOnPageChangeListener implements OnPageChangeListener {
+
+        @Override
+        public void onPageSelected(int position) {
+        	ViewUtil.changeState(viewpager_dot_layout, (position%imageSize));
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {}
+    }
 	
 	@Override
 	public void onClickEmptyLayoutRefresh() {
@@ -156,6 +205,11 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		case R.id.add_to_cart_cover:
 			ToastUtil.diaplayMesShort(GoodsDetailActivity.this, mSingleGoods.getGoodsName()+"已加入购物车");
 			CartUtil.addToCart(mSingleGoods, number);
+			break;
+		case R.id.buy_now_cover:
+			CartUtil.addToCart(mSingleGoods, number);
+			GoodsDetailActivity.this.finish();
+			MainActivity.setCurrentTab(2);
 			break;
 		}
 	}

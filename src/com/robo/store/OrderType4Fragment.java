@@ -149,12 +149,6 @@ public class OrderType4Fragment extends Fragment implements View.OnClickListener
 				toGoodsDetailActivity(mOrderGoods.getGoodsBarcode());
 			}
 		});
-		get_goods_shop.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ToastUtil.diaplayMesShort(getActivity(), "取货店铺信息");
-			}
-		});
 		return goodsView;
 	}
 	

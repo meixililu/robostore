@@ -11,6 +11,7 @@ public class GetSingleGoodsResponse extends CommonResponse{
 	private String goodsMemo;
 	private String goodsSpec;
 	private String goodsBarcode;
+	private List<GoodsPic> picList;
 	
 	public String getGoodsBarcode() {
 		return goodsBarcode;
@@ -18,9 +19,6 @@ public class GetSingleGoodsResponse extends CommonResponse{
 	public void setGoodsBarcode(String goodsBarcode) {
 		this.goodsBarcode = goodsBarcode;
 	}
-	private List<GoodsPic> picList;
-	
-	
 	public List<GoodsPic> getPicList() {
 		return picList;
 	}

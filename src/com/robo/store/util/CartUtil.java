@@ -19,7 +19,9 @@ public class CartUtil {
 		mGoodsBase.setRetailPrice(mSingleGoods.getRetailPrice());
 		mGoodsBase.setVipPrice(mSingleGoods.getVipPrice());
 		mGoodsBase.setNumber(num);
-//		mGoodsBase.setGoodsPic(mSingleGoods.get);
+		if(mSingleGoods.getPicList().size() > 0){
+			mGoodsBase.setGoodsPic(mSingleGoods.getPicList().get(0).getPicUrl());
+		}
 		if(!compareGoodsList(mGoodsBase)){
 			CartFragment.cartList.add(mGoodsBase);
 		}

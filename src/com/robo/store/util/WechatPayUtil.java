@@ -8,7 +8,7 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.robo.store.BaseApplication;
+import com.robo.store.MainActivity;
 import com.robo.store.dao.PayParams;
 import com.tencent.mm.sdk.modelpay.PayReq;
 
@@ -25,7 +25,10 @@ public class WechatPayUtil {
 		request.nonceStr= mPayParams.getNoncestr();
 		request.timeStamp = mPayParams.getTimestamp();
 		request.sign= mPayParams.getSign();
-		BaseApplication.msgApi.sendReq(request);
+		if(MainActivity.msgApi == null){
+			MainActivity.initWechat();
+		}
+		MainActivity.msgApi.sendReq(request);
 	}
 	
 	public static String getSignData(PayReq request){

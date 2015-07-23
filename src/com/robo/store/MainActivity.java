@@ -26,7 +26,10 @@ import com.robo.store.util.LoginUtil;
 import com.robo.store.util.SPUtil;
 import com.robo.store.util.TabsUtil;
 import com.robo.store.util.ToastUtil;
+import com.robo.store.util.WechatPayUtil;
 import com.robo.store.wxapi.WXPayEntryActivity;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class MainActivity extends ActionBarActivity implements OnPageChangeListener {
 
@@ -43,14 +46,23 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 	
 	private int[] selecters = {R.drawable.tab_nav_home_selector, R.drawable.tab_nav_shop_selector, 
 			R.drawable.tab_nav_cart_selector, R.drawable.tab_nav_user_selector};
+	public static IWXAPI msgApi;
+	public static MainActivity context;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context = this;
 		setContentView(R.layout.activity_main);
+		initWechat();
 		init();
 		RequestData();
 		LoginUtil.login(this, mSharedPreferences);
+	}
+	
+	public static void initWechat(){
+		msgApi = WXAPIFactory.createWXAPI(context, null);
+		msgApi.registerApp(WechatPayUtil.APP_ID);
 	}
 	
 	private void init(){
@@ -139,8 +151,11 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		if(viewPager != null){
 			viewPager = null;
 		}
-		if(BaseApplication.msgApi != null){
-			BaseApplication.msgApi = null;
+		if(context != null){
+			context = null;
+		}
+		if(msgApi != null){
+			msgApi = null;
 		}
 		LoginUtil.isUpdate = false;
 		WXPayEntryActivity.isPaySuccee = false;

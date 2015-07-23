@@ -3,6 +3,8 @@ package com.robo.store.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,9 +15,12 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robo.store.CheckAllOrdersActivity;
+import com.robo.store.KeQuHuoShopActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
 import com.robo.store.util.CartUtil;
+import com.robo.store.util.KeyUtil;
 import com.squareup.picasso.Picasso;
 
 public class CartListViewAdapter extends BaseAdapter {
@@ -86,7 +91,7 @@ public class CartListViewAdapter extends BaseAdapter {
 		holder.get_goods_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				toQuhuoShopActivity(mGoodsBase.getGoodsBarcode());
 			}
 		});
 		holder.checkbox.setOnClickListener(new OnClickListener() {
@@ -115,6 +120,14 @@ public class CartListViewAdapter extends BaseAdapter {
 			}
 		});
 		return convertView;
+	}
+	
+	private void toQuhuoShopActivity(String goodsId){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.GoodsIdKey, goodsId);
+		Intent intent = new Intent(context,KeQuHuoShopActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		context.startActivity(intent);
 	}
 	
 	static class ViewHolder {
