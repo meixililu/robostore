@@ -5,6 +5,8 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +31,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	public static final int requestLoginCode = 101;
 	private FrameLayout logout_cover;
 	private Button mButton;
-	private TextView my_account_name;
+	private TextView my_account_name,soft_version_text;
 	private RelativeLayout login_layout,about_us_layout;
 	private LinearLayout user_info_layout;
 	
@@ -61,6 +63,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		user_info_layout = (LinearLayout) getView().findViewById(R.id.user_info_layout);
 		mButton = (Button) getView().findViewById(R.id.login_btn);
 		my_account_name = (TextView) getView().findViewById(R.id.my_account_name);
+		soft_version_text = (TextView) getView().findViewById(R.id.soft_version_text);
 		
 		obligation_cover = (FrameLayout) getView().findViewById(R.id.obligation_cover);
 		to_pick_up_cover = (FrameLayout) getView().findViewById(R.id.to_pick_up_cover);
@@ -71,6 +74,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		about_us_layout = (RelativeLayout) getView().findViewById(R.id.about_us_layout);
 		check_my_order = (TextView) getView().findViewById(R.id.check_my_order);
 		
+		soft_version_text.setText(getVersion());
 		logout_cover.setOnClickListener(this);
 		obligation_cover.setOnClickListener(this);
 		to_pick_up_cover.setOnClickListener(this);
@@ -82,6 +86,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		check_update_cover.setOnClickListener(this);
 		about_us_layout.setOnClickListener(this);
 		isLogin();
+		
 	}
 	
 	private void isLogin(){
@@ -169,6 +174,18 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		});
 		dialog.setCancelable(true);
 		dialog.show();
+	}
+	
+	public String getVersion() {
+		try {
+			PackageManager manager = getActivity().getPackageManager();
+			PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+			String version = info.versionName;
+			return version;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "1.0";
+		}
 	}
 	
 	private void checkSoftUpdate(){
