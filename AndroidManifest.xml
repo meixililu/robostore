@@ -63,6 +63,9 @@
         </service>
         
         <activity
+            android:name=".PickupRecordListActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".KeQuHuoShopActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -112,7 +115,9 @@
         <activity
             android:name=".CityActivity"
             android:screenOrientation="portrait" />
-        
+        <activity
+            android:name=".AboutUsActivity"
+            android:screenOrientation="portrait" />
         
     </application>
 

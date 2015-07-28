@@ -19,10 +19,12 @@ public class TimeUtil {
 	public static final String TimeFormat = "HH:mm:ss";
 	public static final String MinuteFormat = "HH:mm";
 	public static final String MonthFormat = "MM-dd";
+	public static final String MonthFormat2 = "MM月dd日";
 	public static final String MonthMinuteFormat = "MM-dd HH:mm";
+	public static final String OneDay = "23:59:59";
 	
 	/**
-	 * 返回时间格式�?12-28 19:28
+	 * 返回时间格式�?12-28 19:28
 	 */
 	public static String formatLongTimeForCustom(long time, String format) {
 		Date date = new Date(time);
@@ -40,7 +42,7 @@ public class TimeUtil {
 	}
 	
 	/**
-	 * 返回时间格式�?20111228
+	 * 返回时间格式�?20111228
 	 */
 	public static String getTimeDateLong(long time) {
 		Date date = new Date(time);
@@ -49,7 +51,7 @@ public class TimeUtil {
 	}
 	
 	/**
-	 * 返回时间格式�?2011-12-28
+	 * 返回时间格式�?2011-12-28
 	 */
 	public static String getTimeDate(long time) {
 		Date date = new Date(time);
@@ -58,7 +60,7 @@ public class TimeUtil {
 	}
 	
 	/**
-	 * 返回时间格式�?201203281122
+	 * 返回时间格式�?201203281122
 	 */
 	public static String getTimeAsNumber(long time) {
 		Date date = new Date(time);
@@ -67,7 +69,7 @@ public class TimeUtil {
 	}
 
 	/**
-	 * 格式化日�?
+	 * 格式化日�?
 	 * 
 	 * @return
 	 */
@@ -86,7 +88,7 @@ public class TimeUtil {
 	}
 
 	/***
-	 * 日期格式：yyyy-MM-dd HH:mm:ss 转成时间�?
+	 * 日期格式：yyyy-MM-dd HH:mm:ss 转成时间�?
 	 */
 	public static long getDateToTime(String time) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -104,7 +106,7 @@ public class TimeUtil {
 	}
 
 	/**
-	 * 根据�?个日期，返回是星期几的字符串,2012-10-26 星期�?
+	 * 根据�?个日期，返回是星期几的字符串,2012-10-26 星期�?
 	 * 
 	 * @param sdate
 	 * @return
@@ -127,10 +129,10 @@ public class TimeUtil {
 		return customFormatDate(dateStr, "yyyy-MM-dd HH:mm:ss", "MM-dd HH:mm");
 	}
 
-	/**自定义时间格�?
+	/**自定义时间格�?
 	 * @param dateStr  时间字符串；
-	 * @param oldStyle 传进来的时间字符串的格式�?
-	 * @param newStyle 希望得到的时间格�?
+	 * @param oldStyle 传进来的时间字符串的格式�?
+	 * @param newStyle 希望得到的时间格�?
 	 * @return
 	 */
 	public static String customFormatDate(String dateStr, String oldStyle, String newStyle) {
@@ -150,7 +152,7 @@ public class TimeUtil {
 	}
 
 	/**
-	 * 返回时间格式�?12-28 19:28
+	 * 返回时间格式�?12-28 19:28
 	 */
 	public static String getLongtimeToShorttime(String time) {
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -165,7 +167,7 @@ public class TimeUtil {
 		return sdf.format(d);
 	}
 	
-	/**将时分转成�?�共多少分钟，用于推送比较时间大�?
+	/**将时分转成�?�共多少分钟，用于推送比较时间大�?
 	 * @param time
 	 * @return
 	 */
@@ -194,4 +196,30 @@ public class TimeUtil {
 		}
 		return d;
 	}
+	
+	public static String compareDate(String endDate){
+		DateFormat df = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+		try{
+		    Date d1 = df.parse(endDate);
+		    Date d2 = new Date();
+		    long diff = d1.getTime() - d2.getTime();
+		    long days = diff/(24*60*60*1000);
+		    long hour = (diff/(60*60*1000)-days*24);
+		    long min = ((diff/(60*1000))-days*24*60-hour*60);
+		    long s = (diff/1000-days*24*60*60-hour*60*60-min*60);
+		    if(days > 0){
+		    	return days +  "天";
+		    }else if(hour > 0){
+		    	return hour +  "小时";
+		    }else if(min > 0){
+		    	return min +  "分钟";
+		    }else if(s > 0){
+		    	return s +  "秒";
+		    }
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 }

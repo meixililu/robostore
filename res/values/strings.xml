@@ -44,7 +44,7 @@
     <string name="retrieve_pwd">找回密码</string>
     <string name="soft_versoin">当前版本</string>
     <string name="soft_update">版本更新</string>
-    <string name="check_soft_update">查看版本更新 > </string>
+    <string name="check_soft_update"> > </string>
     <string name="forget_pwd">忘记密码</string>
     <string name="order_detail">订单详情</string>
     <string name="order_type_1">待付款</string>
@@ -68,4 +68,7 @@
     <string name="sorry_load_empty">暂无数据，轻触屏幕刷新</string>
     
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+    <string name="about_us_text">萝卜便利店，是致力于满足顾客主要生活场景需求的O2O自助购物平台。萝卜便利店所有在售商品均经严格审厂，由正规厂家直接供应，请放心购买。</string>
+    <string name="about_us_copyright">Copyright©2015-2022</string>
+    <string name="about_us_company">北京富雷实业股份有限公司</string>
 </resources>

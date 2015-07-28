@@ -223,7 +223,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	
 	private void isEmpty(){
 		if(pageIndex == 0){
-			if(goodsList.size() == 0){
+			if(goodsList.size() == 0 && mGoodsTypeList.size() == 0){
 				empty_layout.setVisibility(View.VISIBLE);
 			}
 		}

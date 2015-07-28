@@ -10,11 +10,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -22,19 +21,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.gc.materialdesign.widgets.Dialog;
-import com.robo.store.http.TextHttpResponseHandler;
-import com.robo.store.dao.GetOrdersListResponse;
-import com.robo.store.dao.GetSingleGoodsResponse;
+import com.robo.store.dao.GetPickUpLogResponse;
 import com.robo.store.dao.GetSingleOrderResponse;
 import com.robo.store.dao.MallOrderDetailVO;
-import com.robo.store.dao.OrderDetailVO;
-import com.robo.store.dao.OrderGoods;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
+import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.listener.onFragmentCallRefresh;
-import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
@@ -52,7 +46,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 	private ImageView get_goods_code_img;
 	private TextView get_goods_code;
 	private TextView order_place_time_tv;
-	private TextView order_refund_sum;
+	private TextView order_sum;
 	private LinearLayout content_layout;
 	private Button confirm_to_refund;
 	private LayoutInflater inflater;
@@ -99,7 +93,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		get_goods_code_img = (ImageView) rootView.findViewById(R.id.get_goods_code_img);
 		get_goods_code = (TextView) rootView.findViewById(R.id.get_goods_code);
 		order_place_time_tv = (TextView) rootView.findViewById(R.id.order_place_time_tv);
-		order_refund_sum = (TextView) rootView.findViewById(R.id.order_refund_sum);
+		order_sum = (TextView) rootView.findViewById(R.id.order_sum);
 		content_layout = (LinearLayout) rootView.findViewById(R.id.content_layout);
 		confirm_to_refund = (Button) rootView.findViewById(R.id.confirm_to_refund);
 		
@@ -121,6 +115,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 			order_pay_method.setImageResource(R.drawable.bg_for_sale);
 		}
 		order_place_time_tv.setText("下单时间："+mSingleOrder.getOrderTime());
+		order_sum.setText("共计：￥"+mSingleOrder.getTotalPrice());
 		List<MallOrderDetailVO> detailList = mSingleOrder.getDetailList();
 		for(int i=0; i<detailList.size(); i++){
 			MallOrderDetailVO mOrderDetailVO = detailList.get(i);
@@ -199,7 +194,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 			refundOrder();
 			break;
 		case R.id.quhuo_shop_cover:
-			RequestQuhuoShopData();
+			showQuhuoShop();
 			break;
 		case R.id.back_cover:
 			getActivity().onBackPressed();
@@ -219,6 +214,15 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		});
 		dialog.setCancelable(true);
 		dialog.show();
+	}
+	
+	private void showQuhuoShop(){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, mSingleOrder.getMallOrderCode());
+		Intent intent = new Intent();
+		intent.setClass(getActivity(), PickupRecordListActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		getActivity().startActivity(intent);
 	}
 	
 	private void RequestCancleData(){
@@ -251,45 +255,5 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 			}
 		});
 	}
-	
-	private void RequestQuhuoShopData(){
-		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "正在加载...", true, false);
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("orderCode", mSingleOrder.getMallOrderCode());
-		RoboHttpClient.get(HttpParameter.orderUrl, "getPickupGoods", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), "连接失败，请重试！");
-			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-//				mSingleOrder = (GetSingleOrderResponse) ResultParse.parseResult(result,GetSingleOrderResponse.class);
-//				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
-//					showQuhuoShop();
-//				}
-			}
-			
-			@Override
-			public void onFinish() {
-				progressDialog.dismiss();
-			}
-		});
-	}
-	
-	private void showQuhuoShop(){
-		Dialog dialog = new Dialog(getActivity(), "取货记录", "取货记录");
-		dialog.addAcceptButton("确定");
-//		dialog.setOnAcceptButtonClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				RequestCancleData();
-//			}
-//		});
-		dialog.setCancelable(true);
-		dialog.show();
-	}
-	
 	
 }

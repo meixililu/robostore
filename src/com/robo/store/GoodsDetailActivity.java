@@ -28,6 +28,7 @@ import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
+import com.robo.store.util.TimeUtil;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
 import com.robo.store.view.AutoScrollViewPager;
@@ -71,6 +72,7 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		good_price_new = (TextView) findViewById(R.id.good_price_new);
 		good_price_old = (TextView) findViewById(R.id.good_price_old);
 		good_newprice_end = (TextView) findViewById(R.id.good_newprice_end);
+		get_goods_date = (TextView) findViewById(R.id.get_goods_date);
 		
 		good_name = (TextView) findViewById(R.id.good_name);
 		good_des = (TextView) findViewById(R.id.good_des);
@@ -97,8 +99,14 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 	private void setData(GetSingleGoodsResponse mGetSingleGoodsResponse){
 		good_price_new.setText(mGetSingleGoodsResponse.getVipPrice());
 		good_price_old.setText("￥" + mGetSingleGoodsResponse.getRetailPrice());
-		if(mGetSingleGoodsResponse.getVipPrice().equals(mGetSingleGoodsResponse.getRetailPrice())){
+		if(TextUtils.isEmpty(mGetSingleGoodsResponse.getVipEndDate())){
 			good_price_old.setVisibility(View.GONE);
+			get_goods_date.setVisibility(View.GONE);
+		}else{
+			String vipDays = TimeUtil.compareDate(mGetSingleGoodsResponse.getVipEndDate() + " " +TimeUtil.OneDay);
+			good_newprice_end.setText("优惠价格还有" + vipDays +"结束");
+			String getGoodsEndTime = TimeUtil.customFormatDate(mGetSingleGoodsResponse.getVipEndDate(), TimeUtil.Day2Format, TimeUtil.MonthFormat2);
+			get_goods_date.setText("请在" + getGoodsEndTime + "前取货");
 		}
 		good_name.setText(mGetSingleGoodsResponse.getGoodsName());
 		good_msg.setText(mGetSingleGoodsResponse.getGoodsMemo());

@@ -118,6 +118,10 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		}
 	}
 	
+	public void onClickEmptyLayoutRefresh(){
+		onSwipeRefreshLayoutRefresh();
+	}
+	
 	public void onSwipeRefreshLayoutRefresh(){
 		clearList();
 		RequestData();
@@ -173,6 +177,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 							no_more_data.setVisibility(View.VISIBLE);
 						}
 					}else{
+						showEmptyLayout_Empty();
 						mListView.removeFooterView(footerView);
 					}
 				}

@@ -30,13 +30,12 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	private FrameLayout logout_cover;
 	private Button mButton;
 	private TextView my_account_name;
-	private RelativeLayout login_layout;
+	private RelativeLayout login_layout,about_us_layout;
 	private LinearLayout user_info_layout;
 	
 	private FrameLayout obligation_cover,to_pick_up_cover,refund_cover;
-	private FrameLayout modify_pwd_cover,retrieve_pwd_cover;
+	private FrameLayout modify_pwd_cover,retrieve_pwd_cover,check_update_cover;
 	private TextView check_my_order;
-	private TextView check_soft_update;
 	public static UserFragment mUserFragment;
 	private SharedPreferences mSharedPreferences;
 	private String userName,userPWD;
@@ -68,8 +67,9 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		refund_cover = (FrameLayout) getView().findViewById(R.id.refund_cover);
 		modify_pwd_cover = (FrameLayout) getView().findViewById(R.id.modify_pwd_cover);
 		retrieve_pwd_cover = (FrameLayout) getView().findViewById(R.id.retrieve_pwd_cover);
+		check_update_cover = (FrameLayout) getView().findViewById(R.id.check_update_cover);
+		about_us_layout = (RelativeLayout) getView().findViewById(R.id.about_us_layout);
 		check_my_order = (TextView) getView().findViewById(R.id.check_my_order);
-		check_soft_update = (TextView) getView().findViewById(R.id.check_soft_update);
 		
 		logout_cover.setOnClickListener(this);
 		obligation_cover.setOnClickListener(this);
@@ -79,7 +79,8 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		retrieve_pwd_cover.setOnClickListener(this);
 		mButton.setOnClickListener(this);
 		check_my_order.setOnClickListener(this);
-		check_soft_update.setOnClickListener(this);
+		check_update_cover.setOnClickListener(this);
+		about_us_layout.setOnClickListener(this);
 		isLogin();
 	}
 	
@@ -133,7 +134,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 		case R.id.check_my_order:
 			toOrderListActivity(0);
 			break;
-		case R.id.check_soft_update:
+		case R.id.check_update_cover:
 			checkSoftUpdate();
 			break;
 		case R.id.modify_pwd_cover:
@@ -141,6 +142,9 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 			break;
 		case R.id.retrieve_pwd_cover:
 			toActivity(ForgetPWDActivity.class, null);
+			break;
+		case R.id.about_us_layout:
+			toActivity(AboutUsActivity.class, null);
 			break;
 		}
 	}

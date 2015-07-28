@@ -44,7 +44,7 @@ import com.squareup.picasso.Picasso;
 
 public class OrderType6Fragment extends Fragment implements View.OnClickListener{
 
-	private FrameLayout back_cover;
+	private FrameLayout back_cover,quhuo_shop_cover;
 	private TextView order_id_tv;
 	private LinearLayout goods_list;
 	private TextView order_pay_time_tv;
@@ -89,6 +89,7 @@ public class OrderType6Fragment extends Fragment implements View.OnClickListener
 	
 	private void init(){
 		back_cover = (FrameLayout) rootView.findViewById(R.id.back_cover);
+		quhuo_shop_cover = (FrameLayout) rootView.findViewById(R.id.quhuo_shop_cover);
 		order_id_tv = (TextView) rootView.findViewById(R.id.order_id_tv);
 		goods_list = (LinearLayout) rootView.findViewById(R.id.goods_list);
 		order_pay_time_tv = (TextView) rootView.findViewById(R.id.order_pay_time_tv);
@@ -100,7 +101,7 @@ public class OrderType6Fragment extends Fragment implements View.OnClickListener
 		
 		back_cover.setOnClickListener(this);
 		confirm_to_refund.setOnClickListener(this);
-		
+		quhuo_shop_cover.setOnClickListener(this);
 		setData(mSingleOrder);
 	}
 	
@@ -176,7 +177,19 @@ public class OrderType6Fragment extends Fragment implements View.OnClickListener
 		case R.id.back_cover:
 			getActivity().onBackPressed();
 			break;
+		case R.id.quhuo_shop_cover:
+			showQuhuoShop();
+			break;
 		}
+	}
+	
+	private void showQuhuoShop(){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, mSingleOrder.getMallOrderCode());
+		Intent intent = new Intent();
+		intent.setClass(getActivity(), PickupRecordListActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		getActivity().startActivity(intent);
 	}
 	
 	private void cancleOrder(){

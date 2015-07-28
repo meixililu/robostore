@@ -101,6 +101,7 @@ public class ModifyPWDActivity extends BaseActivity {
 					if(ResultParse.handleResutl(ModifyPWDActivity.this, mCommonResponse)){
 						ToastUtil.diaplayMesLong(ModifyPWDActivity.this, "修改成功");
 						SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.UserPWDKey, Md5.d5(newPWD));
+						ModifyPWDActivity.this.finish();
 					}else{
 						error_txt.setText(mCommonResponse.getErrorMsg());
 					}
