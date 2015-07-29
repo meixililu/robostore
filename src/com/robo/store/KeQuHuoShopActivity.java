@@ -164,7 +164,7 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 			params.put("latitude", ShopFragment.latitude);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.get(HttpParameter.shopsUrl,"getShopListByGoods", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post(HttpParameter.shopsUrl,"getShopListByGoods", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

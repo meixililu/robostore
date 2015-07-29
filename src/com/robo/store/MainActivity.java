@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 	private void RequestData(){
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("currentVer", String.valueOf(HttpParameter.softVerCode));
-		RoboHttpClient.get("getAppVersion", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post("getAppVersion", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

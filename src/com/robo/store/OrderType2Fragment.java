@@ -184,7 +184,7 @@ public class OrderType2Fragment extends Fragment implements View.OnClickListener
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("orderId", mSingleOrder.getMallOrderCode());
 		params.put("flag", "1");//0退款   1删除   2取消
-		RoboHttpClient.get(HttpParameter.orderUrl, "refund", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.orderUrl, "refund", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

@@ -160,7 +160,7 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 	
 	private void RequestData(){
 		showProgressbar();
-		RoboHttpClient.get(HttpParameter.shopsUrl,"getAllCities", null, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.shopsUrl,"getAllCities", null, new TextHttpResponseHandler(){
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				showEmptyLayout_Error();

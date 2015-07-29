@@ -93,7 +93,7 @@ public class LoginActivity extends BaseActivity {
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("mobile", userName);
 			params.put("password", Md5.d5(pwd));
-			RoboHttpClient.get("userLogin", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post("userLogin", params, new TextHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

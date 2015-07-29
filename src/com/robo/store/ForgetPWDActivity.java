@@ -55,7 +55,7 @@ public class ForgetPWDActivity extends BaseActivity {
 			showDialog();
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("mobile", userName);
-			RoboHttpClient.get("applyCheckCode", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post("applyCheckCode", params, new TextHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -91,7 +91,7 @@ public class ForgetPWDActivity extends BaseActivity {
 			params.put("mobile", userName);
 			params.put("checkCode", identity_code);
 			params.put("newPassword", Md5.d5(pwd));
-			RoboHttpClient.get("resetPassword", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post("resetPassword", params, new TextHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

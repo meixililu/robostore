@@ -347,7 +347,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("orderId", mOrderGoods.getOrderId());
 		params.put("flag", "0");
-		RoboHttpClient.get(HttpParameter.orderUrl, "refund", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.orderUrl, "refund", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

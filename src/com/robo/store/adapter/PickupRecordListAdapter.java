@@ -3,28 +3,23 @@ package com.robo.store.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.robo.store.GoodsDetailActivity;
 import com.robo.store.R;
-import com.robo.store.dao.PickUpLog;
-import com.robo.store.util.KeyUtil;
+import com.robo.store.dao.GetPickUpLogVO;
 import com.robo.store.util.TimeUtil;
 
 public class PickupRecordListAdapter extends BaseAdapter {
 
 	private Context context;
 	private LayoutInflater mInflater;
-	private List<PickUpLog> ordersList;
+	private List<GetPickUpLogVO> ordersList;
 	
-	public PickupRecordListAdapter(Context mContext,LayoutInflater mInflater,List<PickUpLog> goodsList){
+	public PickupRecordListAdapter(Context mContext,LayoutInflater mInflater,List<GetPickUpLogVO> goodsList){
 		this.context = mContext;
 		this.mInflater = mInflater;
 		this.ordersList = goodsList;
@@ -36,7 +31,7 @@ public class PickupRecordListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public PickUpLog getItem(int position) {
+	public GetPickUpLogVO getItem(int position) {
 		return ordersList.get(position);
 	}
 
@@ -59,7 +54,7 @@ public class PickupRecordListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		final PickUpLog mGoodsBase = ordersList.get(position);
+		final GetPickUpLogVO mGoodsBase = ordersList.get(position);
 		holder.date_day.setText(TimeUtil.customFormatDate(mGoodsBase.getPickUpTime(),TimeUtil.DateFormat,"d")+"日");
 		holder.date_month.setText(TimeUtil.customFormatDate(mGoodsBase.getPickUpTime(),TimeUtil.DateFormat,"M")+"月");
 		holder.tv_shop.setText(mGoodsBase.getShopName());

@@ -190,7 +190,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			params.put("cityId", HomeFragment.cityId);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByArea", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post(HttpParameter.shopsUrl,"queryShopByArea", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -240,7 +240,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("longitude", longitude);
 		params.put("latitude", latitude);
-		RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByBeforeUse", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.shopsUrl,"queryShopByBeforeUse", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -272,7 +272,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 		params.put("longitude", longitude);
 		params.put("latitude", latitude);
 		params.put("cityId", HomeFragment.cityId);
-		RoboHttpClient.get(HttpParameter.shopsUrl,"queryShopByNearby", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.shopsUrl,"queryShopByNearby", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

@@ -92,7 +92,7 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 		params.put("cityId", HomeFragment.cityId);
 		params.put("totalPrice", CartFragment.totalSum);
 		params.put("list", getGoodsList());
-		RoboHttpClient.get(HttpParameter.orderUrl,"addOrder", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.orderUrl,"addOrder", params, new TextHttpResponseHandler(){
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, ConfirmOrderActivity.this.getResources().getString(R.string.connet_fail));

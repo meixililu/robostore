@@ -146,7 +146,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 			params.put("type", OrderType);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.get(HttpParameter.orderUrl,"getOrdersList", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post(HttpParameter.orderUrl,"getOrdersList", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

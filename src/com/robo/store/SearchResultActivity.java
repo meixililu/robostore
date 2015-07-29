@@ -159,7 +159,7 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 				params.put("shopId", shopId);
 				params.put("pageIndex", pageIndex);
 				params.put("pageCount", Settings.pageCount);
-				RoboHttpClient.get(HttpParameter.goodUrl,"getGoodsByName", params, new TextHttpResponseHandler(){
+				RoboHttpClient.post(HttpParameter.goodUrl,"getGoodsByName", params, new TextHttpResponseHandler(){
 					
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -208,7 +208,7 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 				params.put("latitude", ShopFragment.latitude);
 				params.put("pageIndex", pageIndex);
 				params.put("pageCount", Settings.pageCount);
-				RoboHttpClient.get(HttpParameter.shopsUrl,"getShopListByName", params, new TextHttpResponseHandler(){
+				RoboHttpClient.post(HttpParameter.shopsUrl,"getShopListByName", params, new TextHttpResponseHandler(){
 					
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

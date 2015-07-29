@@ -119,7 +119,7 @@ public class GoodsDetailActivity extends BaseActivity implements View.OnClickLis
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("goodsBarcode", goodsBarcode);
 		params.put("cityId", HomeFragment.cityId);
-		RoboHttpClient.get(HttpParameter.goodUrl, "getSingleGoods", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.goodUrl, "getSingleGoods", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

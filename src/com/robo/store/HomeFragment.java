@@ -242,7 +242,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 			params.put("type", goodType);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.get(HttpParameter.goodUrl,"getGoodsListByType", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post(HttpParameter.goodUrl,"getGoodsListByType", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {

@@ -60,7 +60,7 @@ public class OrderDetailActivity extends BaseActivity implements onFragmentCallR
 		parent_layout.setVisibility(View.GONE);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("mallOrderId", mallOrderId);
-		RoboHttpClient.get(HttpParameter.orderUrl, "getSingleOrder", params, new TextHttpResponseHandler(){
+		RoboHttpClient.post(HttpParameter.orderUrl, "getSingleOrder", params, new TextHttpResponseHandler(){
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
