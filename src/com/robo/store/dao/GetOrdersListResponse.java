@@ -9,6 +9,20 @@ public class GetOrdersListResponse {
 	private int orderStatus;
 	private String orderAmount;
 	private String barcode;
+	private String barcodeData;
+	private String payTime;
+	public String getPayTime() {
+		return payTime;
+	}
+	public void setPayTime(String payTime) {
+		this.payTime = payTime;
+	}
+	public String getBarcodeData() {
+		return barcodeData;
+	}
+	public void setBarcodeData(String barcodeData) {
+		this.barcodeData = barcodeData;
+	}
 	private String orderTime;
 	public String getOrderTime() {
 		return orderTime;

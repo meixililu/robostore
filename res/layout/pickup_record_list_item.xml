@@ -34,30 +34,63 @@
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:layout_marginRight="@dimen/padding_10"
         android:background="@drawable/cash_order_list_item_money_bg"
-        android:paddingLeft="@dimen/padding_10"
+        android:paddingLeft="@dimen/padding_7"
         android:paddingRight="@dimen/padding_10"
         >
-        <TextView 
-            android:id="@+id/tv_shop"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:textColor="@color/text_black"
-            android:textSize="@dimen/bigger"
-            />
-        <TextView 
-            android:id="@+id/tv_machine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:textColor="@color/text_black"
-            android:textSize="@dimen/bigger"
-            />
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:orientation="horizontal"
+	        android:gravity="center_vertical"
+	        >
+	        <TextView 
+	            android:id="@+id/tv_shop"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="left"
+	            android:textColor="@color/text_black"
+	            android:textSize="@dimen/bigger"
+	            />
+	        <TextView 
+	            android:id="@+id/tv_machine"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="left"
+	            android:textColor="@color/text_black"
+	            android:textSize="@dimen/bigger"
+	            />
+	    </LinearLayout>
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:orientation="horizontal"
+	        android:gravity="center_vertical"
+	        >
+	        <TextView 
+	            android:id="@+id/tv_goods_name"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="left"
+	            android:textColor="@color/app_color"
+	            android:textSize="@dimen/big"
+	            />
+	        <TextView 
+	            android:id="@+id/tv_goods_count"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="@dimen/padding_5"
+	            android:layout_marginTop="@dimen/padding_margin"
+	            android:gravity="left"
+	            android:textColor="@color/app_color"
+	            android:textSize="@dimen/middle"
+	            />
+	    </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

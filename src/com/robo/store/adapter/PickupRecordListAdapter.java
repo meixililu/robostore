@@ -50,6 +50,8 @@ public class PickupRecordListAdapter extends BaseAdapter {
 			holder.date_month = (TextView) convertView.findViewById(R.id.date_month);
 			holder.tv_shop = (TextView) convertView.findViewById(R.id.tv_shop);
 			holder.tv_machine = (TextView) convertView.findViewById(R.id.tv_machine);
+			holder.tv_goods_name = (TextView) convertView.findViewById(R.id.tv_goods_name);
+			holder.tv_goods_count = (TextView) convertView.findViewById(R.id.tv_goods_count);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -59,7 +61,8 @@ public class PickupRecordListAdapter extends BaseAdapter {
 		holder.date_month.setText(TimeUtil.customFormatDate(mGoodsBase.getPickUpTime(),TimeUtil.DateFormat,"M")+"月");
 		holder.tv_shop.setText(mGoodsBase.getShopName());
 		holder.tv_machine.setText(mGoodsBase.getMachineName());
-		
+		holder.tv_goods_name.setText(mGoodsBase.getGoodsName());
+		holder.tv_goods_count.setText("x"+mGoodsBase.getGoodsCount());
 		return convertView;
 	}
 	
@@ -68,6 +71,8 @@ public class PickupRecordListAdapter extends BaseAdapter {
 		TextView date_month;
 		TextView tv_shop;
 		TextView tv_machine;
+		TextView tv_goods_name;
+		TextView tv_goods_count;
 	}
 
 }

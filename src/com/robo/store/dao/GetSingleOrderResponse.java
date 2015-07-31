@@ -9,8 +9,22 @@ public class GetSingleOrderResponse extends CommonResponse {
 	private double totalPrice;
 	private String payTime;
 	private String orderTime;
+	private String barcode;
+	private String barcodeData;
 	private List<MallOrderDetailVO> detailList;
 	
+	public String getBarcode() {
+		return barcode;
+	}
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+	public String getBarcodeData() {
+		return barcodeData;
+	}
+	public void setBarcodeData(String barcodeData) {
+		this.barcodeData = barcodeData;
+	}
 	public int getPayType() {
 		return payType;
 	}

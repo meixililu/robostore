@@ -33,6 +33,10 @@ public class KeyUtil {
 	
 	public static final String OrderIdKey = "OrderIdKey";
 	
+	public static final String QRCodeKey = "QRCodeKey";
+	
+	public static final String QRCodeDataKey = "QRCodeDataKey";
+	
 	public static final String OrderTypeKey = "OrderTypeKey";
 	
 	public static final String ShopDetailTitleKey = "ShopDetailTitleKey";

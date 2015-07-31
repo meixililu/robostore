@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.http.Header;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,14 +22,8 @@ import android.widget.TextView;
 
 import com.gc.materialdesign.widgets.Dialog;
 import com.robo.store.CheckAllOrdersActivity;
-import com.robo.store.ConfirmOrderActivity;
 import com.robo.store.OrderDetailActivity;
-import com.robo.store.OrderType1Fragment;
-import com.robo.store.OrderType2Fragment;
-import com.robo.store.OrderType3Fragment;
-import com.robo.store.OrderType4Fragment;
-import com.robo.store.OrderType5Fragment;
-import com.robo.store.OrderType6Fragment;
+import com.robo.store.QRCodeActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GetOrdersListResponse;
 import com.robo.store.dao.GetPayParamsRespone;
@@ -41,6 +34,7 @@ import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
+import com.robo.store.util.DrawableUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
@@ -118,7 +112,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				holder3 = new ViewHolder3();
 				convertView = mInflater.inflate(R.layout.order_list_item_type_3, null);
 				holder3.refund_btn = (Button) convertView.findViewById(R.id.refund_btn);
-				holder3.order_code_img = (TextView) convertView.findViewById(R.id.order_code_img);
+				holder3.order_code_img = (ImageView) convertView.findViewById(R.id.order_code_img);
 				holder3.goods_list = (LinearLayout) convertView.findViewById(R.id.goods_list);
 				convertView.setTag(holder3);
 				break;
@@ -198,6 +192,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 			}
 			break;
 		case 3:
+			holder3.order_code_img.setImageBitmap(DrawableUtil.stringtoBitmap(mOrderGoods.getBarcodeData()));
 			holder3.goods_list.removeAllViews();
 			for(int i=0; i<detailList.size(); i++){
 				OrderDetailVO mOrderDetailVO = detailList.get(i);
@@ -209,6 +204,12 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				goodsView.setLayoutParams(mParams);
 				holder3.goods_list.addView(goodsView);
 			}
+			holder3.order_code_img.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					toQRCodeActivity(mOrderGoods);
+				}
+			});
 			holder3.refund_btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -381,6 +382,16 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 		context.startActivity(intent);
 	}
 	
+	private void toQRCodeActivity(GetOrdersListResponse mOrdersList){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.QRCodeKey, mOrdersList.getBarcode());
+		mBundle.putString(KeyUtil.QRCodeDataKey, mOrdersList.getBarcodeData());
+		Intent intent = new Intent();
+		intent.setClass(context, QRCodeActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		context.startActivity(intent);
+	}
+	
 	static class ViewHolder1 {
 		Button to_pay_btn;
 		LinearLayout goods_list;
@@ -390,7 +401,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 	}
 	static class ViewHolder3 {
 		Button refund_btn;
-		TextView order_code_img;
+		ImageView order_code_img;
 		LinearLayout goods_list;
 	}
 	static class ViewHolder4 {

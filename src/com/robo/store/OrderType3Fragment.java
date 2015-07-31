@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.widgets.Dialog;
+import com.robo.store.dao.GetOrdersListResponse;
 import com.robo.store.dao.GetPickUpLogResponse;
 import com.robo.store.dao.GetSingleOrderResponse;
 import com.robo.store.dao.MallOrderDetailVO;
@@ -29,6 +30,7 @@ import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.listener.onFragmentCallRefresh;
+import com.robo.store.util.DrawableUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
@@ -104,7 +106,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		setData(mSingleOrder);
 	}
 	
-	private void setData(GetSingleOrderResponse mSingleOrder){
+	private void setData(final GetSingleOrderResponse mSingleOrder){
 		order_id_tv.setText(mSingleOrder.getMallOrderCode());
 		order_pay_time_tv.setText(mSingleOrder.getPayTime());
 		if(mSingleOrder.getPayType() == 2){
@@ -116,6 +118,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		}
 		order_place_time_tv.setText("下单时间："+mSingleOrder.getOrderTime());
 		order_sum.setText("共计：￥"+mSingleOrder.getTotalPrice());
+		get_goods_code_img.setImageBitmap(DrawableUtil.stringtoBitmap(mSingleOrder.getBarcodeData()));
 		List<MallOrderDetailVO> detailList = mSingleOrder.getDetailList();
 		for(int i=0; i<detailList.size(); i++){
 			MallOrderDetailVO mOrderDetailVO = detailList.get(i);
@@ -127,6 +130,12 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 			goodsView.setLayoutParams(mParams);
 			goods_list.addView(goodsView);
 		}
+		get_goods_code_img.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				toQRCodeActivity(mSingleOrder);
+			}
+		});
 	}
 	
 	private View getGoodsView(final MallOrderDetailVO mOrderGoods){
@@ -185,6 +194,16 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 		Intent intent = new Intent(getActivity(), GoodsDetailActivity.class);
 		intent.putExtra(KeyUtil.GoodsIdKey, id);
 		startActivity(intent);
+	}
+	
+	private void toQRCodeActivity(GetSingleOrderResponse mOrdersList){
+		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.QRCodeKey, mOrdersList.getBarcode());
+		mBundle.putString(KeyUtil.QRCodeDataKey, mOrdersList.getBarcodeData());
+		Intent intent = new Intent();
+		intent.setClass(getActivity(), QRCodeActivity.class);
+		intent.putExtra(KeyUtil.BundleKey, mBundle);
+		getActivity().startActivity(intent);
 	}
 	
 	@Override
