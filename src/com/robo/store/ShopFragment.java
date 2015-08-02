@@ -135,7 +135,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	
 	private void InitLocation(){
 		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationMode.Battery_Saving);//设置定位模式
+		option.setLocationMode(LocationMode.Hight_Accuracy);//设置定位模式
 		option.setCoorType("gcj02");//返回的定位结果是百度经纬度，默认值gcj02
 		option.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
 		option.setIsNeedAddress(true);
