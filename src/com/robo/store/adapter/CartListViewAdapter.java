@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.robo.store.CheckAllOrdersActivity;
+import com.robo.store.GoodsDetailActivity;
 import com.robo.store.KeQuHuoShopActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
@@ -87,7 +88,18 @@ public class CartListViewAdapter extends BaseAdapter {
 		holder.number_txt.setText(String.valueOf(mGoodsBase.getNumber()));
 		holder.checkbox.setChecked(mGoodsBase.isSelected());
 		
-		
+		holder.good_icon.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				toGoodsDetailActivity(mGoodsBase.getGoodsBarcode());
+			}
+		});
+		holder.good_name.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				toGoodsDetailActivity(mGoodsBase.getGoodsBarcode());
+			}
+		});
 		holder.get_goods_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -120,6 +132,12 @@ public class CartListViewAdapter extends BaseAdapter {
 			}
 		});
 		return convertView;
+	}
+	
+	private void toGoodsDetailActivity(String id){
+		Intent intent = new Intent(context, GoodsDetailActivity.class);
+		intent.putExtra(KeyUtil.GoodsIdKey, id);
+		context.startActivity(intent);
 	}
 	
 	private void toQuhuoShopActivity(String goodsId){

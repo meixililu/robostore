@@ -59,6 +59,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
 	private String shopId;
+	private boolean isInitFooterView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,6 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		footerView.setVisibility(View.GONE);
-		mListView.addFooterView(footerView);
 		
 		headerView = inflater.inflate(R.layout.shop_list_header, null);
 		mGridView = (MyGridView) headerView.findViewById(R.id.gridview);
@@ -145,10 +145,12 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 	public void clearList(){
 		pageIndex = 0;
 		goodsList.clear();
+		isInitFooterView = false;
 		footerView.setVisibility(View.GONE);
 		mHomeListViewAdapter.notifyDataSetChanged();
 		load_more_data.setVisibility(View.VISIBLE);
 		no_more_data.setVisibility(View.GONE);
+		mListView.removeFooterView(footerView);
 	}
 	
 	private void RequestData(){
@@ -188,10 +190,10 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 						if(mGoodsList.size() > 0){
 							if(mGoodsList.size() < Settings.pageCount && pageIndex == 0){
 								isLoadMoreData = false;
-								mListView.removeFooterView(footerView);
 							}else{
-								isLoadMoreData = true;
+								initFooterView();
 								footerView.setVisibility(View.VISIBLE);
+								isLoadMoreData = true;
 								pageIndex++;
 							}
 						}else{
@@ -199,8 +201,6 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 							load_more_data.setVisibility(View.GONE);
 							no_more_data.setVisibility(View.VISIBLE);
 						}
-					}else{
-						mListView.removeFooterView(footerView);
 					}
 				}
 				
@@ -212,6 +212,13 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 					mGridView.setEnabled(true);
 				}
 			});
+		}
+	}
+	
+	private void initFooterView(){
+		if(!isInitFooterView){
+			isInitFooterView = true;
+			mListView.addFooterView(footerView);
 		}
 	}
 	

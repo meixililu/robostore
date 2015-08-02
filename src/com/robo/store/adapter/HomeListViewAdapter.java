@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,12 +77,18 @@ public class HomeListViewAdapter extends BaseAdapter {
 			e.printStackTrace();
 		}
 		holder.good_name.setText(mGoodsBase.getGoodsName());
-		holder.good_price_new.setText("￥" + mGoodsBase.getVipPrice());
+		if(!TextUtils.isEmpty(mGoodsBase.getVipPrice())){
+			holder.good_price_new.setText("￥" + mGoodsBase.getVipPrice());
+		}else {
+			holder.good_price_new.setText("￥" + mGoodsBase.getRetailPrice());
+		}
 		holder.good_price_old.setText("￥" + mGoodsBase.getRetailPrice());
-		if(mGoodsBase.getVipPrice().equals(mGoodsBase.getRetailPrice())){
-			holder.good_price_old.setVisibility(View.GONE);
-		}else{
-			holder.good_price_old.setVisibility(View.VISIBLE);
+		if(!TextUtils.isEmpty(mGoodsBase.getVipPrice()) && !TextUtils.isEmpty(mGoodsBase.getRetailPrice())){
+			if(mGoodsBase.getVipPrice().equals(mGoodsBase.getRetailPrice())){
+				holder.good_price_old.setVisibility(View.GONE);
+			}else{
+				holder.good_price_old.setVisibility(View.VISIBLE);
+			}
 		}
 		
 		holder.item_cover.setOnClickListener(new OnClickListener() {

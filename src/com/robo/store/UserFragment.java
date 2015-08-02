@@ -95,7 +95,9 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 			login_layout.setVisibility(View.GONE);
 			user_info_layout.setVisibility(View.VISIBLE);
 			userName = mSharedPreferences.getString(KeyUtil.UserNameKey, "");
-			my_account_name.setText(userName);
+			if(userName.length() >= 11){
+				my_account_name.setText(userName.substring(0, 3) + "****" + userName.substring(7));
+			}
 		}else{
 			logout_cover.setVisibility(View.GONE);
 			login_layout.setVisibility(View.VISIBLE);

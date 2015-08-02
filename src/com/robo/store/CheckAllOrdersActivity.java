@@ -48,6 +48,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
 	public static boolean isNeedRefresh;
+	private boolean isInitFooterView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		footerView.setVisibility(View.GONE);
 		mListView.addFooterView(footerView);
+		isInitFooterView = true;
 		setListOnScrollListener();
 		ordersList = new ArrayList<GetOrdersListResponse>();
 		mCheckAllOrderListAdapter = new CheckAllOrderListAdapter(this, inflater, ordersList);
@@ -113,7 +115,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		super.onResume();
 		LogUtil.DefalutLog("CheckAllOrdersActivity---onResume");
 		if(isNeedRefresh){
-			isNeedRefresh = true;
+			isNeedRefresh = false;
 			onSwipeRefreshLayoutRefresh();
 		}
 	}
@@ -129,11 +131,13 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	
 	public void clearList(){
 		pageIndex = 0;
+		isInitFooterView = false;
 		footerView.setVisibility(View.GONE);
 		load_more_data.setVisibility(View.VISIBLE);
 		no_more_data.setVisibility(View.GONE);
 		ordersList.clear();
 		mCheckAllOrderListAdapter.notifyDataSetChanged();
+		mListView.removeFooterView(footerView);
 	}
 	
 	private void RequestData(){
@@ -158,27 +162,56 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 					GetAllOrderResponse mListResponse = (GetAllOrderResponse) ResultParse.parseResult(result,GetAllOrderResponse.class);
 					if(ResultParse.handleResutl(CheckAllOrdersActivity.this, mListResponse)){
 						List<GetOrdersListResponse> mOrderList = mListResponse.getOrderList();
-						if(mOrderList.size() > 0){
-							ordersList.addAll(mOrderList);
-							mCheckAllOrderListAdapter.notifyDataSetChanged();
-							if(mOrderList.size() < Settings.pageCount && pageIndex == 0){
+						ordersList.addAll(mOrderList);
+						mCheckAllOrderListAdapter.notifyDataSetChanged();
+						if(pageIndex == 0){
+							if(mOrderList.size() == 0){
+								mListView.removeFooterView(footerView);
+								showEmptyLayout_Empty();
+								empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
+							}else if(mOrderList.size() > 0 && mOrderList.size() < Settings.pageCount){
 								isLoadMoreData = false;
 								mListView.removeFooterView(footerView);
 							}else{
-								isLoadMoreData = true;
+								initFooterView();
 								footerView.setVisibility(View.VISIBLE);
+								isLoadMoreData = true;
 								pageIndex++;
 							}
 						}else{
-							showEmptyLayout_Empty();
-							empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
-							isLoadMoreData = false;
-							load_more_data.setVisibility(View.GONE);
-							no_more_data.setVisibility(View.VISIBLE);
+							if(mOrderList.size() > 0 && mOrderList.size() < Settings.pageCount || mOrderList.size() == 0){
+								isLoadMoreData = false;
+								load_more_data.setVisibility(View.GONE);
+								no_more_data.setVisibility(View.VISIBLE);
+							}else{
+								footerView.setVisibility(View.VISIBLE);
+								isLoadMoreData = true;
+								pageIndex++;
+							}
 						}
+//						if(mOrderList.size() > 0){
+//							ordersList.addAll(mOrderList);
+//							mCheckAllOrderListAdapter.notifyDataSetChanged();
+//							if(mOrderList.size() < Settings.pageCount && pageIndex == 0){
+//								isLoadMoreData = false;
+//							}else{
+//								initFooterView();
+//								footerView.setVisibility(View.VISIBLE);
+//								isLoadMoreData = true;
+//								pageIndex++;
+//							}
+//						}else if(mOrderList.size() == 0 && pageIndex == 0){
+//							showEmptyLayout_Empty();
+//							empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
+//						}else {
+//							isLoadMoreData = false;
+//							load_more_data.setVisibility(View.GONE);
+//							no_more_data.setVisibility(View.VISIBLE);
+//						}
 					}else{
-						showEmptyLayout_Empty();
 						mListView.removeFooterView(footerView);
+						showEmptyLayout_Empty();
+						empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
 					}
 				}
 				
@@ -189,6 +222,13 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 					mProgressbar.setVisibility(View.GONE);
 				}
 			});
+		}
+	}
+	
+	private void initFooterView(){
+		if(!isInitFooterView){
+			isInitFooterView = true;
+			mListView.addFooterView(footerView);
 		}
 	}
 	

@@ -80,6 +80,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	public static BaseFragment mBaseFragment;
 	public int pageIndex = 0;
 	private boolean isLoadMoreData;
+	private boolean isInitFooterView;
 	private boolean isFinishloadData = true;
 	
 	@Override
@@ -128,7 +129,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
 		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		footerView.setVisibility(View.GONE);
-		mListView.addFooterView(footerView);
 		
 		headerView = inflater.inflate(R.layout.home_list_header, null);
 		viewpager_dot_layout = (LinearLayout) headerView.findViewById(R.id.viewpager_dot_layout);
@@ -207,10 +207,12 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	public void clearList(){
 		pageIndex = 0;
 		goodsList.clear();
+		isInitFooterView = false;
 		footerView.setVisibility(View.GONE);
 		mHomeListViewAdapter.notifyDataSetChanged();
 		load_more_data.setVisibility(View.VISIBLE);
 		no_more_data.setVisibility(View.GONE);
+		mListView.removeFooterView(footerView);
 	}
 	
 	protected void loadData(){
@@ -264,15 +266,13 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 						
 						mMenuAdapter.notifyDataSetChanged();
 						mHomeListViewAdapter.notifyDataSetChanged();
-						
-						
 						if(mGoodsList.size() > 0){
 							if(mGoodsList.size() < Settings.pageCount && pageIndex == 0){
 								isLoadMoreData = false;
-								mListView.removeFooterView(footerView);
 							}else{
-								isLoadMoreData = true;
+								initFooterView();
 								footerView.setVisibility(View.VISIBLE);
+								isLoadMoreData = true;
 								pageIndex++;
 							}
 						}else{
@@ -280,8 +280,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 							load_more_data.setVisibility(View.GONE);
 							no_more_data.setVisibility(View.VISIBLE);
 						}
-					}else{
-						mListView.removeFooterView(footerView);
 					}
 				}
 				
@@ -294,6 +292,13 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 					mGridView.setEnabled(true);
 				}
 			});
+		}
+	}
+	
+	private void initFooterView(){
+		if(!isInitFooterView){
+			isInitFooterView = true;
+			mListView.addFooterView(footerView);
 		}
 	}
 
