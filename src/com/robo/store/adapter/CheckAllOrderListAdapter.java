@@ -79,7 +79,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 	
 	@Override
 	public int getViewTypeCount() {
-		return 10;
+		return 100;
 	}
 
 	@Override
@@ -135,6 +135,12 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				holder6.goods_list = (LinearLayout) convertView.findViewById(R.id.goods_list);
 				convertView.setTag(holder6);
 				break;
+			default:
+				holder6 = new ViewHolder6();
+				convertView = mInflater.inflate(R.layout.order_list_item_type_6, null);
+				holder6.goods_list = (LinearLayout) convertView.findViewById(R.id.goods_list);
+				convertView.setTag(holder6);
+				break;
 			}
 		} else {
 			switch(type){
@@ -156,8 +162,12 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 			case 6:
 				holder6 = (ViewHolder6) convertView.getTag();
 				break;
+			default:
+				holder6 = (ViewHolder6) convertView.getTag();
+				break;
 			}
 		}
+		try{
 		switch(type){
 		case 1:
 			holder1.goods_list.removeAllViews();
@@ -257,6 +267,22 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 				holder6.goods_list.addView(goodsView);
 			}
 			break;
+		default:
+			holder6.goods_list.removeAllViews();
+			for(int i=0; i<detailList.size(); i++){
+				OrderDetailVO mOrderDetailVO = detailList.get(i);
+				if(i > 0){
+					holder6.goods_list.addView( ViewUtil.getLine(context, R.color.text_grey) );
+				}
+				View goodsView = getGoodsView(mOrderDetailVO,false,mOrderGoods);
+				LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+				goodsView.setLayoutParams(mParams);
+				holder6.goods_list.addView(goodsView);
+			}
+			break;
+		}
+		} catch(Exception e){
+			e.printStackTrace();
 		}
 		return convertView;
 	}
@@ -384,6 +410,7 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 	
 	private void toQRCodeActivity(GetOrdersListResponse mOrdersList){
 		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, mOrdersList.getOrderId());
 		mBundle.putString(KeyUtil.QRCodeKey, mOrdersList.getBarcode());
 		mBundle.putString(KeyUtil.QRCodeDataKey, mOrdersList.getBarcodeData());
 		Intent intent = new Intent();

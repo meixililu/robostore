@@ -198,6 +198,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 	
 	private void toQRCodeActivity(GetSingleOrderResponse mOrdersList){
 		Bundle mBundle = new Bundle();
+		mBundle.putString(KeyUtil.OrderIdKey, mOrdersList.getMallOrderCode());
 		mBundle.putString(KeyUtil.QRCodeKey, mOrdersList.getBarcode());
 		mBundle.putString(KeyUtil.QRCodeDataKey, mOrdersList.getBarcodeData());
 		Intent intent = new Intent();

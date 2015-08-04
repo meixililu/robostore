@@ -150,7 +150,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 			params.put("type", OrderType);
 			params.put("pageIndex", pageIndex);
 			params.put("pageCount", Settings.pageCount);
-			RoboHttpClient.post(HttpParameter.orderUrl,"getOrdersList", params, new TextHttpResponseHandler(){
+			RoboHttpClient.post(HttpParameter.orderUrl, "getOrdersList", params, new TextHttpResponseHandler(){
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
@@ -189,25 +189,6 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 								pageIndex++;
 							}
 						}
-//						if(mOrderList.size() > 0){
-//							ordersList.addAll(mOrderList);
-//							mCheckAllOrderListAdapter.notifyDataSetChanged();
-//							if(mOrderList.size() < Settings.pageCount && pageIndex == 0){
-//								isLoadMoreData = false;
-//							}else{
-//								initFooterView();
-//								footerView.setVisibility(View.VISIBLE);
-//								isLoadMoreData = true;
-//								pageIndex++;
-//							}
-//						}else if(mOrderList.size() == 0 && pageIndex == 0){
-//							showEmptyLayout_Empty();
-//							empty_layout.setText(CheckAllOrdersActivity.this.getResources().getString(R.string.order_list_empty));
-//						}else {
-//							isLoadMoreData = false;
-//							load_more_data.setVisibility(View.GONE);
-//							no_more_data.setVisibility(View.VISIBLE);
-//						}
 					}else{
 						mListView.removeFooterView(footerView);
 						showEmptyLayout_Empty();
