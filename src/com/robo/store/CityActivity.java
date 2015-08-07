@@ -126,9 +126,9 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 	private void InitLocation(){
 		LocationClientOption option = new LocationClientOption();
 		option.setLocationMode(LocationMode.Battery_Saving);//设置定位模式
-		option.setCoorType("gcj02");//返回的定位结果是百度经纬度，默认值gcj02
-		option.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
-		option.setOpenGps(false);
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
 		option.setIsNeedAddress(true);
 		mLocationClient.setLocOption(option);
 	}

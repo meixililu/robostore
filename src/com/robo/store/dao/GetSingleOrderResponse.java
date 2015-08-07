@@ -11,6 +11,13 @@ public class GetSingleOrderResponse extends CommonResponse {
 	private String orderTime;
 	private String barcode;
 	private String barcodeData;
+	private boolean isExpired;
+	public boolean isExpired() {
+		return isExpired;
+	}
+	public void setExpired(boolean isExpired) {
+		this.isExpired = isExpired;
+	}
 	private List<MallOrderDetailVO> detailList;
 	
 	public String getBarcode() {

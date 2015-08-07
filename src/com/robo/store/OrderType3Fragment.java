@@ -136,6 +136,10 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 				toQRCodeActivity(mSingleOrder);
 			}
 		});
+		if(mSingleOrder.isExpired()){
+			get_goods_code.setText("已过期");
+			get_goods_code.setTextColor(getActivity().getResources().getColor(R.color.red));
+		}
 	}
 	
 	private View getGoodsView(final MallOrderDetailVO mOrderGoods){
