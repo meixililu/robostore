@@ -7,24 +7,15 @@ import android.widget.Toast;
 
 public class HttpUtil {
 
-	public static void checkNetwork(final Context mContext){
+	public static boolean checkNetwork(final Context mContext){
 		ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);    
         NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();    
         if (networkinfo == null || !networkinfo.isAvailable()) {  // 当前网络不可用  
         	Toast.makeText(mContext, "没有可用的网络连接,请打开网络连接！", 0).show();
+        	return false;
         }else{
-        	Toast.makeText(mContext, "暂无数据", 0).show();
+        	return true;
         }
-	}
-	
-	public static String checkNetwork(final Context mContext, int a){
-		ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);    
-		NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();    
-		if (networkinfo == null || !networkinfo.isAvailable()) {  // 当前网络不可用  
-			return "没有可用的网络连接,请打开网络连接！";
-		}else{
-			return "网络连接错误，请稍候再试";
-		}
 	}
 	
 	public static boolean isNetworkAvailable(Context mContext){

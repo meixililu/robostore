@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.robo.store.dao.CommonResponse;
 
 public class ResultParse {
@@ -23,8 +24,9 @@ public class ResultParse {
 				JSONObject jObject = new JSONObject(result);
 				if(jObject.has("dataList")){
 					String dataList = jObject.getString("dataList");
-					ObjectMapper objectMapper = new ObjectMapper();
-					ResultDao = objectMapper.readValue(dataList,  mClass);
+//					ObjectMapper objectMapper = new ObjectMapper();
+//					ResultDao = objectMapper.readValue(dataList,  mClass);
+					ResultDao = new Gson().fromJson(dataList,  mClass);
 					return ResultDao;
 				}else{
 					return ResultDao;

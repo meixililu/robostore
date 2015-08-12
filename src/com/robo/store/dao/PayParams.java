@@ -8,6 +8,14 @@ public class PayParams {
 	private String noncestr;
 	private String timestamp;
 	private String sign;
+	private String payBarcode;
+
+	public String getPayBarcode() {
+		return payBarcode;
+	}
+	public void setPayBarcode(String payBarcode) {
+		this.payBarcode = payBarcode;
+	}
 	public String getAppid() {
 		return appid;
 	}

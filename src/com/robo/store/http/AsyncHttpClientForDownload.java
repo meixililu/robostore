@@ -115,7 +115,7 @@ import java.util.zip.GZIPInputStream;
  * @see com.robo.store.http.ResponseHandlerInterface
  * @see com.robo.store.http.RequestParams
  */
-public class AsyncHttpClient {
+public class AsyncHttpClientForDownload {
 
     public static final String LOG_TAG = "AsyncHttpClient";
 
@@ -124,7 +124,7 @@ public class AsyncHttpClient {
     public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
-    public static final String ENCODING_GZIP = "gzip";//identity
+    public static final String ENCODING_GZIP = "identity";//identity
 
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
@@ -146,7 +146,7 @@ public class AsyncHttpClient {
     /**
      * Creates a new AsyncHttpClient with default constructor arguments values
      */
-    public AsyncHttpClient() {
+    public AsyncHttpClientForDownload() {
         this(false, 80, 443);
     }
 
@@ -155,7 +155,7 @@ public class AsyncHttpClient {
      *
      * @param httpPort non-standard HTTP-only port
      */
-    public AsyncHttpClient(int httpPort) {
+    public AsyncHttpClientForDownload(int httpPort) {
         this(false, httpPort, 443);
     }
 
@@ -165,7 +165,7 @@ public class AsyncHttpClient {
      * @param httpPort  non-standard HTTP-only port
      * @param httpsPort non-standard HTTPS-only port
      */
-    public AsyncHttpClient(int httpPort, int httpsPort) {
+    public AsyncHttpClientForDownload(int httpPort, int httpsPort) {
         this(false, httpPort, httpsPort);
     }
 
@@ -176,7 +176,7 @@ public class AsyncHttpClient {
      * @param httpPort                   HTTP port to be used, must be greater than 0
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
-    public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
+    public AsyncHttpClientForDownload(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
         this(getDefaultSchemeRegistry(fixNoHttpResponseException, httpPort, httpsPort));
     }
 
@@ -223,7 +223,7 @@ public class AsyncHttpClient {
      *
      * @param schemeRegistry SchemeRegistry to be used
      */
-    public AsyncHttpClient(SchemeRegistry schemeRegistry) {
+    public AsyncHttpClientForDownload(SchemeRegistry schemeRegistry) {
 
         BasicHttpParams httpParams = new BasicHttpParams();
 
@@ -1560,9 +1560,9 @@ public class AsyncHttpClient {
 
         @Override
         public void consumeContent() throws IOException {
-            AsyncHttpClient.silentCloseInputStream(wrappedStream);
-            AsyncHttpClient.silentCloseInputStream(pushbackStream);
-            AsyncHttpClient.silentCloseInputStream(gzippedStream);
+            AsyncHttpClientForDownload.silentCloseInputStream(wrappedStream);
+            AsyncHttpClientForDownload.silentCloseInputStream(pushbackStream);
+            AsyncHttpClientForDownload.silentCloseInputStream(gzippedStream);
             super.consumeContent();
         }
     }

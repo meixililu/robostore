@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gc.materialdesign.widgets.Dialog;
+import com.robo.store.util.APKDownloadUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.LoginUtil;
@@ -191,7 +192,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void checkSoftUpdate(){
-		
+		APKDownloadUtil.CheckUpdate(getActivity());
 	}
 	
 	@Override

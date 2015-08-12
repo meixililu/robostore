@@ -1,10 +1,7 @@
 package com.robo.store;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import org.apache.http.Header;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,18 +11,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.robo.store.http.TextHttpResponseHandler;
+import com.gc.materialdesign.widgets.Dialog;
 import com.robo.store.adapter.MainTabViewPagerAdapter;
-import com.robo.store.http.HttpParameter;
-import com.robo.store.http.RoboHttpClient;
+import com.robo.store.util.APKDownloadUtil;
+import com.robo.store.util.HttpUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.LoginUtil;
 import com.robo.store.util.SPUtil;
 import com.robo.store.util.TabsUtil;
-import com.robo.store.util.ToastUtil;
 import com.robo.store.util.WechatPayUtil;
 import com.robo.store.wxapi.WXPayEntryActivity;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -56,8 +53,15 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		setContentView(R.layout.activity_main);
 		initWechat();
 		init();
-		RequestData();
+		checkNetwork();
 		LoginUtil.login(this, mSharedPreferences);
+		APKDownloadUtil.CheckUpdate(this);
+	}
+	
+	private void checkNetwork(){
+		if(!HttpUtil.checkNetwork(this)){
+			networdError();
+		}
 	}
 	
 	public static void initWechat(){
@@ -80,6 +84,19 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 				
 		viewPager.setOnPageChangeListener(this);
 		viewPager.setAdapter(new MainTabViewPagerAdapter(getSupportFragmentManager(), fragmentList));
+	}
+	
+	private void networdError(){
+		Dialog dialog = new Dialog(this, "温馨提示", "当前没有可用的网络连接,请打开网络连接！");
+		dialog.addAcceptButton("确定");
+		dialog.setOnAcceptButtonClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				checkNetwork();
+			}
+		});
+		dialog.setCancelable(true);
+		dialog.show();
 	}
 	
 	@Override
@@ -121,30 +138,6 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		}
 	}
 	
-	private void RequestData(){
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("currentVer", String.valueOf(HttpParameter.softVerCode));
-		RoboHttpClient.post("getAppVersion", params, new TextHttpResponseHandler(){
-
-			@Override
-			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(MainActivity.this, "连接失败，请重试！");
-			}
-
-			@Override
-			public void onSuccess(int arg0, Header[] arg1, String result) {
-				LogUtil.DefalutLog(result);
-//				UserLoginResponse mUserLoginResponse = (UserLoginResponse) ResultParse.parseResult(result,UserLoginResponse.class);
-//				if(ResultParse.handleResutl(MainActivity.this, mUserLoginResponse)){
-//				}
-			}
-			
-			@Override
-			public void onFinish() {
-			}
-		});
-	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

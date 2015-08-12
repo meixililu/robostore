@@ -1,5 +1,6 @@
 package com.robo.store.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,6 +86,18 @@ public class SaveData {
       }  
       //读取产生异常，返回null  
       return null;  
-  }  
+   }  
+   
+   public static boolean isFileExists(Context mContext,String name){
+	   File file = new File(mContext.getFilesDir(), name);
+	   return file.exists();
+   }
+   
+   public static void deleteObject(Context mContext,String name){
+	   File file = new File(mContext.getFilesDir(), name);
+	   if(file.exists()){
+		  file.delete();  
+	   }
+   }
 	
 }

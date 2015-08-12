@@ -64,6 +64,7 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 	private SharedPreferences mSharedPreferences;
 	private String city;
 	private String cityId;
+	private String oldcityId;
 	private String locationCity;
 	private LocationClient mLocationClient = null;
 	private BDLocationListener myListener = new MyLocationListener();
@@ -77,6 +78,7 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 		mSharedPreferences = SPUtil.getSharedPreferences(this);
 		city = mSharedPreferences.getString(KeyUtil.CityKey, "");
 		cityId = mSharedPreferences.getString(KeyUtil.CityIdKey, "");
+		oldcityId = cityId;
 		mLocationClient = new LocationClient(this);
 		mLocationClient.registerLocationListener( myListener ); 
 		filterList = new ArrayList<ContactItemInterface>();
@@ -200,6 +202,12 @@ public class CityActivity extends BaseActivity implements TextWatcher {
 	}
 	
 	private void saveCity(String cityId, String city){
+		if(!oldcityId.equals(cityId)){
+			if(CartFragment.cartList != null){
+				CartFragment.cartList.clear();
+			}
+			SaveData.deleteObject(this, CartFragment.SaveCartDataName);
+		}
 		SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.CityKey, city);
 		SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.CityIdKey, cityId);
 	}

@@ -96,5 +96,14 @@ public class RoboHttpClient {
 	public static void post(String type, Map param, AsyncHttpResponseHandler responseHandler) {
 		post(HttpParameter.baseUrl, type, param, responseHandler);
 	}
+	
+	/**下载apk专用，因为AsyncHttp默认使用gzip压缩，在有些机子上下载内容的totalsize为-1，更新进度无法显示，需要改为identity.
+	 * @param url
+	 * @param params
+	 * @param responseHandler
+	 */
+	public static void getAPk(String url, RequestParams params, ResponseHandlerInterface responseHandler) {
+		new AsyncHttpClientForDownload().get(url, params, responseHandler);
+	}
 
 }

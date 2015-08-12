@@ -12,7 +12,7 @@
         android:layout_height="37dp"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="@dimen/small"
+        android:textSize="@dimen/big"
         android:background="@drawable/home_menu_item_selector"
         />
 </LinearLayout>
