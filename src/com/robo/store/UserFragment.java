@@ -192,7 +192,7 @@ public class UserFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void checkSoftUpdate(){
-		APKDownloadUtil.CheckUpdate(getActivity());
+		APKDownloadUtil.CheckUpdate(getActivity(),true);
 	}
 	
 	@Override

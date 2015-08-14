@@ -16,11 +16,11 @@ import com.robo.store.http.TextHttpResponseHandler;
 
 public class APKDownloadUtil {
 
-	public static void CheckUpdate(Context mContext){
-		RequestData(mContext);
+	public static void CheckUpdate(Context mContext, boolean isShowMsg){
+		RequestData(mContext,isShowMsg);
 	}
 	
-	private static void RequestData(final Context mContext){
+	private static void RequestData(final Context mContext, final boolean isShowMsg){
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("appName", "robo");//roboisp
 		params.put("appVersion", String.valueOf(HttpParameter.softVerCode));
@@ -40,6 +40,10 @@ public class APKDownloadUtil {
 						updateDialog(mContext, false, mResponse);
 					}else if(mResponse.getUpdateType() == 2){
 						updateDialog(mContext, true, mResponse);
+					}else if(mResponse.getUpdateType() == 0){
+						if(isShowMsg){
+							ToastUtil.diaplayMesShort(mContext, "当前版本是最新版本");
+						}
 					}
 				}
 			}
