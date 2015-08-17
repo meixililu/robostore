@@ -105,9 +105,8 @@ public class ForgetPWDActivity extends BaseActivity {
 						if (timer != null) {
 							timer.cancel(); 
 						}
-						getcode_btn.setClickable(true);
-						getcode_btn.setText("获取验证码");
 						ToastUtil.diaplayMesLong(ForgetPWDActivity.this, "修改成功");
+						ForgetPWDActivity.this.finish();
 					}
 				}
 				

@@ -201,7 +201,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, String result) {
 					GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-					if(ResultParse.handleResutl(getActivity(), mResponse)){
+					if(ResultParse.handleResutl(getActivity(), mResponse, false)){
 						List<ShopBase> mList = mResponse.getList();
 						if(mList.size() > 0){
 							if(pageIndex == 0){
@@ -250,7 +250,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mResponse)){
+				if(ResultParse.handleResutl(getActivity(), mResponse, false)){
 					List<ShopBase> mList = mResponse.getList();
 					isBeforeUseListAdd = mList.size();
 					if(isBeforeUseListAdd > 0){
@@ -283,7 +283,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
-				if(ResultParse.handleResutl(getActivity(), mResponse)){
+				if(ResultParse.handleResutl(getActivity(), mResponse, false)){
 					List<ShopBase> mList = mResponse.getList();
 					isNearbyListAdd = mList.size(); 
 					if(isNearbyListAdd > 0){

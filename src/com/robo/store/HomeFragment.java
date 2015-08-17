@@ -173,11 +173,11 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		search_btn.setOnClickListener(this);
 		if(!TextUtils.isEmpty(city) && !TextUtils.isEmpty(cityId)){
 			city_tv.setText(city);
+			isHashFinishInitView = true;
+			loadData();
 		}else{
 			toActivityForResult(CityActivity.class, null, RequestCity);
 		}
-		isHashFinishInitView = true;
-		loadData();
 	}
 	
 	public void setListOnScrollListener(){

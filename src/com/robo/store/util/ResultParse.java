@@ -56,4 +56,22 @@ public class ResultParse {
 		return data;
 	}
 	
+	public static boolean handleResutl(Context mContext, CommonResponse mResultDao, boolean isShowToast){
+		boolean data = false;
+		if(mResultDao != null){
+			if(mResultDao.getStatus().equals(ResultOk)){
+				data = true;
+			}else if(mResultDao.getStatus().equals(TokenOut)){
+				SharedPreferences mSharedPreferences = SPUtil.getSharedPreferences(mContext);
+				LoginUtil.login(mContext, mSharedPreferences);
+				ToastUtil.diaplayMesLong(mContext, "用户信息更新成功，请刷新重试！");
+			}else{
+				if(isShowToast){
+					ToastUtil.diaplayMesLong(mContext, mResultDao.getErrorMsg());
+				}
+			}
+		}
+		return data;
+	}
+	
 }

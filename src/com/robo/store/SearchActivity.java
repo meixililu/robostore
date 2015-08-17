@@ -23,6 +23,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 	private String searchContent;
 	private String searchType;
 	private String shopId;
+	private String hintText;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,14 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 			searchType = mBundle.getString(KeyUtil.SearchTypeKey);
 			shopId = mBundle.getString(KeyUtil.ShopDetailIdKey);
 		}
+		if(searchType.equals(SearchGoods)){
+			hintText = "请输入商品名称";
+		}else{
+			hintText = "请输入店铺名称";
+		}
 		search_cover = (FrameLayout) findViewById(R.id.search_cover);
 		search_et = (EditText) findViewById(R.id.search_tv);
+		search_et.setHint(hintText);
 		search_cover.setOnClickListener(this);
 		search_et.requestFocus();
 		showIME();
@@ -59,7 +66,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 		boolean isvalid = true;
 		searchContent = search_et.getText().toString().trim();
 		if(TextUtils.isEmpty(searchContent)){
-			ToastUtil.diaplayMesShort(this, "请输入搜索内容");
+			ToastUtil.diaplayMesShort(this, hintText);
 			isvalid = false;
 		}
 		return isvalid;
