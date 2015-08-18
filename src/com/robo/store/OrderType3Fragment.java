@@ -268,6 +268,7 @@ public class OrderType3Fragment extends Fragment implements View.OnClickListener
 				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
 					ToastUtil.diaplayMesLong(getActivity(), "申请退款成功");
 					if(mRefreshListener != null){
+						CheckAllOrdersActivity.isNeedRefresh = true;
 						mRefreshListener.refresh();
 					}
 				}

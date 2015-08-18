@@ -199,6 +199,7 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetPayParamsRespone mResponse = (GetPayParamsRespone) ResultParse.parseResult(result,GetPayParamsRespone.class);
 				if(ResultParse.handleResutl(getActivity(), mResponse)){
+					CheckAllOrdersActivity.isNeedRefresh = true;
 					OrderDetailActivity.isNeedRefresh = true;
 					WechatPayUtil.startWechat(mResponse.getPayParams());
 				}
@@ -244,6 +245,7 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 				if(ResultParse.handleResutl(getActivity(), mSingleOrder)){
 					ToastUtil.diaplayMesLong(getActivity(), "订单已取消");
 					if(mRefreshListener != null){
+						CheckAllOrdersActivity.isNeedRefresh = true;
 						mRefreshListener.refresh();
 					}
 				}
