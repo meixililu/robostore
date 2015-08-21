@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.robo.store.dao.CommonResponse;
+import com.robo.store.http.HttpParameter;
 
 public class ResultParse {
 	
@@ -49,6 +50,12 @@ public class ResultParse {
 				SharedPreferences mSharedPreferences = SPUtil.getSharedPreferences(mContext);
 				LoginUtil.login(mContext, mSharedPreferences);
 				ToastUtil.diaplayMesLong(mContext, "用户信息更新成功，请刷新重试！");
+			}else if(mResultDao.getStatus().equals("10007")){//用户已被禁用
+				SharedPreferences mSharedPreferences = SPUtil.getSharedPreferences(mContext);
+				SPUtil.saveSharedPreferences(mSharedPreferences, KeyUtil.UserPWDKey, "");
+				LoginUtil.isLogin = false;
+				HttpParameter.accessToken = "";
+				ToastUtil.diaplayMesLong(mContext, mResultDao.getErrorMsg());
 			}else{
 				ToastUtil.diaplayMesLong(mContext, mResultDao.getErrorMsg());
 			}
