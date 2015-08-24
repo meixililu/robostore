@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
@@ -39,14 +42,19 @@ public class ShopLocationFragment extends BaseFragment {
 		mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL); 
 		LatLng point = new LatLng(ShopLocationActivity.latitude, ShopLocationActivity.longitude); 
 		//构建Marker图标  
-		BitmapDescriptor bitmap = BitmapDescriptorFactory  
-		    .fromResource(R.drawable.icon_poi);  
+		BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_poi);  
 		//构建MarkerOption，用于在地图上添加Marker  
 		OverlayOptions option = new MarkerOptions()  
 		    .position(point)  
 		    .icon(bitmap);  
 		//在地图上添加Marker，并显示  
 		mBaiduMap.addOverlay(option);
+		MapStatus mMapStatus = new MapStatus.Builder()
+		.target(point)
+		.zoom(18)
+		.build();
+		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+		mBaiduMap.animateMapStatus(mapStatusUpdate);
 	}
 	
 	
