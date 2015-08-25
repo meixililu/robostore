@@ -56,6 +56,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		setTitle();
 		setContentView(R.layout.activity_check_all_orders);
 		init();
+		mSwipeRefreshLayout.setRefreshing(true);
 		RequestData();
 	}
 	
@@ -143,9 +144,6 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	private void RequestData(){
 		if(isFinishloadData){
 			isFinishloadData = false;
-			if(pageIndex == 0){
-				mProgressbar.setVisibility(View.VISIBLE);
-			}
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("type", OrderType);
 			params.put("pageIndex", pageIndex);

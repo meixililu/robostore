@@ -144,6 +144,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	}
 
 	protected void loadData(){
+		mSwipeRefreshLayout.setRefreshing(true);
 		if(LoginUtil.isLogin){
 			QueryShopByNearby();
 			QueryShopByBeforeUse();
@@ -181,9 +182,6 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	private void QueryShopByArea(){
 		if(isFinishloadData){
 			isFinishloadData = false;
-			if(pageIndex == 0){
-				mProgressbar.setVisibility(View.VISIBLE);
-			}
 			empty_layout.setVisibility(View.GONE);
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("longitude", longitude);

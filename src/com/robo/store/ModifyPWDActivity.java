@@ -62,19 +62,19 @@ public class ModifyPWDActivity extends BaseActivity {
 		newPWDRepeat = repeat_pwd_input.getText().toString().trim();
 		if(TextUtils.isEmpty(oldPWD)){
 			ToastUtil.diaplayMesShort(this, "请输入旧密码");
-			isvalid = false;
+			return false;
 		}
 		if(TextUtils.isEmpty(newPWD)){
 			ToastUtil.diaplayMesShort(this, "请输入新密码");
-			isvalid = false;
+			return false;
 		}
 		if(TextUtils.isEmpty(newPWDRepeat)){
 			ToastUtil.diaplayMesShort(this, "请再次输入新密码");
-			isvalid = false;
+			return false;
 		}
 		if(!newPWDRepeat.equals(newPWD)){
 			ToastUtil.diaplayMesShort(this, "两次输入的新密码不一致");
-			isvalid = false;
+			return false;
 		}
 		return isvalid;
 	}

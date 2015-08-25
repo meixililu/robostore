@@ -143,6 +143,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 				HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
 				mMenuAdapter.notifyDataSetChanged();
 				clearList();
+				mSwipeRefreshLayout.setRefreshing(true);
 				RequestData();
 			}
 		});
@@ -219,6 +220,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		LogUtil.DefalutLog("HomeFragment---setUserVisibleHint---loadData");
 		if(isHashFinishInitView){
 			isHashFinishInitView = false;
+			mSwipeRefreshLayout.setRefreshing(true);
 			RequestData();
 		}
 	}
@@ -235,9 +237,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		if(isFinishloadData){
 			mGridView.setEnabled(false);
 			isFinishloadData = false;
-			if(pageIndex == 0){
-				mProgressbar.setVisibility(View.VISIBLE);
-			}
 			empty_layout.setVisibility(View.GONE);
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("cityId", HomeFragment.cityId);

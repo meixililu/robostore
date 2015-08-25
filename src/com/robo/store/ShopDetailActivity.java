@@ -68,6 +68,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		setTitle();
 		setContentView(R.layout.activity_shop_detail);
 		init();
+		mSwipeRefreshLayout.setRefreshing(true);
 		RequestData();
 	}
 	
@@ -108,6 +109,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 				HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
 				mMenuAdapter.notifyDataSetChanged();
 				clearList();
+				mSwipeRefreshLayout.setRefreshing(true);
 				RequestData();
 			}
 		});
@@ -158,9 +160,6 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		if(isFinishloadData){
 			mGridView.setEnabled(false);
 			isFinishloadData = false;
-			if(pageIndex == 0){
-				mProgressbar.setVisibility(View.VISIBLE);
-			}
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("shopId", shopId);
 			params.put("type", goodType);

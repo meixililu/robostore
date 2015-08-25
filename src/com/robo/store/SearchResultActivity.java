@@ -8,11 +8,14 @@ import org.apache.http.Header;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,7 +38,6 @@ import com.robo.store.util.UnicodeToStr;
 
 public class SearchResultActivity extends BaseActivity implements OnClickListener{
 
-	private SwipeRefreshLayout mswiperefreshlayout;
 	private LinearLayout list_layout,message_layout;
 	private ListView mListView;
 	private TextView result_number_tv;
@@ -56,6 +58,10 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 	private boolean isLoadMoreData;
 	private boolean isFinishloadData = true;
 	
+	private FrameLayout search_cover;
+	private EditText search_et;
+	private String hintText;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,12 +79,12 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 			searchContent = mBundle.getString(KeyUtil.SearchContentKey);
 			shopId = mBundle.getString(KeyUtil.ShopDetailIdKey);
 		}
-		if(searchType.equals(SearchActivity.SearchGoods)){
-			title = this.getResources().getString(R.string.search_goods_result);
-		}else{
-			title = this.getResources().getString(R.string.search_shops_result);
-		}
-		setTitle(title);
+//		if(searchType.equals(SearchActivity.SearchGoods)){
+//			title = this.getResources().getString(R.string.search_goods_result);
+//		}else{
+//			title = this.getResources().getString(R.string.search_shops_result);
+//		}
+//		setTitle(title);
 	}
 	
 	private void init(){
@@ -88,6 +94,17 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 		message_layout = (LinearLayout) findViewById(R.id.message_layout);
 		mListView = (ListView) findViewById(R.id.content_lv);
 		result_number_tv = (TextView) findViewById(R.id.result_number_tv);
+		
+		if(searchType.equals(SearchActivity.SearchGoods)){
+			hintText = "请输入商品名称";
+		}else{
+			hintText = "请输入店铺名称";
+		}
+		search_cover = (FrameLayout) findViewById(R.id.search_cover);
+		search_et = (EditText) findViewById(R.id.search_tv);
+		search_et.setHint(hintText);
+		search_cover.setOnClickListener(this);
+		
 		footerView = inflater.inflate(R.layout.list_footer_view, null);
 		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
@@ -140,7 +157,8 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 			goodsList.clear();
 			mHomeListViewAdapter.notifyDataSetChanged();
 		}else{
-			
+			shopList.clear();
+			mShopSearchListAdapter.notifyDataSetChanged();
 		}
 	}
 	
@@ -149,7 +167,6 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 			isFinishloadData = false;
 			if(pageIndex == 0){
 				list_layout.setVisibility(View.GONE);
-				mProgressbar.setVisibility(View.VISIBLE);
 			}
 			message_layout.setVisibility(View.GONE);
 			if(searchType.equals(SearchActivity.SearchGoods)){
@@ -260,6 +277,29 @@ public class SearchResultActivity extends BaseActivity implements OnClickListene
 		case R.id.empty_layout:
 			SearchResultActivity.this.finish();
 			break;
+		case R.id.search_cover:
+			search();
+			
+			break;
+		}
+	}
+	
+	private boolean validData(){
+		boolean isvalid = true;
+		String temp = search_et.getText().toString().trim();
+		if(TextUtils.isEmpty(temp)){
+			ToastUtil.diaplayMesShort(this, hintText);
+			isvalid = false;
+		}else{
+			searchContent = temp;
+		}
+		return isvalid;
+	}
+	
+	private void search(){
+		if(validData()){
+			mSwipeRefreshLayout.setRefreshing(true);
+			onSwipeRefreshLayoutRefresh();
 		}
 	}
 	
