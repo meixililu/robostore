@@ -83,6 +83,7 @@
             android:layout_height="@dimen/progressbar_heigh"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:background="@color/app_color"
             />
     </FrameLayout>
