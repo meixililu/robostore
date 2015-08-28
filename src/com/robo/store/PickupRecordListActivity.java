@@ -37,6 +37,7 @@ public class PickupRecordListActivity extends BaseActivity implements OnClickLis
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pickup_record_list);
 		init();
+		mSwipeRefreshLayout.setRefreshing(true);
 		RequestData();
 	}
 	
@@ -68,7 +69,6 @@ public class PickupRecordListActivity extends BaseActivity implements OnClickLis
 		if(isFinishloadData){
 			hideEmptyLayout();
 			isFinishloadData = false;
-			showProgressbar();
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("orderId", orderCode);
 			RoboHttpClient.post(HttpParameter.orderUrl,"getPickUpLog", params, new TextHttpResponseHandler(){
@@ -104,6 +104,7 @@ public class PickupRecordListActivity extends BaseActivity implements OnClickLis
 	
 	@Override
 	public void onClickEmptyLayoutRefresh() {
+		mSwipeRefreshLayout.setRefreshing(true);
 		onSwipeRefreshLayoutRefresh();
 	}
 	

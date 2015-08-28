@@ -65,6 +65,7 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		setContentView(R.layout.activity_quhuo_shop);
 		initView();
 		initLocation();
+		mSwipeRefreshLayout.setRefreshing(true);
 		QueryShopByArea();
 	}
 	
@@ -153,9 +154,6 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 	private void QueryShopByArea(){
 		if(isFinishloadData){
 			isFinishloadData = false;
-			if(pageIndex == 0){
-				showProgressbar();
-			}
 			empty_layout.setVisibility(View.GONE);
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("cityId", HomeFragment.cityId);
