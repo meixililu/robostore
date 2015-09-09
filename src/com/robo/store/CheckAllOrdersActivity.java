@@ -8,6 +8,7 @@ import org.apache.http.Header;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,13 +34,11 @@ import com.robo.store.util.ToastUtil;
 public class CheckAllOrdersActivity extends BaseActivity implements OnClickListener{
 
 	//（订单状态：“1.待付款”，“2.订单取消”，“3.待取货”，“4.退款处理中”，“5.已退款，交易关闭”，“6.交易完成”6种状态）
-	private SwipeRefreshLayout mswiperefreshlayout;
 	private ListView mListView;
 	private View footerView;
 	private LinearLayout load_more_data;
 	private TextView no_more_data;
 	private LayoutInflater inflater;
-	
 	private CheckAllOrderListAdapter mCheckAllOrderListAdapter;
 	private List<GetOrdersListResponse> ordersList;
 	
@@ -56,7 +55,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 		setTitle();
 		setContentView(R.layout.activity_check_all_orders);
 		init();
-		mSwipeRefreshLayout.setRefreshing(true);
+		onCreateShowProgressbar();
 		RequestData();
 	}
 	
@@ -78,11 +77,11 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	
 	private void init(){
 		inflater = LayoutInflater.from(this);
-		initSwipeRefresh();
 		mListView = (ListView) findViewById(R.id.content_lv);
 		footerView = inflater.inflate(R.layout.list_footer_view, null);
 		load_more_data = (LinearLayout) footerView.findViewById(R.id.load_more_data);
 		no_more_data = (TextView) footerView.findViewById(R.id.no_more_data);
+		initSwipeRefresh();
 		footerView.setVisibility(View.GONE);
 		mListView.addFooterView(footerView);
 		isInitFooterView = true;
@@ -122,6 +121,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 	}
 	
 	public void onClickEmptyLayoutRefresh(){
+		mSwipeRefreshLayout.setRefreshing(true);
 		onSwipeRefreshLayoutRefresh();
 	}
 	
@@ -152,6 +152,7 @@ public class CheckAllOrdersActivity extends BaseActivity implements OnClickListe
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					showEmptyLayout_Error();
 					ToastUtil.diaplayMesLong(CheckAllOrdersActivity.this, CheckAllOrdersActivity.this.getResources().getString(R.string.connet_fail));
 				}
 				

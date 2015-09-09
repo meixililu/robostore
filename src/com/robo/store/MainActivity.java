@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements OnPageChangeListe
 		init();
 		checkNetwork();
 		LoginUtil.login(this, mSharedPreferences);
-//		APKDownloadUtil.CheckUpdate(this,false);
+		APKDownloadUtil.CheckUpdate(this,false);
 	}
 	
 	private void checkNetwork(){

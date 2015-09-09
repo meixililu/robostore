@@ -65,7 +65,7 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 		setContentView(R.layout.activity_quhuo_shop);
 		initView();
 		initLocation();
-		mSwipeRefreshLayout.setRefreshing(true);
+		onCreateShowProgressbar();
 		QueryShopByArea();
 	}
 	
@@ -219,6 +219,7 @@ public class KeQuHuoShopActivity extends BaseActivity implements OnClickListener
 	}
 	
 	public void onClickEmptyLayoutRefresh(){
+		mSwipeRefreshLayout.setRefreshing(true);
 		onSwipeRefreshLayoutRefresh();
 	}
 	

@@ -57,6 +57,17 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 	
+	protected void onCreateShowProgressbar(){
+		if(mSwipeRefreshLayout != null){
+			mSwipeRefreshLayout.post(new Runnable() {
+				@Override
+				public void run() {
+					mSwipeRefreshLayout.setRefreshing(true);
+				}
+			});
+		}
+	}
+	
 	protected void initProgressbar(){
 		if(mProgressbar == null){
 			mProgressbar = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndetermininate);

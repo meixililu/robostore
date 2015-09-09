@@ -63,6 +63,8 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 	private int isNearbyListAdd;
 	private int loadCount;
 	
+	private List<ShopBase> fjList;
+	private List<ShopBase> zjList;
 	private List<ShopBase> AllDataList;
 	private ShopPinnedListAdapter mShopListAdapter;
 	
@@ -193,7 +195,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-					ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+					ToastUtil.diaplayMesShort(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
 				}
 				
 				@Override
@@ -249,11 +251,14 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mResponse, false)){
-					List<ShopBase> mList = mResponse.getList();
-					isBeforeUseListAdd = mList.size();
+					if(zjList != null && zjList.size() > 0){
+						AllDataList.removeAll(zjList);
+					}
+					zjList = mResponse.getList();
+					isBeforeUseListAdd = zjList.size();
 					if(isBeforeUseListAdd > 0){
-						mList.add(0, getSectionBean("最近使用的店铺"));
-						AllDataList.addAll(0,mList);
+						zjList.add(0, getSectionBean("最近使用的店铺"));
+						AllDataList.addAll(0,zjList);
 						mShopListAdapter.notifyDataSetChanged();
 					}
 				}
@@ -275,18 +280,20 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
 			}
 
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String result) {
 				GetShopListResponse mResponse = (GetShopListResponse) ResultParse.parseResult(result,GetShopListResponse.class);
 				if(ResultParse.handleResutl(getActivity(), mResponse, false)){
-					List<ShopBase> mList = mResponse.getList();
-					isNearbyListAdd = mList.size(); 
+					if(zjList != null && zjList.size() > 0){
+						AllDataList.removeAll(zjList);
+					}
+					fjList = mResponse.getList();
+					isNearbyListAdd = fjList.size(); 
 					if(isNearbyListAdd > 0){
-						mList.add(0, getSectionBean("附近的店铺"));
-						AllDataList.addAll(isBeforeUseListAdd, mList);
+						fjList.add(0, getSectionBean("附近的店铺"));
+						AllDataList.addAll(isBeforeUseListAdd, fjList);
 						mShopListAdapter.notifyDataSetChanged();
 					}
 				}

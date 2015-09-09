@@ -68,7 +68,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		setTitle();
 		setContentView(R.layout.activity_shop_detail);
 		init();
-		mSwipeRefreshLayout.setRefreshing(true);
+		onCreateShowProgressbar();
 		RequestData();
 	}
 	
@@ -145,6 +145,12 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		RequestData();
 	}
 	
+	@Override
+	public void onClickEmptyLayoutRefresh() {
+		mSwipeRefreshLayout.setRefreshing(true);
+		onSwipeRefreshLayoutRefresh();
+	}
+	
 	public void clearList(){
 		pageIndex = 0;
 		goodsList.clear();
@@ -169,6 +175,7 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					showEmptyLayout_Error();
 					ToastUtil.diaplayMesLong(ShopDetailActivity.this, ShopDetailActivity.this.getResources().getString(R.string.connet_fail));
 				}
 				
