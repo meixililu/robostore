@@ -195,6 +195,7 @@ public class ShopFragment extends BaseFragment implements OnClickListener{
 				
 				@Override
 				public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+					empty_layout.setVisibility(View.VISIBLE);
 					ToastUtil.diaplayMesShort(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
 				}
 				
