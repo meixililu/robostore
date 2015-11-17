@@ -8,6 +8,9 @@ import org.apache.http.Header;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,25 +25,31 @@ import android.widget.TextView;
 
 import com.gc.materialdesign.widgets.Dialog;
 import com.robo.store.CheckAllOrdersActivity;
+import com.robo.store.ConfirmOrderActivity;
 import com.robo.store.OrderDetailActivity;
 import com.robo.store.QRCodeActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GetOrdersListResponse;
 import com.robo.store.dao.GetPayParamsRespone;
 import com.robo.store.dao.GetSingleOrderResponse;
+import com.robo.store.dao.GetZfbPayParamsRespone;
 import com.robo.store.dao.OrderDetailVO;
 import com.robo.store.dao.OrderGoods;
+import com.robo.store.dialog.PayDialog;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
+import com.robo.store.listener.onPayTypeSelectedListener;
 import com.robo.store.util.DrawableUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
+import com.robo.store.util.PayResult;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
 import com.robo.store.util.WechatPayUtil;
+import com.robo.store.util.ZFBpayUtil;
 import com.squareup.picasso.Picasso;
 
 public class CheckAllOrderListAdapter extends BaseAdapter {
@@ -328,7 +337,22 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 		return goodsView;
 	}
 	
-	private void getWeChatPara(String orderId){
+	private void getWeChatPara(final String orderId){
+		PayDialog mPayDialog = new PayDialog(context);
+		mPayDialog.setmListener(new onPayTypeSelectedListener() {
+			@Override
+			public void zfbPay() {
+				toZFBPay(orderId);
+			}
+			@Override
+			public void wechatPay() {
+				toWechatPay(orderId);
+			}
+		});
+		mPayDialog.show();
+	}
+	
+	private void toWechatPay(String orderId){
 		final ProgressDialog progressDialog = ProgressDialog.show(context, "", "正在调取支付...", true, false);
 		RequestParams params = new RequestParams();
 		params.put("orderId", orderId);
@@ -354,6 +378,56 @@ public class CheckAllOrderListAdapter extends BaseAdapter {
 			}
 		});
 	}
+	
+	private void toZFBPay(String orderId){
+		final ProgressDialog progressDialog = ProgressDialog.show(context, "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", orderId);
+		RoboHttpClient.postForPay(HttpParameter.zfbUrl, params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(context, context.getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetZfbPayParamsRespone mResponse = (GetZfbPayParamsRespone) ResultParse.parseResult(result,GetZfbPayParamsRespone.class);
+				if(ResultParse.handleResutl(context, mResponse)){
+					ZFBpayUtil.startZFBpay(context, mHandler, mResponse.getAlipayParams());
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case ZFBpayUtil.SDK_PAY_FLAG: {
+				PayResult payResult = new PayResult((String) msg.obj);
+				String resultStatus = payResult.getResultStatus();
+				if (TextUtils.equals(resultStatus, "9000")) {
+					ToastUtil.diaplayMesShort(context, "支付成功");
+					context.onSwipeRefreshLayoutRefresh();
+				} else {
+					if (TextUtils.equals(resultStatus, "8000")) {
+						ToastUtil.diaplayMesShort(context, "支付结果确认中");
+					} else {
+						ToastUtil.diaplayMesShort(context, "支付失败");
+					}
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		};
+	};
 	
 	private void refundOrder(final GetOrdersListResponse mOrderGoods){
 		Dialog dialog = new Dialog(context, "温馨提示", "确定要申请退款吗？");

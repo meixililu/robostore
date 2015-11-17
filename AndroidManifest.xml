@@ -63,6 +63,9 @@
         </service>
         
         <activity
+            android:name=".GuideActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".QRCodeActivity"
             android:screenOrientation="portrait" />
         <activity

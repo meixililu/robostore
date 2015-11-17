@@ -9,7 +9,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,18 +27,23 @@ import android.widget.TextView;
 import com.gc.materialdesign.widgets.Dialog;
 import com.robo.store.dao.GetPayParamsRespone;
 import com.robo.store.dao.GetSingleOrderResponse;
+import com.robo.store.dao.GetZfbPayParamsRespone;
 import com.robo.store.dao.MallOrderDetailVO;
+import com.robo.store.dialog.PayDialog;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.http.TextHttpResponseHandler;
 import com.robo.store.listener.onFragmentCallRefresh;
+import com.robo.store.listener.onPayTypeSelectedListener;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
+import com.robo.store.util.PayResult;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
 import com.robo.store.util.WechatPayUtil;
+import com.robo.store.util.ZFBpayUtil;
 import com.squareup.picasso.Picasso;
 
 public class OrderType1Fragment extends Fragment implements View.OnClickListener{
@@ -173,7 +181,7 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.confirm_to_pay:
-			getWeChatPara();
+			getPayType();
 			break;
 		case R.id.order_cancle_cover:
 			cancleOrder();
@@ -184,7 +192,22 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 		}
 	}
 	
-	private void getWeChatPara(){
+	private void getPayType(){
+		PayDialog mPayDialog = new PayDialog(getActivity());
+		mPayDialog.setmListener(new onPayTypeSelectedListener() {
+			@Override
+			public void zfbPay() {
+				toZFBPay();
+			}
+			@Override
+			public void wechatPay() {
+				toWechatPay();
+			}
+		});
+		mPayDialog.show();
+	}
+	
+	private void toWechatPay(){
 		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "正在调取支付...", true, false);
 		RequestParams params = new RequestParams();
 		params.put("orderId", mSingleOrder.getMallOrderCode());
@@ -211,6 +234,61 @@ public class OrderType1Fragment extends Fragment implements View.OnClickListener
 			}
 		});
 	}
+	
+	private void toZFBPay(){
+		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", mSingleOrder.getMallOrderCode());
+		RoboHttpClient.postForPay(HttpParameter.zfbUrl, params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(getActivity(), getActivity().getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetZfbPayParamsRespone mResponse = (GetZfbPayParamsRespone) ResultParse.parseResult(result,GetZfbPayParamsRespone.class);
+				if(ResultParse.handleResutl(getActivity(), mResponse)){
+					CheckAllOrdersActivity.isNeedRefresh = true;
+					OrderDetailActivity.isNeedRefresh = true;
+					ZFBpayUtil.startZFBpay(getActivity(), mHandler, mResponse.getAlipayParams());
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case ZFBpayUtil.SDK_PAY_FLAG: {
+				PayResult payResult = new PayResult((String) msg.obj);
+				String resultStatus = payResult.getResultStatus();
+				if (TextUtils.equals(resultStatus, "9000")) {
+					if(mRefreshListener != null){
+						CheckAllOrdersActivity.isNeedRefresh = true;
+						mRefreshListener.refresh();
+					}
+					ToastUtil.diaplayMesShort(getActivity(), "支付成功");
+				} else {
+					if (TextUtils.equals(resultStatus, "8000")) {
+						ToastUtil.diaplayMesShort(getActivity(), "支付结果确认中");
+					} else {
+						ToastUtil.diaplayMesShort(getActivity(), "支付失败");
+					}
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		};
+	};
 	
 	private void cancleOrder(){
 		Dialog dialog = new Dialog(getActivity(), "温馨提示", "确定要取消该订单吗？");

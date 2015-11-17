@@ -40,7 +40,7 @@
                     android:layout_weight="1"
                     android:text="新鲜薯条"
                     android:textColor="@color/text_dark"
-                    android:textSize="@dimen/bigest" />
+                    android:textSize="@dimen/biggerx" />
 
             </LinearLayout>
 
@@ -60,7 +60,7 @@
 	                    android:layout_height="wrap_content"
 	                    android:text="￥30.00"
 	                    android:textColor="@color/app_color"
-	                    android:textSize="@dimen/title" />
+	                    android:textSize="@dimen/biggerx" />
                 
                 <TextView
 	                    android:id="@+id/goods_number"

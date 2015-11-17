@@ -9,8 +9,9 @@ import org.apache.http.Header;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,8 +24,8 @@ import com.robo.store.adapter.ConfirmToPayListViewAdapter;
 import com.robo.store.dao.AddOrderDetailVO;
 import com.robo.store.dao.AddOrderResponse;
 import com.robo.store.dao.GetPayParamsRespone;
+import com.robo.store.dao.GetZfbPayParamsRespone;
 import com.robo.store.dao.GoodsBase;
-import com.robo.store.dao.PayParams;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RequestParams;
 import com.robo.store.http.RoboHttpClient;
@@ -33,12 +34,11 @@ import com.robo.store.util.CartUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.NumberUtil;
+import com.robo.store.util.PayResult;
 import com.robo.store.util.ResultParse;
 import com.robo.store.util.ToastUtil;
 import com.robo.store.util.WechatPayUtil;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.robo.store.util.ZFBpayUtil;
 
 public class ConfirmOrderActivity extends BaseActivity implements OnClickListener{
 
@@ -77,13 +77,13 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void toPay(){
-//		if(rb_weixin.isChecked()){
+		if(rb_weixin.isChecked()){
 			submitOrders();
-//		}else if(rb_zhifubao.isChecked()){
-//			
-//		}else{
-//			ToastUtil.diaplayMesShort(this, "请选择支付方式");
-//		}
+		}else if(rb_zhifubao.isChecked()){
+			submitOrders();
+		}else{
+			ToastUtil.diaplayMesShort(this, "请选择支付方式");
+		}
 	}
 	
 	private void submitOrders(){
@@ -103,7 +103,13 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
 					orderId = mResponse.getOrderId();
 					if(!TextUtils.isEmpty(orderId)){
-						getWeChatPara();
+						if(rb_weixin.isChecked()){
+							getWeChatPara();
+						}else if(rb_zhifubao.isChecked()){
+							getZFBPara();
+						}else{
+							ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "请选择支付方式");
+						}
 					}else{
 						ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, "订单提交失败，请重试");
 					}
@@ -142,6 +148,60 @@ public class ConfirmOrderActivity extends BaseActivity implements OnClickListene
 			}
 		});
 	}
+	
+	private void getZFBPara(){
+		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "正在调取支付...", true, false);
+		RequestParams params = new RequestParams();
+		params.put("orderId", orderId);
+		RoboHttpClient.postForPay(HttpParameter.zfbUrl, params, new TextHttpResponseHandler(){
+			
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				ToastUtil.diaplayMesLong(ConfirmOrderActivity.this, ConfirmOrderActivity.this.getResources().getString(R.string.connet_fail));
+			}
+			
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String result) {
+				GetZfbPayParamsRespone mResponse = (GetZfbPayParamsRespone) ResultParse.parseResult(result,GetZfbPayParamsRespone.class);
+				if(ResultParse.handleResutl(ConfirmOrderActivity.this, mResponse)){
+					ZFBpayUtil.startZFBpay(ConfirmOrderActivity.this, mHandler, mResponse.getAlipayParams());
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				progressDialog.dismiss();
+			}
+		});
+	}
+	
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case ZFBpayUtil.SDK_PAY_FLAG: {
+				PayResult payResult = new PayResult((String) msg.obj);
+				String resultStatus = payResult.getResultStatus();
+				if (TextUtils.equals(resultStatus, "9000")) {
+					ToastUtil.diaplayMesShort(ConfirmOrderActivity.this, "支付成功");
+				} else {
+					if (TextUtils.equals(resultStatus, "8000")) {
+						ToastUtil.diaplayMesShort(ConfirmOrderActivity.this, "支付结果确认中");
+					} else {
+						ToastUtil.diaplayMesShort(ConfirmOrderActivity.this, "支付失败");
+					}
+				}
+				payFinish();
+				break;
+			}
+			case ZFBpayUtil.SDK_CHECK_FLAG: {
+					ToastUtil.diaplayMesShort(ConfirmOrderActivity.this, (String)msg.obj);
+				break;
+			}
+			default:
+				break;
+			}
+		};
+	};
 	
 	private List<AddOrderDetailVO> getGoodsList(){
 		List<AddOrderDetailVO> mGoodsList = new ArrayList<AddOrderDetailVO>();

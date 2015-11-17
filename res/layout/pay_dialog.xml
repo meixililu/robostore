@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    
+    <com.gc.materialdesign.views.ButtonFlat
+                android:id="@+id/wechat_pay"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="@dimen/padding_10"
+                android:paddingTop="@dimen/padding_10"
+                android:paddingRight="@dimen/padding_10"
+                android:paddingBottom="@dimen/padding_5"
+                android:background="#ff6600"
+                android:textSize="@dimen/bigest"
+                materialdesign:rippleSpeed="95"
+                android:text="微信支付" />
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_tint2"
+        />
+    <com.gc.materialdesign.views.ButtonFlat
+                android:id="@+id/zfb_pay"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="@dimen/padding_10"
+                android:paddingTop="@dimen/padding_5"
+                android:paddingRight="@dimen/padding_10"
+                android:paddingBottom="@dimen/padding_10"
+                android:background="#ff6600"
+                android:textSize="@dimen/bigest"
+                materialdesign:rippleSpeed="95"
+                android:text="支付宝支付" />
+    
+</LinearLayout>

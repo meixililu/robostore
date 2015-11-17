@@ -48,7 +48,7 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
 		order_code_img = (ImageView) findViewById(R.id.order_code_img);
 		order_code_tv = (TextView) findViewById(R.id.order_code_tv);
 		order_code_img.setImageBitmap(DrawableUtil.stringtoBitmap(qrCodeData));
-		order_code_tv.setText(qrCode);
+		order_code_tv.setText("取货码:"+qrCode);
 		
 		send_cover.setOnClickListener(this);
 	}

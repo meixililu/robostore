@@ -9,16 +9,21 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 public class HttpParameter {
+	
+//	public static final String rootUrl = "http://www.robochina.com.cn";
+	public static final String rootUrl = "http://123.57.8.253:8080";
 
-	public static final String baseUrl = "http://www.robochina.com.cn/robo/base";
+	public static final String baseUrl = rootUrl +"/robo/base";
 	
-	public static final String goodUrl = "http://www.robochina.com.cn/robo/goods";
+	public static final String goodUrl = rootUrl +"/robo/goods";
 	
-	public static final String orderUrl = "http://www.robochina.com.cn/robo/order";
+	public static final String orderUrl = rootUrl +"/robo/order";
 	
-	public static final String shopsUrl = "http://www.robochina.com.cn/robo/sys";
+	public static final String shopsUrl = rootUrl +"/robo/sys";
 	
-	public static final String payUrl = "http://www.robochina.com.cn/robopay/weixin/pay";
+	public static final String payUrl = rootUrl +"/robopay/weixin/pay";
+	
+	public static final String zfbUrl = rootUrl +"/robopay/alipay/pay";
 	//RequestHeader
 	public static String softVer;
 	

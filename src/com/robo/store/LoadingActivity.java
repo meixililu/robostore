@@ -3,9 +3,11 @@ package com.robo.store;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.robo.store.http.HttpParameter;
 import com.robo.store.util.LoginUtil;
 import com.robo.store.util.SPUtil;
 
@@ -13,6 +15,8 @@ public class LoadingActivity extends Activity {
 
 	private SharedPreferences mSharedPreferences;
 	private String userName,userPWD;
+	//第一次启动的话启动引导界面
+	private int isFirstLoad;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,7 @@ public class LoadingActivity extends Activity {
 		setContentView(R.layout.activity_loading);
 		mSharedPreferences = SPUtil.getSharedPreferences(this);
 		LoginUtil.login(this, mSharedPreferences);
+		isFirstLoad = mSharedPreferences.getInt("isFirstLoad", 0);
 		new WaitTask().execute();
 	}
 	
@@ -28,7 +33,7 @@ public class LoadingActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -41,9 +46,23 @@ public class LoadingActivity extends Activity {
 		}
 	}
 	
+	private void setIsFirstLoad(){
+		Editor editor = mSharedPreferences.edit();
+		editor.putInt("isFirstLoad", HttpParameter.softVerCode);
+		editor.commit();
+	}
+	
 	private void toNextPage(){
-		Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-		startActivity(intent);
-		finish();
+		if(isFirstLoad != HttpParameter.softVerCode){
+			Intent intent = new Intent(this,GuideActivity.class);
+			startActivity(intent);
+//			setIsFirstLoad();
+			finish();
+		}else{
+			Intent intent = new Intent();
+			intent.setClass(this,MainActivity.class);
+			startActivity(intent);
+			finish();
+		}
 	}
 }

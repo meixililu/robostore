@@ -90,6 +90,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 			result.setText(msg);
 		}
 		ToastUtil.diaplayMesShort(this, msg);
+		finish();
 	}
 
 }

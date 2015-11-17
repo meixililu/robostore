@@ -7,8 +7,10 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -132,5 +134,26 @@ public class ViewUtil {
 				mView.setEnabled(false);
 			}
 		}
+	}
+	
+	/**新手引导
+	 * @param mContext
+	 * @param res
+	 * @return
+	 */
+	public static View getGuideImage(Context mContext,int res){
+		ImageView img = new ImageView(mContext);
+		ViewGroup.LayoutParams mParams = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+		img.setLayoutParams(mParams);
+		img.setImageResource(res);
+		return img;
+	}
+	
+	public static ImageView getGuideImage(Context mContext){
+		ImageView img = new ImageView(mContext);
+		ViewGroup.LayoutParams mParams = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+		img.setLayoutParams(mParams);
+		img.setScaleType(ScaleType.CENTER_CROP);
+		return img;
 	}
 }
