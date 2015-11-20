@@ -56,7 +56,7 @@ public class LoadingActivity extends Activity {
 		if(isFirstLoad != HttpParameter.softVerCode){
 			Intent intent = new Intent(this,GuideActivity.class);
 			startActivity(intent);
-//			setIsFirstLoad();
+			setIsFirstLoad();
 			finish();
 		}else{
 			Intent intent = new Intent();

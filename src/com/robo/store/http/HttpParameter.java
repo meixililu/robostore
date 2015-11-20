@@ -10,8 +10,8 @@ import android.text.TextUtils;
 
 public class HttpParameter {
 	
-//	public static final String rootUrl = "http://www.robochina.com.cn";
-	public static final String rootUrl = "http://123.57.8.253:8080";
+	public static final String rootUrl = "http://www.robochina.com.cn";
+//	public static final String rootUrl = "http://123.57.8.253:8080";
 
 	public static final String baseUrl = rootUrl +"/robo/base";
 	
