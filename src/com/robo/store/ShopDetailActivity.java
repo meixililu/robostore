@@ -104,13 +104,18 @@ public class ShopDetailActivity extends BaseActivity implements OnClickListener{
 		mGridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-				GoodsType mGoodsType = mGoodsTypeList.get(position);
-				goodType = mGoodsType.getGoodsTypeId();
-				HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
-				mMenuAdapter.notifyDataSetChanged();
-				clearList();
-				mSwipeRefreshLayout.setRefreshing(true);
-				RequestData();
+				if(mGoodsTypeList.size() > 8 && position == 7 && !mMenuAdapter.isShowAll()){
+					mMenuAdapter.setShowAll(true);
+					mMenuAdapter.notifyDataSetChanged();
+				}else{
+					GoodsType mGoodsType = mGoodsTypeList.get(position);
+					goodType = mGoodsType.getGoodsTypeId();
+					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
+					mMenuAdapter.notifyDataSetChanged();
+					clearList();
+					mSwipeRefreshLayout.setRefreshing(true);
+					RequestData();
+				}
 			}
 		});
 		setListOnScrollListener();

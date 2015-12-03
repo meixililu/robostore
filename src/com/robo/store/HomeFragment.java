@@ -138,13 +138,19 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		mGridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-				GoodsType mGoodsType = mGoodsTypeList.get(position);
-				goodType = mGoodsType.getGoodsTypeId();
-				HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
-				mMenuAdapter.notifyDataSetChanged();
-				clearList();
-				mSwipeRefreshLayout.setRefreshing(true);
-				RequestData();
+				if(mGoodsTypeList.size() > 8 && position == 7 && !mMenuAdapter.isShowAll()){
+					mMenuAdapter.setShowAll(true);
+					mMenuAdapter.notifyDataSetChanged();
+				}else{
+//					mMenuAdapter.setShowAll(false);
+					GoodsType mGoodsType = mGoodsTypeList.get(position);
+					goodType = mGoodsType.getGoodsTypeId();
+					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
+					mMenuAdapter.notifyDataSetChanged();
+					clearList();
+					mSwipeRefreshLayout.setRefreshing(true);
+					RequestData();
+				}
 			}
 		});
 		
@@ -153,7 +159,6 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
         imageIdList.add(R.drawable.banner2);
         imageIdList.add(R.drawable.banner3);
         imageIdList.add(R.drawable.banner4);
-        imageIdList.add(R.drawable.banner5);
         auto_view_pager.setAdapter(new ImagePagerAdapter(getActivity(), imageIdList).setInfiniteLoop(true));
         auto_view_pager.setOnPageChangeListener(new MyOnPageChangeListener());
         auto_view_pager.setInterval(2000);

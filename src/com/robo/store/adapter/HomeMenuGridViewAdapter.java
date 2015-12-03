@@ -17,21 +17,47 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 	private List<GoodsType> mGoodsTypeList;
 	private LayoutInflater inflater;
 	private Context mContext;
+	private boolean isShowAll;
+	private GoodsType mShowAllType;
 	
 	public HomeMenuGridViewAdapter(Context mContext, LayoutInflater inflater, List<GoodsType> GoodsTypeList){
 		this.mContext = mContext;
 		this.mGoodsTypeList = GoodsTypeList;
 		this.inflater = inflater;
+		mShowAllType = new GoodsType();
+		mShowAllType.setGoodsTypeId("999");
+		mShowAllType.setGoodsTypeName("更多");
+		mShowAllType.setIsSelect(0);
 	}
 	
 	@Override
 	public int getCount() {
-		return mGoodsTypeList.size();
+		if(mGoodsTypeList.size() > 8){
+			if(isShowAll){
+				return mGoodsTypeList.size();
+			}else{
+				return 8;
+			}
+		}else{
+			return mGoodsTypeList.size();
+		}
 	}
 
 	@Override
 	public GoodsType getItem(int position) {
-		return mGoodsTypeList.get(position);
+		if(mGoodsTypeList.size() > 8){
+			if(isShowAll){
+				return mGoodsTypeList.get(position);
+			}else{
+				if(position == 7){
+					return mShowAllType;
+				}else{
+					return mGoodsTypeList.get(position);
+				}
+			}
+		}else{
+			return mGoodsTypeList.get(position);
+		}
 	}
 
 	@Override
@@ -50,7 +76,7 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		final GoodsType mGoodsType = mGoodsTypeList.get(position);
+		final GoodsType mGoodsType = getItem(position);
 		holder.good_type_name.setText(mGoodsType.getGoodsTypeName());
 		if(mGoodsType.getIsSelect() == 1){
 			holder.good_type_name.setTextColor(mContext.getResources().getColor(R.color.text_dark));
@@ -59,11 +85,20 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 			holder.good_type_name.setTextColor(mContext.getResources().getColor(R.color.white));
 			holder.good_type_name.setBackgroundResource(R.color.none);
 		}
+		
 		return convertView;
 	}
 	
 	static class ViewHolder {
 		TextView good_type_name;
+	}
+
+	public boolean isShowAll() {
+		return isShowAll;
+	}
+
+	public void setShowAll(boolean isShowAll) {
+		this.isShowAll = isShowAll;
 	}
 
 }
