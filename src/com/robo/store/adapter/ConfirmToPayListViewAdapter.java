@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
 import com.robo.store.util.CartUtil;
+import com.robo.store.util.ImageUtil;
 import com.squareup.picasso.Picasso;
 
 public class ConfirmToPayListViewAdapter extends BaseAdapter {
@@ -64,7 +65,7 @@ public class ConfirmToPayListViewAdapter extends BaseAdapter {
 		final GoodsBase mGoodsBase = goodsList.get(position);
 		try {
 			Picasso.with(context)
-			.load(mGoodsBase.getGoodsPic())
+			.load(mGoodsBase.getGoodsPic() + ImageUtil.shutCutImg)
 			.tag(context)
 			.into(holder.good_icon);
 		} catch (Exception e) {

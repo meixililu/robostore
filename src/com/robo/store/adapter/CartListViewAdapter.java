@@ -21,6 +21,7 @@ import com.robo.store.KeQuHuoShopActivity;
 import com.robo.store.R;
 import com.robo.store.dao.GoodsBase;
 import com.robo.store.util.CartUtil;
+import com.robo.store.util.ImageUtil;
 import com.robo.store.util.KeyUtil;
 import com.squareup.picasso.Picasso;
 
@@ -77,7 +78,7 @@ public class CartListViewAdapter extends BaseAdapter {
 		final GoodsBase mGoodsBase = goodsList.get(position);
 		try {
 			Picasso.with(context)
-			.load(mGoodsBase.getGoodsPic())
+			.load(mGoodsBase.getGoodsPic() + ImageUtil.shutCutImg)
 			.tag(context)
 			.into(holder.good_icon);
 		} catch (Exception e) {

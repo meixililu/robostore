@@ -19,6 +19,7 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 	private Context mContext;
 	private boolean isShowAll;
 	private GoodsType mShowAllType;
+	private GoodsType mHideAllType;
 	
 	public HomeMenuGridViewAdapter(Context mContext, LayoutInflater inflater, List<GoodsType> GoodsTypeList){
 		this.mContext = mContext;
@@ -26,15 +27,19 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 		this.inflater = inflater;
 		mShowAllType = new GoodsType();
 		mShowAllType.setGoodsTypeId("999");
-		mShowAllType.setGoodsTypeName("更多");
+		mShowAllType.setGoodsTypeName("全部分类");
 		mShowAllType.setIsSelect(0);
+		mHideAllType = new GoodsType();
+		mHideAllType.setGoodsTypeId("998");
+		mHideAllType.setGoodsTypeName("收起分类");
+		mHideAllType.setIsSelect(0);
 	}
 	
 	@Override
 	public int getCount() {
 		if(mGoodsTypeList.size() > 8){
 			if(isShowAll){
-				return mGoodsTypeList.size();
+				return mGoodsTypeList.size() + 1;
 			}else{
 				return 8;
 			}
@@ -47,7 +52,11 @@ public class HomeMenuGridViewAdapter extends BaseAdapter {
 	public GoodsType getItem(int position) {
 		if(mGoodsTypeList.size() > 8){
 			if(isShowAll){
-				return mGoodsTypeList.get(position);
+				if(position == mGoodsTypeList.size()){
+					return mHideAllType;
+				}else{
+					return mGoodsTypeList.get(position) ;
+				}
 			}else{
 				if(position == 7){
 					return mShowAllType;

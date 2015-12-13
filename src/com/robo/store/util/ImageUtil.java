@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 
 public class ImageUtil {
 	
+	public static String shutCutImg = "@1e_211w_185h_0c_0i_1o_1x.jpg";
+	
 	public static Bitmap getdecodeBitmap(String img){
 		return decodeFile(new File(img));
 	}

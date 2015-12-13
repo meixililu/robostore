@@ -141,8 +141,10 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 				if(mGoodsTypeList.size() > 8 && position == 7 && !mMenuAdapter.isShowAll()){
 					mMenuAdapter.setShowAll(true);
 					mMenuAdapter.notifyDataSetChanged();
+				}else if(position == mGoodsTypeList.size()){
+					mMenuAdapter.setShowAll(false);
+					mMenuAdapter.notifyDataSetChanged();
 				}else{
-//					mMenuAdapter.setShowAll(false);
 					GoodsType mGoodsType = mGoodsTypeList.get(position);
 					goodType = mGoodsType.getGoodsTypeId();
 					HomeUtil.setSelectedMenu(mGoodsTypeList, goodType);
