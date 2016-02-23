@@ -88,8 +88,6 @@ public class ViewUtil {
 		LinearLayout.LayoutParams lp = new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		ImageView mImage = new ImageView(mContext);
-		mImage.setImageDrawable(mContext.getResources().getDrawable(
-				R.drawable.banner1));
 		mImage.setLayoutParams(lp);
 		return mImage;
 	}

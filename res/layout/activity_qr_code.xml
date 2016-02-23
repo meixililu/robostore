@@ -64,8 +64,8 @@
         >
         <ImageView
             android:id="@+id/order_code_img"
-            android:layout_width="230dp"
-            android:layout_height="230dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:src="@drawable/icon_to_pic_kup"
             />
         <TextView 

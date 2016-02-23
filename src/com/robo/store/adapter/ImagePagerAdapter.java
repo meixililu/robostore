@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import com.robo.store.util.ImageUtil;
 import com.robo.store.view.RecyclingPagerAdapter;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -24,12 +26,12 @@ import com.robo.store.view.RecyclingPagerAdapter;
 public class ImagePagerAdapter extends RecyclingPagerAdapter {
 
     private Context       context;
-    private List<Integer> imageIdList;
+    private List<String> imageIdList;
 
     private int           size;
     private boolean       isInfiniteLoop;
 
-    public ImagePagerAdapter(Context context, List<Integer> imageIdList) {
+    public ImagePagerAdapter(Context context, List<String> imageIdList) {
         this.context = context;
         this.imageIdList = imageIdList;
         this.size = imageIdList.size();
@@ -62,7 +64,14 @@ public class ImagePagerAdapter extends RecyclingPagerAdapter {
         } else {
             holder = (ViewHolder)view.getTag();
         }
-        holder.imageView.setImageResource(imageIdList.get(getPosition(position)));
+        try {
+			Picasso.with(context)
+			.load(imageIdList.get(getPosition(position)) + ImageUtil.shutCutImg1)
+			.tag(context)
+			.into(holder.imageView);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         holder.imageView.setScaleType(ScaleType.CENTER_CROP);
         return view;
     }

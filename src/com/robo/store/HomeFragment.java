@@ -156,11 +156,12 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 			}
 		});
 		
-		ArrayList<Integer> imageIdList = new ArrayList<Integer>();
-        imageIdList.add(R.drawable.banner1);
-        imageIdList.add(R.drawable.banner2);
-        imageIdList.add(R.drawable.banner3);
-        imageIdList.add(R.drawable.banner4);
+		ArrayList<String> imageIdList = new ArrayList<String>();
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/1.jpg");
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/2.jpg");
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/3.jpg");
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/4.jpg");
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/5.jpg");
         auto_view_pager.setAdapter(new ImagePagerAdapter(getActivity(), imageIdList).setInfiniteLoop(true));
         auto_view_pager.setOnPageChangeListener(new MyOnPageChangeListener());
         auto_view_pager.setInterval(2000);

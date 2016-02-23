@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -28,7 +29,7 @@ import com.robo.store.wxapi.WXPayEntryActivity;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
-public class MainActivity extends ActionBarActivity implements OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements OnPageChangeListener {
 
 	private LinearLayout tabs;
 	private String currentTabId;
