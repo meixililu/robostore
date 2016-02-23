@@ -8,6 +8,7 @@ package com.robo.store.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import android.widget.ImageView.ScaleType;
 
 import com.robo.store.util.ImageUtil;
 import com.robo.store.view.RecyclingPagerAdapter;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 
@@ -66,7 +69,8 @@ public class ImagePagerAdapter extends RecyclingPagerAdapter {
         }
         try {
 			Picasso.with(context)
-			.load(imageIdList.get(getPosition(position)) + ImageUtil.shutCutImg1)
+			.load(imageIdList.get(getPosition(position)))
+//			.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
 			.tag(context)
 			.into(holder.imageView);
 		} catch (Exception e) {

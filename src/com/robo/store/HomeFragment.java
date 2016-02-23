@@ -39,6 +39,7 @@ import com.robo.store.dao.GoodsType;
 import com.robo.store.http.HttpParameter;
 import com.robo.store.http.RoboHttpClient;
 import com.robo.store.util.HomeUtil;
+import com.robo.store.util.ImageUtil;
 import com.robo.store.util.KeyUtil;
 import com.robo.store.util.LogUtil;
 import com.robo.store.util.ResultParse;
@@ -48,6 +49,7 @@ import com.robo.store.util.ToastUtil;
 import com.robo.store.util.ViewUtil;
 import com.robo.store.view.AutoScrollViewPager;
 import com.robo.store.view.MyGridView;
+import com.squareup.picasso.Picasso;
 
 public class HomeFragment extends BaseFragment implements OnClickListener{
 
@@ -68,6 +70,7 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 	private List<GoodsBase> goodsList;
 	private boolean isHashFinishInitView;
 	private TextView empty_layout;
+	private ImagePagerAdapter mImagePagerAdapter;
 	
 	private View headerView,footerView;
 	private LinearLayout load_more_data;
@@ -157,12 +160,14 @@ public class HomeFragment extends BaseFragment implements OnClickListener{
 		});
 		
 		ArrayList<String> imageIdList = new ArrayList<String>();
-        imageIdList.add("http://file.robo.ucrl.net/apps/android/1.jpg");
-        imageIdList.add("http://file.robo.ucrl.net/apps/android/2.jpg");
-        imageIdList.add("http://file.robo.ucrl.net/apps/android/3.jpg");
-        imageIdList.add("http://file.robo.ucrl.net/apps/android/4.jpg");
-        imageIdList.add("http://file.robo.ucrl.net/apps/android/5.jpg");
-        auto_view_pager.setAdapter(new ImagePagerAdapter(getActivity(), imageIdList).setInfiniteLoop(true));
+		String houzhui = ImageUtil.shutCutImg1 + "?time=" +System.currentTimeMillis();
+		imageIdList.add("http://file.robo.ucrl.net/apps/android/1.jpg" + houzhui);
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/2.jpg" + houzhui);
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/3.jpg" + houzhui);
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/4.jpg" + houzhui);
+        imageIdList.add("http://file.robo.ucrl.net/apps/android/5.jpg" + houzhui);
+        mImagePagerAdapter = new ImagePagerAdapter(getActivity(), imageIdList).setInfiniteLoop(true);
+        auto_view_pager.setAdapter(mImagePagerAdapter);
         auto_view_pager.setOnPageChangeListener(new MyOnPageChangeListener());
         auto_view_pager.setInterval(2000);
         auto_view_pager.startAutoScroll();
